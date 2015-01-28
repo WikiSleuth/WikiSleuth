@@ -14,17 +14,31 @@ var WikiRevFinder = function(url) {
 
 	this.iterativeBinarySearch = function(stringToCheck) {
 
+		//take out links in stringToCheck, so we just have the string itself
+		//also newlines
+
+		stringToCheck = stringToCheck.replace(/\[.*?\]/g, "");
+		stringToCheck = stringToCheck.replace(/\n/g, " ");
+
+		console.log("STRING TO CHECK: "+ stringToCheck);
+
 		
 		while(this.revIDList.length > 1){
 
 			// need to make new WikiEdDiff or it freaks out. only first 10 so that infinite loop still runs.
-			if (this.round < 10){
+			if (this.round < 500){
 				this.WikEdDiff = new WikEdDiff();
 				this.round = this.round + 1;
 			}
 			var midpointRevisionContent = this.getMidpointRevisionContent();
 			
 			var diffDictionary = this.WikEdDiff.diff(this.mostCurrentRevisionContent, midpointRevisionContent);
+
+			//make the dictionary entries more parseable by taking out newlines
+			diffDictionary['='] = diffDictionary['='].replace(/\n\n/g, " ");
+			diffDictionary['+'] = diffDictionary['+'].replace(/\n\n/g, " ");
+			diffDictionary['-'] = diffDictionary['-'].replace(/\n\n/g, " ");
+
 
 			if(diffDictionary['='].indexOf(stringToCheck) > -1){
 				//run binary search on older/right half of list of current revisions
@@ -57,6 +71,7 @@ var WikiRevFinder = function(url) {
 				// console.log("ending calling diff Dictionary");
 
 				console.log("this revision DID affect the string");
+				// console.log("DIFF DICTIONARY FOR THIS ONE: "+diffDictionary['=']);
 			}
 		}
 		//otherwise, run on newer/left half of current revisions
