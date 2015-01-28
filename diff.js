@@ -1195,7 +1195,7 @@ var WikEdDiff = function () {
 		if ( this.config.timer === true ) {
 			this.timeEnd( 'total' );
 		}
-
+		console.log("FRAGMENTS: "+this.fragments[0].type);
 		return this.diffDictionary;
 	};
 
@@ -3201,7 +3201,6 @@ var WikEdDiff = function () {
 						type:  type,
 						color: color
 					} );
-
 					diffDictionary[type] = diffDictionary[type] + " " + blocks[block].text;
 				}
 
