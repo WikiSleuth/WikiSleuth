@@ -67,6 +67,10 @@ var WikiRevFinder = function(url) {
 		// if(diffDictionary['+'].indexOf(stringToCheck) > -1){
 		// 	console.log('this revision added: ' + stringToCheck);
 		// }
+		if (typeof this.revIdList === "undefined") {
+			console.log('there was no found revision that affecs the string')
+			return 0;
+		}
 		console.log('first revision that affects: '+this.revIDList[0]['revid']);
 		return this.revIDList[0];
 	};
