@@ -2,37 +2,19 @@
  var bgPage = chrome.extension.getBackgroundPage();
 
 function callHeatMap(){
-    chrome.tabs.executeScript(null,{file: "heatmap.js"});
+    chrome.tabs.executeScript(null,{file: "heatMapScripts/changeTextBackgroundColor.js"});
 }
 
 function callHeatMap2(){
-    chrome.tabs.executeScript(null,{file: "heatmap2.js"});
+    chrome.tabs.executeScript(null,{file: "heatMapScripts/changeTextFontColor.js"});
 }
 
 function callResetColors(){
-    chrome.tabs.executeScript(null,{file: "resetColors.js"});
+    chrome.tabs.executeScript(null,{file: "heatMapScripts/resetColors.js"});
 }
 
 function callBackgroundColor(){
-    /*console.log("calling backgroundColor");
-    if(document.getElementById('red').checked) {
-        console.log("red was seleceted");
-        chrome.tabs.executeScript(tab.id, {file: 'backgroundColor.js'}, function() {
-            chrome.tabs.sendMessage(tab.id, 'red');
-        });
-    }else if(document.getElementById('blue').checked) {
-        console.log("blue was selected");
-        chrome.tabs.executeScript(tab.id, {file: 'backgroundColor.js'}, function() {
-            chrome.tabs.sendMessage(tab.id, 'blue');
-        });
-    */
-    
-    if(document.getElementById('one').checked == true){
-        chrome.tabs.executeScript(null, {file: 'backgroundColor.js'});
-    }
-    else if(document.getElementById('two').checked == true){
-        chrome.tabs.executeScript(null, {file: 'backgroundColor2.js'});
-    }
+        chrome.tabs.executeScript(null, {file: 'heatMapScripts/backgroundColor.js'});
 }
 
 function callBackgroundPage(){

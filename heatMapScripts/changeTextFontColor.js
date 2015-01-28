@@ -29,6 +29,6 @@ function chooseColor(){
     //var colorList = ["rgb("+255+","+0","+0+")","rgb("+0+","+255+","0+")","rgb("0+","+0","+255")"];
     var colorList = ["#005b96","#4783ba","#FF8533","#E65C00","#B24700","#993D00","#CC2900"];
     return colorList[number]; 
-}
+}   
 
 changeFontColor();
