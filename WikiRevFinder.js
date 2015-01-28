@@ -15,8 +15,10 @@ var WikiRevFinder = function(url) {
 	this.iterativeBinarySearch = function(stringToCheck) {
 
 		//take out links in stringToCheck, so we just have the string itself
+		//also newlines
 
-		stringToCheck = stringToCheck.replace(/\[.*?\]/, "");
+		stringToCheck = stringToCheck.replace(/\[.*?\]/g, "");
+		stringToCheck = stringToCheck.replace(/\n/g, " ");
 
 		console.log("STRING TO CHECK: "+ stringToCheck);
 
@@ -31,8 +33,12 @@ var WikiRevFinder = function(url) {
 			var midpointRevisionContent = this.getMidpointRevisionContent();
 			
 			var diffDictionary = this.WikEdDiff.diff(this.mostCurrentRevisionContent, midpointRevisionContent);
-			// var noSpaceDictionary = diffDictionary['='].replace(/\s/, "");
-			// console.log("NO SPACE DICTIONARY: " + noSpaceDictionary);
+
+			//make the dictionary entries more parseable by taking out newlines
+			diffDictionary['='] = diffDictionary['='].replace(/\n\n/g, " ");
+			diffDictionary['+'] = diffDictionary['+'].replace(/\n\n/g, " ");
+			diffDictionary['-'] = diffDictionary['-'].replace(/\n\n/g, " ");
+
 
 			if(diffDictionary['='].indexOf(stringToCheck) > -1){
 				//run binary search on older/right half of list of current revisions
