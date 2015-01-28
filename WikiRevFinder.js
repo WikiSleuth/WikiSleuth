@@ -82,7 +82,7 @@ var WikiRevFinder = function(url) {
 		// if(diffDictionary['+'].indexOf(stringToCheck) > -1){
 		// 	console.log('this revision added: ' + stringToCheck);
 		// }
-		if (typeof this.revIdList === "undefined") {
+		if (!this.revIDList) {
 			console.log('there was no found revision that affecs the string')
 			return 0;
 		}
