@@ -29,8 +29,11 @@ function sendTextToModel(response) {
 // Collects data recieved by the model ****** Should be moved somewhere that makes more sense ******
 function getAffectedRevisions(highlightedText){
   var revID = WikiAPI.getWikiRevsInfo(highlightedText);
-  var editor_statistics = WikiAPI.WikiAPI.getRevisionStatistics(revID['revid']);
-  return [editor_statistics['timestamp'], editor_statistics['user'], editor_statistics['parsedcomment'], editor_statistics['user'], editor_statistics['timestamp'], revID['revid'], revID['parentid'], highlightedText];
+  if (revID != 0) {
+    var editor_statistics = WikiAPI.WikiAPI.getRevisionStatistics(revID['revid']);
+    return [editor_statistics['timestamp'], editor_statistics['user'], editor_statistics['parsedcomment'], editor_statistics['user'], editor_statistics['timestamp'], revID['revid'], revID['parentid'], highlightedText];
+  }
+  return [];
 }
 
 // Get the active window again. *** Can be combined with query for data? ***
@@ -45,12 +48,12 @@ function addInfo(tabs) {
 
 // Send constructed pane to Wiki page along with the CSS for the pane
 function buildPane(tabs, html) {
+  chrome.tabs.insertCSS(tabs[0].id, {file: 'panel.css'})
   chrome.tabs.executeScript(tabs[0].id, {
     code: 'var panelHTML = ' + JSON.stringify(html)
   }, function() {
     chrome.tabs.executeScript(tabs[0].id, {file: 'createPanel.js'});
   });
-  chrome.tabs.insertCSS(tabs[0].id, {file: 'panel.css'})
   isPaneDisplayed = true;
 }
 
