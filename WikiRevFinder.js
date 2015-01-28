@@ -39,7 +39,17 @@ var WikiRevFinder = function(url) {
 			}
 
 			else{
-				this.revIDList = this.revIDList.slice(0, (this.revIDList.length/2) + 1);
+
+				//edge case: this has the potential to continue slicing infinitely, making a new list of the same size as before
+				//if list size is two, so we do this if list size is too
+				if(this.revIDList.length == 2){
+					//check later of two things in the list
+					this.revIDList = this.findFirstRevisionLinearSearch(this.revIDList, stringToCheck);
+					
+				}
+				else{
+					this.revIDList = this.revIDList.slice(0, (this.revIDList.length/2) + 1);
+				}
 				// console.log("after slice:" + this.revIDList)
 				// midpointRevisionContent = this.getMidpointRevisionContent();
 				// console.log("starting calling diff Dictionary");
@@ -74,6 +84,29 @@ var WikiRevFinder = function(url) {
 		//console.log("text: " + txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(this.revIDList[halfpoint]['revid'])))
 		return txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(this.revIDList[halfpoint]['revid']));
 		
+	};
+
+	this.findFirstRevisionLinearSearch = function(revIdList, stringToCheck) {
+		var toReturn = [];
+
+
+		this.WikEdDiff = new WikEdDiff();
+		var secondItemContent = txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(revIdList[revIdList.length-1]['revid']));
+		var secondItemDiffDictionary = this.WikEdDiff.diff(this.mostCurrentRevisionContent, secondItemContent);
+
+		if(secondItemDiffDictionary['='].indexOf(stringToCheck) == -1){
+			toReturn[0] = revIdList[revIdList.length-1];
+		}
+
+		this.WikEdDiff = new WikEdDiff();
+		var firstItemContent = txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(revIdList[0]['revid']));
+		var firstItemDiffDictionary = this.WikEdDiff.diff(this.mostCurrentRevisionContent, firstItemContent);
+
+		if(firstItemDiffDictionary['='].indexOf(stringToCheck) == -1){
+			toReturn[0] = revIdList[0];
+		}
+		console.log('TO RETURN: '+toReturn);
+		return toReturn;
 	};
 
 	this.getMostRecentRevisionContent = function() {
