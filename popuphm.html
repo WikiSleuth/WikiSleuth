@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Heat Map</title>
+    <style>
+      body {
+        width: 150px;
+        overflow-x: hidden;
+        font-family: Arial;
+        text-align: center;
+      }
+        button[type=button] {
+        width: 14em;  height: 4em;
+        }
+        </style>
+      <script src="main.js"></script>
+  </head>
+  <body>
+
+      <form>What color do you prefer?<br>
+            <input type="radio" name="colors" id="one">Gray
+            <input type="radio" name="colors" id="two">Green
+      </form>
+
+        <button type="button" id="rev">Get Affected Revisions</button>
+      <hr>
+        <button type="button" id="art">Change Article Background</button>
+      <hr>
+        <button type="button" id="para">Change Text Background</button>
+      <hr>
+        <button type="button" id="sent">     Change Font      </button>
+      <hr>
+        <button type="button" id="reset">    Reset            </button>
+  </body>
+</html>

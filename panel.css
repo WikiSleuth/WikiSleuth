@@ -1,0 +1,122 @@
+#expanding_list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#expanding_list > li {
+
+}
+
+#expanding_list .selectable_item {
+	cursor: pointer;
+	font-weight: bold;
+}
+
+#expanding_list input[type=checkbox] {
+	opacity: 0;
+}
+
+#expanding_list > li > input[type=checkbox] + ul {
+	display: none;
+}
+
+#expanding_list > li > input[type=checkbox]:checked + ul {
+	display: block;
+}
+
+#panel {
+    width: 100%;
+    height: 10%;
+    bottom: 0%;
+    padding: 6px; 
+    background-color: rgb(255, 255, 255);
+	height: 40%;
+	overflow: scroll;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	border: 3px solid rgb(0, 0, 0);
+	position: fixed;
+}
+
+
+.item_list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	padding-left: 5%;
+}
+
+.timestamp {
+	float: left;
+	width: 20%;
+	color: #B19BDB;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.editor {
+	float: left;
+	width: 20%;
+	color: green;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.comment {
+	float: right;
+	width: 60%;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.header_left {
+	float: left;
+	width: 20%;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.header_right {
+	float: left;
+	width: 60%;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.text_added {
+	padding-top: 3%;
+	padding-bottom: 3%;
+	float: left;
+	width: 80%;
+	overflow: hidden;
+}
+
+#text_affected {
+	padding-top: 3%;
+}
+
+#author {
+	color: #6BBBD4;
+}
+
+#date {
+	color: #EBD6BB;
+}
+
+#revision {
+	color: #F599C2;
+}
+
+#parent_rev {
+	color: #B39DB4;
+}
+
+#text_affected {
+	color: #78DD77;
+}

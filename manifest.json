@@ -1,0 +1,60 @@
+{
+  "name": "WikiSleuth",
+  "description": "Panel that shows a UI",
+  "version": "1.0",
+
+  "permissions": [
+    "activeTab",
+    "tabs"
+  ],
+
+  "optional_permissions": [
+    "http://en.wikipedia.org/w/api.php"
+  ],
+  
+  "background": {
+    "scripts": ["apiClass.js", "diff.js", "txtwiki.js", "WikiRevFinder.js", "createPanel.js", "preProcess.js","panel.js", "processDataForUI.js","master.js"],
+    "persistent": true
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["apiClass.js", "diff.js", "txtwiki.js", "WikiRevFinder.js", "panel.js"]
+    }
+  ],
+
+  "commands":{
+    "WikiSleuth":{
+      "suggested_key":{
+        "default": "Ctrl+Shift+E",
+        "mac": "Command+Shift+E",
+        "windows": "Ctrl+Shift+E"
+        },
+        "description": "WikiSleuth",
+        "global": true
+      },
+
+    "_execute_browser_action": {
+      "suggested_key":{
+        "default": "Ctrl+Shift+I",
+        "mac": "Ctrl+Shift+I",
+        "windows": "Ctrl+Shift+I"
+      }
+    },
+    "_execute_page_action":{
+      "suggested_key": {
+        "default": "Ctrl+Shift+U",
+        "mac": "Ctrl+Shift+U",
+        "windows": "Ctrl+Shift+U"
+      }
+    }
+    }, 
+
+  "browser_action": {
+    "default_title": "Wikisleuth",
+    "default_icon": "icon.png",
+    "default_popup": "popuphm.html"
+  },
+  "manifest_version": 2
+}
