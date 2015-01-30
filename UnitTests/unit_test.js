@@ -1,4 +1,6 @@
 var UnitTester = function() {
+  this.WikiRevFinder = null;
+  this.testUrl = "";
 
   this.init = function() {
   	this.testUrl = "http://en.wikipedia.org/wiki/Cake";
