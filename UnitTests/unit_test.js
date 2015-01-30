@@ -20,8 +20,7 @@ var UnitTester = function() {
       document.body.appendChild(this.linebreak);
   	}
   	else{
-  		document.body.appendChild(document.createTextNode("Failed test 1. Expected value = 624717323, actual value = "+revID));
-      document.body.appendChild(this.linebreak);
+  		document.body.appendChild(document.createTextNode("Failed test 1. Expected value = 624717323, actual value = "+revID + document.createElement('br')));
   	}
   }
 
@@ -33,8 +32,7 @@ var UnitTester = function() {
       document.body.appendChild(this.linebreak);
     }
     else{
-      document.body.appendChild(document.createTextNode("Failed test 2. Expected value = 624717323, actual value = "+revID));
-      document.body.appendChild(this.linebreak);
+      document.body.appendChild(document.createTextNode("Failed test 2. Expected value = 624717323, actual value = "+revID + document.createElement('br')));
     }
   }
 
