@@ -43,6 +43,8 @@ var WikiRevFinder = function(url) {
 			if(diffDictionary['='].indexOf(stringToCheck) > -1){
 				//run binary search on older/right half of list of current revisions
 				//first, change this.revIdList to be the right half of the list, then call the two functions above again
+
+				//start here, change it so that we don't subtract 1, deal with resulting bug
 				this.revIDList = this.revIDList.slice(this.revIDList.length/2, this.revIDList.length-1);
 				// midpointRevisionContent = this.getMidpointRevisionContent();
 				// console.log("calling diff Dictionary");
