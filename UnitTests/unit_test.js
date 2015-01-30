@@ -1,3 +1,5 @@
+// chrome-extension://gfooghnbhkielnnedfhmclbpkomnnchb/UnitTests/unit_test.html
+
 var UnitTester = function() {
   this.WikiRevFinder = null;
   this.testUrl = "";
@@ -18,6 +20,7 @@ var UnitTester = function() {
   		document.body.appendChild(document.createTextNode("Failed test 1. Expected value = 624717323, actual value = "+revID));
   	}
   }
+  
   this.hello = function() {
     document.body.appendChild(document.createTextNode('hello'));
     return 'hello';
