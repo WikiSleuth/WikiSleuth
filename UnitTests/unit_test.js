@@ -1,8 +1,12 @@
 var UnitTester = function() {
 
   this.init = function() {
-    alert('hello!');
     return;
+  }
+
+  this.hello = function() {
+    document.body.appendChild(document.createTextNode('hello'));
+    return 'hello';
   }
 
   this.init();
@@ -10,3 +14,4 @@ var UnitTester = function() {
 }
 
 var tester = new UnitTester();
+tester.hello();
