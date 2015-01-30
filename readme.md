@@ -1,7 +1,6 @@
 <h1>Git Branching!</h1>
-<br>
 This is a simple write up on how to use branching in Git to develop while maintaining a stable product in the Master branch.
-<br><br>
+<br>
 <h3>Summary:</h3>
 git pull <br>
 git checkout -b <branch name> <br>
@@ -11,13 +10,12 @@ git commit <file(s)> -m 'Committing!' <br>
 git pull origin <branch name> <br>
 git push origin <branch name> <br>
 git checkout master <br>
-git pull <br> <br>
+git pull <br>
 git merge <branch name> <br>
 git branch -d <branch name> <br>
 git push <br>
-<br><br>
-<h3>Mini Tutorial:</h3>
 <br>
+<h3>Mini Tutorial:</h3>
 0) git pull (make sure the branch you are checking out contains the newest content of that branch) <br>
 1) git checkout -b <your branch name> <br>
     - ex: git checkout -b foo <br>
@@ -44,3 +42,5 @@ git push <br>
 You should now have pushed your stable changes safely to master! Side note, don't be afraid of merge conflicts. They can seem bad at first but once you fix one they are not that bad. <br>
 
 Let me know if any of this is ambiguous, or feel free to add to it if you think something is wrong/not explained well. <br>
+
+Here is the link Jadrian sent out for more documentation: http://nvie.com/posts/a-successful-git-branching-model/
