@@ -1,7 +1,6 @@
 var UnitTester = function() {
 
   this.init = function() {
-    alert('hello!');
     return;
   }
 
@@ -18,6 +17,9 @@ var UnitTester = function() {
   	else{
   		document.body.appendChild(document.createTextNode("Failed test 1. Expected value = 624717323, actual value = "+revID));
   	}
+  this.hello = function() {
+    document.body.appendChild(document.createTextNode('hello'));
+    return 'hello';
   }
 
   this.init();
@@ -25,4 +27,5 @@ var UnitTester = function() {
 }
 
 var tester = new UnitTester();
-
+tester.hello();
+tester.firstTest();
