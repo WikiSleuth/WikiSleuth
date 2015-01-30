@@ -1,4 +1,6 @@
 var UnitTester = function() {
+  this.WikiRevFinder = null;
+  this.testUrl = "";
 
   this.init = function() {
     return;
@@ -17,6 +19,8 @@ var UnitTester = function() {
   	else{
   		document.body.appendChild(document.createTextNode("Failed test 1. Expected value = 624717323, actual value = "+revID));
   	}
+  }
+  
   this.hello = function() {
     document.body.appendChild(document.createTextNode('hello'));
     return 'hello';
