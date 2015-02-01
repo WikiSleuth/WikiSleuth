@@ -4,6 +4,7 @@ var WikiRevFinder = function(url) {
 	this.WikiAPI = null;
 	this.revIDList = [];
 	this.mostCurrentRevisionContent = '';
+	this.halfpoint = 0;
 
 	this.init = function() {
 		this.WikiAPI = new APICaller(url);
@@ -22,6 +23,7 @@ var WikiRevFinder = function(url) {
 
 		console.log("STRING TO CHECK: "+ stringToCheck);
 
+		var affectedRevisionList = [];
 		while(this.revIDList.length > 1){
 
 			// need to make new WikiEdDiff or it freaks out. only first 10 so that infinite loop still runs.
@@ -54,7 +56,7 @@ var WikiRevFinder = function(url) {
 			}
 
 			else{
-
+				affectedRevisionList.push(this.revIDList[this.halfpoint])
 				//edge case: this has the potential to continue slicing infinitely, making a new list of the same size as before
 				//if list size is two, so we do this if list size is too
 				if(this.revIDList.length == 2){
@@ -83,22 +85,17 @@ var WikiRevFinder = function(url) {
 		// if(diffDictionary['+'].indexOf(stringToCheck) > -1){
 		// 	console.log('this revision added: ' + stringToCheck);
 		// }
-		if (!this.revIDList) {
-			console.log('there was no found revision that affecs the string')
-			return 0;
-		}
-		console.log('first revision that affects: '+this.revIDList[0]['revid']);
-		return this.revIDList[0];
+		return affectedRevisionList.slice(0,10);
 	};
 
 	this.getMidpointRevisionContent = function() {
 		console.log("length:" + this.revIDList.length)
 		console.log("half length:" + this.revIDList.length/2)
-		var halfpoint = Math.floor(this.revIDList.length/2);
+		this.halfpoint = Math.floor(this.revIDList.length/2);
 	
-		console.log("halfpoint number we think: " + this.revIDList[halfpoint]['revid']);
+		console.log("halfpoint number we think: " + this.revIDList[this.halfpoint]['revid']);
 		//console.log("text: " + txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(this.revIDList[halfpoint]['revid'])))
-		return txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(this.revIDList[halfpoint]['revid']));
+		return txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(this.revIDList[this.halfpoint]['revid']));
 		
 	};
 

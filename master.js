@@ -28,12 +28,14 @@ function sendTextToModel(response) {
 
 // Collects data recieved by the model ****** Should be moved somewhere that makes more sense ******
 function getAffectedRevisions(highlightedText){
-  var revID = WikiAPI.getWikiRevsInfo(highlightedText);
-  if (revID != 0) {
-    var editor_statistics = WikiAPI.WikiAPI.getRevisionStatistics(revID['revid']);
-    return [editor_statistics['timestamp'], editor_statistics['user'], editor_statistics['parsedcomment'], editor_statistics['user'], editor_statistics['timestamp'], revID['revid'], revID['parentid'], highlightedText];
+  var affectedRevs = WikiAPI.getWikiRevsInfo(highlightedText);
+  var revisionDetails = null;
+
+  for (i = 0; i < affectedRevs.length; i++) {
+    revisionDetails = WikiAPI.WikiAPI.getRevisionStatistics(affectedRevs[i]['revid']);
+    affectedRevs[i] = [revisionDetails['timestamp'], revisionDetails['user'], revisionDetails['parsedcomment'], revisionDetails['user'], revisionDetails['timestamp'], affectedRevs[i]['revid'], affectedRevs[i]['parentid'], highlightedText];
   }
-  return [];
+  return affectedRevs;
 }
 
 // Get the active window again. *** Can be combined with query for data? ***
