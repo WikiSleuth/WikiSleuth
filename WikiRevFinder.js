@@ -22,7 +22,6 @@ var WikiRevFinder = function(url) {
 
 		console.log("STRING TO CHECK: "+ stringToCheck);
 
-		
 		while(this.revIDList.length > 1){
 
 			// need to make new WikiEdDiff or it freaks out. only first 10 so that infinite loop still runs.
@@ -95,11 +94,7 @@ var WikiRevFinder = function(url) {
 	this.getMidpointRevisionContent = function() {
 		console.log("length:" + this.revIDList.length)
 		console.log("half length:" + this.revIDList.length/2)
-		if (this.revIDList.length % 2 == 0){
-			halfpoint = this.revIDList.length/2
-		} else {
-			halfpoint = this.revIDList.length/2-0.5
-		}
+		var halfpoint = Math.floor(this.revIDList.length/2);
 	
 		console.log("halfpoint number we think: " + this.revIDList[halfpoint]['revid']);
 		//console.log("text: " + txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(this.revIDList[halfpoint]['revid'])))
