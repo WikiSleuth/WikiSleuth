@@ -953,7 +953,7 @@ var WikEdDiff = function () {
 		// Load version strings into WikEdDiffText objects
 		this.newText = new WikEdDiff.WikEdDiffText( newString, this );
 		this.oldText = new WikEdDiff.WikEdDiffText( oldString, this );
-		/*
+
 		// Trap trivial changes: no change
 		if ( this.newText.text === this.oldText.text ) {
 			this.html =
@@ -962,7 +962,7 @@ var WikEdDiff = function () {
 				this.htmlEscape( this.config.msg['wiked-diff-empty'] ) +
 				this.config.htmlCode.noChangeEnd +
 				this.config.htmlCode.containerEnd;
-			return this.diffDictionary;
+			return [this.diffDictionary, this.html];
 		}
 
 		// Trap trivial changes: old text deleted
@@ -980,7 +980,7 @@ var WikEdDiff = function () {
 				this.config.htmlCode.insertEnd +
 				this.config.htmlCode.fragmentEnd +
 				this.config.htmlCode.containerEnd;
-			return this.diffDictionary;
+			return [this.diffDictionary, this.html];
 		}
 
 		// Trap trivial changes: new text deleted
@@ -998,9 +998,9 @@ var WikEdDiff = function () {
 				this.config.htmlCode.deleteEnd +
 				this.config.htmlCode.fragmentEnd +
 				this.config.htmlCode.containerEnd;
-			return this.html;
+			return [this.diffDictionary, this.html];
 		}
-		*/
+
 
 		// Split new and old text into paragraps
 		if ( this.config.timer === true ) {
@@ -1196,7 +1196,7 @@ var WikEdDiff = function () {
 			this.timeEnd( 'total' );
 		}
 		console.log("FRAGMENTS: "+this.fragments[0].type);
-		return this.diffDictionary;
+		return [this.diffDictionary, this.html];
 	};
 
 

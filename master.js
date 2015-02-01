@@ -32,8 +32,8 @@ function getAffectedRevisions(highlightedText){
   var revisionDetails = null;
 
   for (i = 0; i < affectedRevs.length; i++) {
-    revisionDetails = WikiAPI.WikiAPI.getRevisionStatistics(affectedRevs[i]['revid']);
-    affectedRevs[i] = [revisionDetails['timestamp'], revisionDetails['user'], revisionDetails['parsedcomment'], revisionDetails['user'], revisionDetails['timestamp'], affectedRevs[i]['revid'], affectedRevs[i]['parentid'], highlightedText];
+    revisionDetails = WikiAPI.WikiAPI.getRevisionStatistics(affectedRevs[i][0]['revid']);
+    affectedRevs[i][0] = [revisionDetails['timestamp'], revisionDetails['user'], revisionDetails['parsedcomment'], revisionDetails['user'], revisionDetails['timestamp'], affectedRevs[i]['revid'], affectedRevs[i]['parentid'], highlightedText];
   }
   return affectedRevs;
 }
