@@ -6,5 +6,5 @@ wikiPageFooter.className += " addPaddingForPage";
 
 var script = document.createElement('script');
 script.setAttribute("type", "application/javascript");
-script.textContent = "function showDiff(divName) { alert(document.getElemenyById(divName).innerHTML); }";
+script.textContent = "function showDiff(divName) { var myWindow = window.open('', 'MsgWindow', 'width=200, height=100'); myWindow.document.write(document.getElementById('DIV1').innerHTML); }";
 document.body.appendChild(script);
