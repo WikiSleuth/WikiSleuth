@@ -1,7 +1,6 @@
 function buildHTMLToAdd(tabs, data, callback) {
 	var extURL = document.location.href.match(/(chrome-extension:\/\/[^\/]*\/)/g);
 	if (data.length > 0) {
-		data.reverse();
 		html = "<div id='panel'> <h2>WikiSleuth</h2>" +
 				"<ul id='expanding_list'>";
 		for (i=0; i<data.length; i++) {

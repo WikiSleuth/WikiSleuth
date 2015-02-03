@@ -33,7 +33,7 @@ function getAffectedRevisions(highlightedText){
 
   for (i = 0; i < affectedRevs.length; i++) {
     revisionDetails = WikiAPI.WikiAPI.getRevisionStatistics(affectedRevs[i][0]['revid']);
-    affectedRevs[i][0] = [revisionDetails['timestamp'], revisionDetails['user'], revisionDetails['parsedcomment'], revisionDetails['user'], revisionDetails['timestamp'], affectedRevs[i]['revid'], affectedRevs[i]['parentid'], highlightedText];
+    affectedRevs[i][0] = [revisionDetails['timestamp'], revisionDetails['user'], revisionDetails['parsedcomment'], revisionDetails['user'], revisionDetails['timestamp'], affectedRevs[i][0]['revid'], affectedRevs[i][0]['parentid'], highlightedText];
   }
   return affectedRevs;
 }
@@ -53,10 +53,7 @@ function buildPane(tabs, html) {
   chrome.tabs.insertCSS(tabs[0].id, {file: 'panel.css'})
   chrome.tabs.executeScript(tabs[0].id, { code: 'var panelHTML = ' + JSON.stringify(html) },
    function() {
-    chrome.tabs.executeScript(tabs[0].id, {file: 'diffPane.js'},
-      function() {
-        chrome.tabs.executeScript(tabs[0].id, {file: 'createPanel.js'});
-      });
+    chrome.tabs.executeScript(tabs[0].id, {file: 'createPanel.js'});
   });
   isPaneDisplayed = true;
 }

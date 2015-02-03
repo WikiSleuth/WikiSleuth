@@ -63,7 +63,10 @@ var WikiRevFinder = function(url) {
 				if(this.revIDList.length == 2){
 					//check later of two things in the list
 					this.revIDList = this.findFirstRevisionLinearSearch(this.revIDList, stringToCheck);
-					
+					if (this.revIDList.length > 0){
+						affectedRevisionList.push([this.revIDList[0], this.revIDList[1]])
+					}
+					break;
 				}
 				else{
 					this.revIDList = this.revIDList.slice(0, (this.revIDList.length/2) + 1);
@@ -86,7 +89,7 @@ var WikiRevFinder = function(url) {
 		// if(diffDictionary['+'].indexOf(stringToCheck) > -1){
 		// 	console.log('this revision added: ' + stringToCheck);
 		// }
-		return affectedRevisionList.slice(0,10);
+		return affectedRevisionList.slice(0,10).reverse();
 	};
 
 	this.getMidpointRevisionContent = function() {
@@ -110,7 +113,7 @@ var WikiRevFinder = function(url) {
 		var secondItemDiffDictionary = secondItemDiffObject[0];
 
 		if(secondItemDiffDictionary['='].indexOf(stringToCheck) == -1){
-			toReturn[0] = revIdList[revIdList.length-1];
+			toReturn[0] = [revIdList[revIdList.length-1], secondItemDiffObject[1]];
 		}
 
 		this.WikEdDiff = new WikEdDiff();
@@ -118,7 +121,7 @@ var WikiRevFinder = function(url) {
 		var firstItemDiffDictionary = this.WikEdDiff.diff(this.mostCurrentRevisionContent, firstItemContent);
 
 		if(firstItemDiffDictionary['='].indexOf(stringToCheck) == -1){
-			toReturn[0] = revIdList[0];
+			toReturn[0] = [revIdList[0], secondItemDiffObject[1]];
 		}
 		console.log('TO RETURN: '+toReturn);
 		return toReturn;
