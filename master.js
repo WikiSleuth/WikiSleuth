@@ -32,8 +32,8 @@ function getAffectedRevisions(highlightedText){
   var revisionDetails = null;
 
   for (i = 0; i < affectedRevs.length; i++) {
-    revisionDetails = WikiAPI.WikiAPI.getRevisionStatistics(affectedRevs[i]['revid']);
-    affectedRevs[i] = [revisionDetails['timestamp'], revisionDetails['user'], revisionDetails['parsedcomment'], revisionDetails['user'], revisionDetails['timestamp'], affectedRevs[i]['revid'], affectedRevs[i]['parentid'], highlightedText];
+    revisionDetails = WikiAPI.WikiAPI.getRevisionStatistics(affectedRevs[i][0]['revid']);
+    affectedRevs[i][0] = [revisionDetails['timestamp'], revisionDetails['user'], revisionDetails['parsedcomment'], revisionDetails['user'], revisionDetails['timestamp'], affectedRevs[i][0]['revid'], affectedRevs[i][0]['parentid'], highlightedText];
   }
   return affectedRevs;
 }
@@ -51,9 +51,8 @@ function addInfo(tabs) {
 // Send constructed pane to Wiki page along with the CSS for the pane
 function buildPane(tabs, html) {
   chrome.tabs.insertCSS(tabs[0].id, {file: 'panel.css'})
-  chrome.tabs.executeScript(tabs[0].id, {
-    code: 'var panelHTML = ' + JSON.stringify(html)
-  }, function() {
+  chrome.tabs.executeScript(tabs[0].id, { code: 'var panelHTML = ' + JSON.stringify(html) },
+   function() {
     chrome.tabs.executeScript(tabs[0].id, {file: 'createPanel.js'});
   });
   isPaneDisplayed = true;

@@ -33,7 +33,8 @@ var WikiRevFinder = function(url) {
 			}
 			var midpointRevisionContent = this.getMidpointRevisionContent();
 			
-			var diffDictionary = this.WikEdDiff.diff(this.mostCurrentRevisionContent, midpointRevisionContent);
+			var diffObject = this.WikEdDiff.diff(this.mostCurrentRevisionContent, midpointRevisionContent);
+			var diffDictionary = diffObject[0];
 
 			//make the dictionary entries more parseable by taking out newlines
 			diffDictionary['='] = diffDictionary['='].replace(/\n\n/g, " ");
@@ -56,13 +57,16 @@ var WikiRevFinder = function(url) {
 			}
 
 			else{
-				affectedRevisionList.push(this.revIDList[this.halfpoint])
+				affectedRevisionList.push([this.revIDList[this.halfpoint], diffObject[1]]);
 				//edge case: this has the potential to continue slicing infinitely, making a new list of the same size as before
 				//if list size is two, so we do this if list size is too
 				if(this.revIDList.length == 2){
 					//check later of two things in the list
 					this.revIDList = this.findFirstRevisionLinearSearch(this.revIDList, stringToCheck);
-					
+					if (this.revIDList.length > 0){
+						affectedRevisionList.push([this.revIDList[0], this.revIDList[1]])
+					}
+					break;
 				}
 				else{
 					this.revIDList = this.revIDList.slice(0, (this.revIDList.length/2) + 1);
@@ -87,6 +91,7 @@ var WikiRevFinder = function(url) {
 		// }
 		var sortedList = affectedRevisionList.sort(function(dict1, dict2){return dict1['revid']-dict2['revid']});
 		return sortedList.slice(0,10);
+		//return affectedRevisionList.slice(0,10).reverse();
 	};
 
 	this.getMidpointRevisionContent = function() {
@@ -106,10 +111,11 @@ var WikiRevFinder = function(url) {
 
 		this.WikEdDiff = new WikEdDiff();
 		var secondItemContent = txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(revIdList[revIdList.length-1]['revid']));
-		var secondItemDiffDictionary = this.WikEdDiff.diff(this.mostCurrentRevisionContent, secondItemContent);
+		var secondItemDiffObject = this.WikEdDiff.diff(this.mostCurrentRevisionContent, secondItemContent);
+		var secondItemDiffDictionary = secondItemDiffObject[0];
 
 		if(secondItemDiffDictionary['='].indexOf(stringToCheck) == -1){
-			toReturn[0] = revIdList[revIdList.length-1];
+			toReturn[0] = [revIdList[revIdList.length-1], secondItemDiffObject[1]];
 		}
 
 		this.WikEdDiff = new WikEdDiff();
@@ -117,7 +123,7 @@ var WikiRevFinder = function(url) {
 		var firstItemDiffDictionary = this.WikEdDiff.diff(this.mostCurrentRevisionContent, firstItemContent);
 
 		if(firstItemDiffDictionary['='].indexOf(stringToCheck) == -1){
-			toReturn[0] = revIdList[0];
+			toReturn[0] = [revIdList[0], secondItemDiffObject[1]];
 		}
 		console.log('TO RETURN: '+toReturn);
 		return toReturn;
