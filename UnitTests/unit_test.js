@@ -166,7 +166,7 @@ var UnitTester = function() {
   }
 
   this.twelfthTest = function(){
-    var highlightedText = "the next sequel to \"Into Darkness\"";
+    var highlightedText = "the next sequel to Into Darkness";
     var revThing = this.WikiRevFinder.getWikiRevsInfo(highlightedText);
     var revID = revThing[revThing.length-1]['revid'];
     if(revID == 639940658){
