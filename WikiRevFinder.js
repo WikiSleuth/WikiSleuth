@@ -115,15 +115,16 @@ var WikiRevFinder = function(url) {
 		var secondItemDiffDictionary = secondItemDiffObject[0];
 
 		if(secondItemDiffDictionary['='].indexOf(stringToCheck) == -1){
-			toReturn[0] = [revIdList[revIdList.length-1], secondItemDiffObject[1]];
+			toReturn = [revIdList[revIdList.length-1], secondItemDiffObject[1]];
 		}
 
 		this.WikEdDiff = new WikEdDiff();
 		var firstItemContent = txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(revIdList[0]['revid']));
-		var firstItemDiffDictionary = this.WikEdDiff.diff(this.mostCurrentRevisionContent, firstItemContent);
+		var firstItemDiffObject = this.WikEdDiff.diff(this.mostCurrentRevisionContent, firstItemContent);
+		var firstItemDiffDictionary = secondItemDiffObject[0];
 
 		if(firstItemDiffDictionary['='].indexOf(stringToCheck) == -1){
-			toReturn[0] = [revIdList[0], secondItemDiffObject[1]];
+			toReturn = [revIdList[0], firstItemDiffObject[1]];
 		}
 		console.log('TO RETURN: '+toReturn);
 		return toReturn;
