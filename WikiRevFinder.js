@@ -46,7 +46,7 @@ var WikiRevFinder = function(url) {
 				//first, change this.revIdList to be the right half of the list, then call the two functions above again
 
 				//start here, change it so that we don't subtract 1, deal with resulting bug
-				this.revIDList = this.revIDList.slice(this.revIDList.length/2, this.revIDList.length-1);
+				this.revIDList = this.revIDList.slice(this.revIDList.length/2, this.revIDList.length);
 				// midpointRevisionContent = this.getMidpointRevisionContent();
 				// console.log("calling diff Dictionary");
 				// diffDictionary = this.WikEdDiff.diff(this.mostCurrentRevisionContent, midpointRevisionContent);
@@ -85,7 +85,8 @@ var WikiRevFinder = function(url) {
 		// if(diffDictionary['+'].indexOf(stringToCheck) > -1){
 		// 	console.log('this revision added: ' + stringToCheck);
 		// }
-		return affectedRevisionList.slice(0,10);
+		var sortedList = affectedRevisionList.sort(function(dict1, dict2){return dict1['revid']-dict2['revid']});
+		return sortedList.slice(0,10);
 	};
 
 	this.getMidpointRevisionContent = function() {
