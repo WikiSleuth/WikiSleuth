@@ -14,7 +14,7 @@ var UnitTester = function() {
   this.firstTest = function(){
   	var highlightedText = "in magazines";
     var revThing = this.WikiRevFinder.getWikiRevsInfo(highlightedText);
-  	var revID = revThing[revThing.length-1]['revid'];
+  	var revID = revThing[revThing.length-1][0]['revid'];
   	if(revID == 624717323){
   		document.body.appendChild(document.createTextNode("Passed test 1."));
       document.body.appendChild(document.createElement('br'));
@@ -29,7 +29,7 @@ var UnitTester = function() {
   this.secondTest = function(){
     var highlightedText = "photographs in";
     var revThing = this.WikiRevFinder.getWikiRevsInfo(highlightedText);
-    var revID = revThing[revThing.length-1]['revid'];
+    var revID = revThing[revThing.length-1][0]['revid'];
     if(revID == 624717323){
       document.body.appendChild(document.createTextNode("Passed test 2."));
       document.body.appendChild(document.createElement('br'));
@@ -43,7 +43,7 @@ var UnitTester = function() {
   this.thirdTest = function(){
     var highlightedText = "cake-making";
     var revThing = this.WikiRevFinder.getWikiRevsInfo(highlightedText);
-    var revID = revThing[revThing.length-1]['revid'];
+    var revID = revThing[revThing.length-1][0]['revid'];
     if(revID == 623824895){
       document.body.appendChild(document.createTextNode("Passed test 3."));
       document.body.appendChild(document.createElement('br'));
@@ -56,7 +56,7 @@ var UnitTester = function() {
 
   // this.fourthTest = function(){
   //   var highlightedText = "phrase";
-  //   var revID = revThing[revThing.length-1]['revid'];
+  //   var revID = revThing[revThing.length-1][0]['revid'];
   //   if(revID == 623824895){
   //     document.body.appendChild(document.createTextNode("Passed test 4."));
   //     document.body.appendChild(document.createElement('br'));
@@ -70,7 +70,7 @@ var UnitTester = function() {
   this.fifthTest = function(){
     var highlightedText = "test movement";
     var revThing = this.WikiRevFinder.getWikiRevsInfo(highlightedText);
-    var revID = revThing[revThing.length-1]['revid'];
+    var revID = revThing[revThing.length-1][0]['revid'];
     if(revID == 630921907){
       document.body.appendChild(document.createTextNode("Passed test 5."));
       document.body.appendChild(document.createElement('br'));
@@ -84,7 +84,7 @@ var UnitTester = function() {
   this.sixthTest = function(){
     var highlightedText = "bread-bread";
     var revThing = this.WikiRevFinder.getWikiRevsInfo(highlightedText);
-    var revID = revThing[revThing.length-1]['revid'];
+    var revID = revThing[revThing.length-1][0]['revid'];
     if(revID == 630886783){
       document.body.appendChild(document.createTextNode("Passed test 6."));
       document.body.appendChild(document.createElement('br'));
@@ -98,7 +98,7 @@ var UnitTester = function() {
   this.seventhTest = function(){
     var highlightedText = "SCRAMBLED WORDS";
     var revThing = this.WikiRevFinder.getWikiRevsInfo(highlightedText);
-    var revID = revThing[revThing.length-1]['revid'];
+    var revID = revThing[revThing.length-1][0]['revid'];
     if(revID == 636395458){
       document.body.appendChild(document.createTextNode("Passed test 7."));
       document.body.appendChild(document.createElement('br'));
@@ -112,7 +112,7 @@ var UnitTester = function() {
   this.eigthTest = function(){
     var highlightedText = "second movement";
     var revThing = this.WikiRevFinder.getWikiRevsInfo(highlightedText);
-    var revID = revThing[revThing.length-1]['revid'];
+    var revID = revThing[revThing.length-1][0]['revid'];
     if(revID == 636690302){
       document.body.appendChild(document.createTextNode("Passed test 8."));
       document.body.appendChild(document.createElement('br'));
@@ -126,7 +126,7 @@ var UnitTester = function() {
   this.ninthTest = function(){
     var highlightedText = "Inserting phrase here.";
     var revThing = this.WikiRevFinder.getWikiRevsInfo(highlightedText);
-    var revID = revThing[revThing.length-1]['revid'];
+    var revID = revThing[revThing.length-1][0]['revid'];
     if(revID == 636530272){
       document.body.appendChild(document.createTextNode("Passed test 9."));
       document.body.appendChild(document.createElement('br'));
@@ -140,7 +140,7 @@ var UnitTester = function() {
   this.tenthTest = function(){
     var highlightedText = "Lorem Ipsum is";
     var revThing = this.WikiRevFinder.getWikiRevsInfo(highlightedText);
-    var revID = revThing[revThing.length-1]['revid'];
+    var revID = revThing[revThing.length-1][0]['revid'];
     if(revID == 632220663){
       document.body.appendChild(document.createTextNode("Passed test 10."));
       document.body.appendChild(document.createElement('br'));
@@ -154,7 +154,7 @@ var UnitTester = function() {
   this.eleventhTest = function(){
     var highlightedText = "to coincide with the franchise's 50th anniversary";
     var revThing = this.WikiRevFinder.getWikiRevsInfo(highlightedText);
-    var revID = revThing[revThing.length-1]['revid'];
+    var revID = revThing[revThing.length-1][0]['revid'];
     if(revID == 639940658){
       document.body.appendChild(document.createTextNode("Passed test 11."));
       document.body.appendChild(document.createElement('br'));
@@ -168,7 +168,7 @@ var UnitTester = function() {
   this.twelfthTest = function(){
     var highlightedText = "the next sequel to Into Darkness";
     var revThing = this.WikiRevFinder.getWikiRevsInfo(highlightedText);
-    var revID = revThing[revThing.length-1]['revid'];
+    var revID = revThing[revThing.length-1][0]['revid'];
     if(revID == 639940658){
       document.body.appendChild(document.createTextNode("Passed test 12."));
       document.body.appendChild(document.createElement('br'));
@@ -182,7 +182,7 @@ var UnitTester = function() {
   this.thirteenthTest = function(){
     var highlightedText = "not as successful in the North American box office as its predecessor, internationally, in terms of box office receipts";
     var revThing = this.WikiRevFinder.getWikiRevsInfo(highlightedText);
-    var revID = revThing[revThing.length-1]['revid'];
+    var revID = revThing[revThing.length-1][0]['revid'];
     if(revID == 639390470){
       document.body.appendChild(document.createTextNode("Passed test 13."));
       document.body.appendChild(document.createElement('br'));
@@ -196,7 +196,7 @@ var UnitTester = function() {
   this.fourteenthTest = function(){
     var highlightedText = "But during the 7th point of the game";
     var revThing = this.WikiRevFinder.getWikiRevsInfo(highlightedText);
-    var revID = revThing[revThing.length-1]['revid'];
+    var revID = revThing[revThing.length-1][0]['revid'];
     if(revID == 493559806){
       document.body.appendChild(document.createTextNode("Passed test 14."));
       document.body.appendChild(document.createElement('br'));

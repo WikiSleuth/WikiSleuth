@@ -21,7 +21,6 @@ var WikiRevFinder = function(url) {
 		stringToCheck = stringToCheck.replace(/\[.*?\]/g, "");
 		stringToCheck = stringToCheck.replace(/\n/g, " ");
 
-		console.log("STRING TO CHECK: "+ stringToCheck);
 
 		var affectedRevisionList = [];
 		while(this.revIDList.length > 1){
@@ -114,8 +113,9 @@ var WikiRevFinder = function(url) {
 		var secondItemDiffObject = this.WikEdDiff.diff(this.mostCurrentRevisionContent, secondItemContent);
 		var secondItemDiffDictionary = secondItemDiffObject[0];
 
-		if(secondItemDiffDictionary['='].indexOf(stringToCheck) == -1){
+		if(secondItemDiffDictionary['='].indexOf(stringToCheck) == -1 && this.mostCurrentRevisionContent.indexOf(stringToCheck) > -1){
 			toReturn = [revIdList[revIdList.length-1], secondItemDiffObject[1]];
+			return toReturn;
 		}
 
 		this.WikEdDiff = new WikEdDiff();
@@ -123,10 +123,11 @@ var WikiRevFinder = function(url) {
 		var firstItemDiffObject = this.WikEdDiff.diff(this.mostCurrentRevisionContent, firstItemContent);
 		var firstItemDiffDictionary = secondItemDiffObject[0];
 
-		if(firstItemDiffDictionary['='].indexOf(stringToCheck) == -1){
+		if(firstItemDiffDictionary['='].indexOf(stringToCheck) == -1 && this.mostCurrentRevisionContent.indexOf(stringToCheck) > -1){
 			toReturn = [revIdList[0], firstItemDiffObject[1]];
+			return toReturn;
 		}
-		console.log('TO RETURN: '+toReturn);
+		// console.log('TO RETURN: '+toReturn);
 		return toReturn;
 	};
 
