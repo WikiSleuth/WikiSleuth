@@ -13,7 +13,7 @@
   ],
   
   "background": {
-    "scripts": ["apiClass.js", "diff.js", "txtwiki.js", "WikiRevFinder.js", "createPanel.js", "preProcess.js","panel.js", "processDataForUI.js","master.js"],
+    "scripts": ["apiClass.js", "diff.js", "txtwiki.js", "WikiRevFinder.js", "createPanel.js", "preProcess.js","panel.js", "processDataForUI.js","master.js", "smartHeatMap.js"],
     "persistent": true
   },
 

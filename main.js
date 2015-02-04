@@ -6,7 +6,7 @@ function callHeatMap(){
 }
 
 function callHeatMap2(){
-    chrome.tabs.executeScript(null,{file: "heatMapScripts/changeTextFontColor.js"});
+    chrome.tabs.executeScript(null,{file: "smartHeatMap.js"});
 }
 
 function callResetColors(){
