@@ -10,7 +10,7 @@ var UnitTester = function() {
   	this.WikiRevFinder = new WikiRevFinder(this.testUrl);
     return;
   }
-  this.cakeTestCases = [["in magazines", 624717323], ["photographs in", 624717323], ["cake-making", 623824895]];
+  this.cakeTestCases = [["in magazines", 624717323], ["photographs in", 624717323], ["cake-making", 623824895], ["phrase", 100970]];
   this.sandboxTestCases = [["test movement", 630921907], ["bread-bread", 630886783], ["SCRAMBLED WORDS", 636395458], ["second movement", 636690302], ["Inserting phrase here.", 636530272], ["Lorem Ipsum is", 632220663]];
   this.trekTestCases = [["to coincide with the franchise's 50th anniversary", 639940658], ["the next sequel to Into Darkness", 639940658], ["not as successful in the North American box office as its predecessor, internationally, in terms of box office receipts", 639390470]];
   this.gopTestCases =  [["But during the 7th point of the game", 493559806]];
@@ -182,19 +182,19 @@ var UnitTester = function() {
   //   }
   // }
 
-  this.fourteenthTest = function(){
-    var highlightedText = "But during the 7th point of the game";
-    var revThing = this.WikiRevFinder.getWikiRevsInfo(highlightedText);
-    var revID = revThing[revThing.length-1][0]['revid'];
-    if(revID == 493559806){
-      document.body.appendChild(document.createTextNode("Passed test 14."));
-      document.body.appendChild(document.createElement('br'));
-    }
-    else{
-      document.body.appendChild(document.createTextNode("Failed test \"But during the 7th point of the game\". Expected value = 493559806, actual value = "+revID));
-      document.body.appendChild(document.createElement('br'));
-    }
-  }
+  // this.fourteenthTest = function(){
+  //   var highlightedText = "But during the 7th point of the game";
+  //   var revThing = this.WikiRevFinder.getWikiRevsInfo(highlightedText);
+  //   var revID = revThing[revThing.length-1][0]['revid'];
+  //   if(revID == 493559806){
+  //     document.body.appendChild(document.createTextNode("Passed test 14."));
+  //     document.body.appendChild(document.createElement('br'));
+  //   }
+  //   else{
+  //     document.body.appendChild(document.createTextNode("Failed test \"But during the 7th point of the game\". Expected value = 493559806, actual value = "+revID));
+  //     document.body.appendChild(document.createElement('br'));
+  //   }
+  // }
 
   this.runTest = function(highlightedText, expectedId){
     var revThing = this.WikiRevFinder.getWikiRevsInfo(highlightedText);
@@ -204,7 +204,7 @@ var UnitTester = function() {
       document.body.appendChild(document.createElement('br'));
     }
     else{
-      document.body.appendChild(document.createTextNode("Failed test \"But during the 7th point of the game\". Expected value = 493559806, actual value = "+revID));
+      document.body.appendChild(document.createTextNode("Failed test \""+ highlightedText +"\". Expected value = "+ expectedId +", actual value = "+revID));
       document.body.appendChild(document.createElement('br'));
     }
   }

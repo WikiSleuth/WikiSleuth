@@ -4,6 +4,7 @@ var WikiRevFinder = function(url) {
 	this.WikiAPI = null;
 	this.revIDList = [];
 	this.mostCurrentRevisionContent = '';
+	this.oldestRevID = 0;
 	this.halfpoint = 0;
 
 	this.init = function() {
@@ -25,11 +26,12 @@ var WikiRevFinder = function(url) {
 		var affectedRevisionList = [];
 		while(this.revIDList.length > 1){
 
+			//UPDATE: I don't think we need this if statement????
 			// need to make new WikiEdDiff or it freaks out. only first 10 so that infinite loop still runs.
-			if (this.round < 500){
-				this.WikEdDiff = new WikEdDiff();
-				this.round = this.round + 1;
-			}
+			// if (this.round < 500){
+			this.WikEdDiff = new WikEdDiff();
+				// this.round = this.round + 1;
+			// }
 			var midpointRevisionContent = this.getMidpointRevisionContent();
 			
 			var diffObject = this.WikEdDiff.diff(this.mostCurrentRevisionContent, midpointRevisionContent);
@@ -41,7 +43,7 @@ var WikiRevFinder = function(url) {
 			diffDictionary['-'] = diffDictionary['-'].replace(/\n\n/g, " ");
 
 
-			if(diffDictionary['='].indexOf(stringToCheck) > -1){
+			if(diffDictionary['='].indexOf(stringToCheck) > -1 || this.mostCurrentRevisionContent.indexOf(stringToCheck) == -1){
 				//run binary search on older/right half of list of current revisions
 				//first, change this.revIdList to be the right half of the list, then call the two functions above again
 
@@ -88,6 +90,8 @@ var WikiRevFinder = function(url) {
 		// if(diffDictionary['+'].indexOf(stringToCheck) > -1){
 		// 	console.log('this revision added: ' + stringToCheck);
 		// }
+
+		//sort the list of recent revisions, from earliest id to latest
 		var sortedList = affectedRevisionList.sort(function(dict1, dict2){return dict1['revid']-dict2['revid']});
 		return sortedList.slice(0,10);
 		//return affectedRevisionList.slice(0,10).reverse();
@@ -135,11 +139,53 @@ var WikiRevFinder = function(url) {
 		return txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(this.revIDList[0]['revid']));
 	};
 
-	this.getWikiRevsInfo = function(stringToCheck) {
-		var revIDList = this.WikiAPI.findFirst500RevisionIDList();
+	this.getOldestRevisionContent = function() {
+		return txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(this.oldestRevID));
+	};
+
+	this.getWikiRevsInfo = function(stringToCheck, revisionOffset) {
+		//make this an optional parameter, set to 0 if not passed in
+		revisionOffset = revisionOffset || 0;
+		var revIDList = [];
+
+		//search the first 500 revisions in this case
+		if(revisionOffset == 0){
+			revIDList = this.WikiAPI.findFirst500RevisionIDList();
+		}
+
+		//otherwise, we've already searched the first 500 (and possibly more), so search the next batch of 500
+		else{
+			revIDList = this.WikiAPI.findFirst500RevisionIDList(this.oldestRevID)
+		}
 		this.revIDList = revIDList;
 		console.log("first item" + this.revIDList[0])
 		this.mostCurrentRevisionContent = this.getMostRecentRevisionContent();
+
+		//before searching the entire revision history, we just check the oldest item
+		//if there's nothing affecting the string in that revision, then nothing will have affected it
+		//in any more recent revisions, so we can just move on to the next set of revisions.
+		this.oldestRevID = this.revIDList[this.revIDList.length-1]['revid'];
+		var oldestRevisionContent = this.getOldestRevisionContent();
+		this.WikEdDiff = new WikEdDiff();
+		var oldestItemDiffObject = this.WikEdDiff.diff(this.mostCurrentRevisionContent, oldestRevisionContent);
+		var oldestItemDiffDictionary = oldestItemDiffObject[0];
+
+		if(oldestItemDiffDictionary['='].indexOf(stringToCheck) > -1 || this.mostCurrentRevisionContent.indexOf(stringToCheck) == -1){
+
+			if(this.revIDList.length == 1){
+				return;
+			}
+
+			//go farther back in revision history
+			this.getWikiRevsInfo(stringToCheck, this.oldestRevID);
+		}
+
+		//if we've gone through the entire history, return oldest item
+		if (this.revIDList.length == 1){
+				var toReturn = [];
+				toReturn[0] = [this.revIDList[0], oldestItemDiffObject[1]];
+				return toReturn;
+			}
 
 		return this.iterativeBinarySearch(stringToCheck);
 	};
