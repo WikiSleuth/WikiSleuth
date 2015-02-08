@@ -58,14 +58,14 @@ var WikiRevFinder = function(url) {
 			}
 
 			else{
-				affectedRevisionList.push([this.revIDList[this.halfpoint], diffObject[1]]);
+				affectedRevisionList.push([this.revIDList[this.halfpoint], diffObject[1], diffObject[2]]);
 				//edge case: this has the potential to continue slicing infinitely, making a new list of the same size as before
 				//if list size is two, so we do this if list size is too
 				if(this.revIDList.length == 2){
 					//check later of two things in the list
 					this.revIDList = this.findFirstRevisionLinearSearch(this.revIDList, stringToCheck);
 					if (this.revIDList.length > 0){
-						affectedRevisionList.push([this.revIDList[0], this.revIDList[1]])
+						affectedRevisionList.push([this.revIDList[0], this.revIDList[1], diffObject[2]])
 					}
 					break;
 				}
