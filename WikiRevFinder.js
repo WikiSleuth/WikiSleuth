@@ -38,7 +38,7 @@ var WikiRevFinder = function(url) {
 			diffDictionary['-'] = diffDictionary['-'].replace(/\n\n/g, " ");
 
 
-			if(diffDictionary['='].indexOf(stringToCheck) > -1 || this.mostCurrentRevisionContent.indexOf(stringToCheck) == -1 || diffDictionary['='].length == 0){
+			if(diffDictionary['='].indexOf(stringToCheck) > -1 || this.mostCurrentRevisionContent.indexOf(stringToCheck) == -1 || (diffDictionary['='].length == 0 && this.revIDList.length > 2)){
 				//run binary search on older/right half of list of current revisions
 				//first, change this.revIdList to be the right half of the list, then call the two functions above again
 
@@ -74,7 +74,7 @@ var WikiRevFinder = function(url) {
 				// console.log("ending calling diff Dictionary");
 
 				console.log("this revision DID affect the string");
-				console.log("DIFF DICTIONARY FOR THIS ONE: "+diffDictionary['='].length);
+				// console.log("DIFF DICTIONARY FOR THIS ONE: "+diffDictionary['='].length);
 			}
 		}
 		//otherwise, run on newer/left half of current revisions
@@ -165,7 +165,7 @@ var WikiRevFinder = function(url) {
 	this.sanitizeInput = function(stringToCheck) {
 		//take out links in stringToCheck, so we just have the string itself
 		//also newlines
-
+		// console.log("OLD STRING TO CHECK: "+stringToCheck);
 		stringToCheck = stringToCheck.replace(/\[.*?\]/g, "");
 		stringToCheck = stringToCheck.replace(/\n/g, " ");
 		stringToCheck = stringToCheck.replace(/\{\{.*?\}\}/g, "");

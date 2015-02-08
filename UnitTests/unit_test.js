@@ -200,7 +200,7 @@ var UnitTester = function() {
     var revThing = this.WikiRevFinder.getWikiRevsInfo(highlightedText);
     var revID = revThing[revThing.length-1][0]['revid'];
     if(revID == expectedId){
-      document.body.appendChild(document.createTextNode("Passed test!"));
+      document.body.appendChild(document.createTextNode("Passed test with value "+ expectedId +"!"));
       document.body.appendChild(document.createElement('br'));
     }
     else{
