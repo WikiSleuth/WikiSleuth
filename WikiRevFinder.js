@@ -43,7 +43,7 @@ var WikiRevFinder = function(url) {
 			diffDictionary['-'] = diffDictionary['-'].replace(/\n\n/g, " ");
 
 
-			if(diffDictionary['='].indexOf(stringToCheck) > -1 || this.mostCurrentRevisionContent.indexOf(stringToCheck) == -1){
+			if(diffDictionary['='].indexOf(stringToCheck) > -1 || this.mostCurrentRevisionContent.indexOf(stringToCheck) == -1 || diffDictionary['='].length == 0){
 				//run binary search on older/right half of list of current revisions
 				//first, change this.revIdList to be the right half of the list, then call the two functions above again
 
@@ -79,7 +79,7 @@ var WikiRevFinder = function(url) {
 				// console.log("ending calling diff Dictionary");
 
 				console.log("this revision DID affect the string");
-				// console.log("DIFF DICTIONARY FOR THIS ONE: "+diffDictionary['=']);
+				console.log("DIFF DICTIONARY FOR THIS ONE: "+diffDictionary['='].length);
 			}
 		}
 		//otherwise, run on newer/left half of current revisions
@@ -161,6 +161,8 @@ var WikiRevFinder = function(url) {
 		console.log("first item" + this.revIDList[0])
 		this.mostCurrentRevisionContent = this.getMostRecentRevisionContent();
 
+
+		//TODO: PUT THIS IN ITS OWN FUNCTUION
 		//before searching the entire revision history, we just check the oldest item
 		//if there's nothing affecting the string in that revision, then nothing will have affected it
 		//in any more recent revisions, so we can just move on to the next set of revisions.

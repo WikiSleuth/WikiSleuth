@@ -13,7 +13,7 @@ var UnitTester = function() {
   this.cakeTestCases = [["in magazines", 624717323], ["photographs in", 624717323], ["cake-making", 623824895], ["phrase", 100970]];
   this.sandboxTestCases = [["test movement", 630921907], ["bread-bread", 630886783], ["SCRAMBLED WORDS", 636395458], ["second movement", 636690302], ["Inserting phrase here.", 636530272], ["Lorem Ipsum is", 632220663]];
   this.trekTestCases = [["to coincide with the franchise's 50th anniversary", 639940658], ["the next sequel to Into Darkness", 639940658], ["not as successful in the North American box office as its predecessor, internationally, in terms of box office receipts", 639390470]];
-  this.gopTestCases =  [["But during the 7th point of the game", 493559806]];
+  this.gopTestCases =  [["But during the 7th point of the game", 493559806], ["collegiate men's", 334109637]];
 
   // this.secondTest = function(){
   //   var highlightedText = "photographs in";
