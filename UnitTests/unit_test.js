@@ -10,10 +10,10 @@ var UnitTester = function() {
   	this.WikiRevFinder = new WikiRevFinder(this.testUrl);
     return;
   }
-  this.cakeTestCases = [["in magazines", 624717323], ["photographs in", 624717323], ["cake-making", 623824895], ["phrase", 100970]];
+  this.cakeTestCases = [["in magazines", 624717323], ["photographs in", 624717323], ["cake-making", 623824895], ["phrase", 100970], ["Cake is often the dessert of choice for meals at ceremonial occasions,", 656583]];
   this.sandboxTestCases = [["test movement", 630921907], ["bread-bread", 630886783], ["SCRAMBLED WORDS", 636395458], ["second movement", 636690302], ["Inserting phrase here.", 636530272], ["Lorem Ipsum is", 632220663]];
   this.trekTestCases = [["to coincide with the franchise's 50th anniversary", 639940658], ["the next sequel to Into Darkness", 639940658], ["not as successful in the North American box office as its predecessor, internationally, in terms of box office receipts", 639390470]];
-  this.gopTestCases =  [["But during the 7th point of the game", 493559806], ["collegiate men's", 334109637]];
+  this.gopTestCases =  [["But during the 7th point of the game", 493559806], ["collegiate men's", 334109637], ["GoP was born late one February night in 1995 in a room on 2nd Nourse. A group of seniors - motivated by their love of Frisbee and a desire for a level of play higher than intramurals, but looking for a commitment and attitude softer than those necessary to play for Carleton’s official intercollegiate teams - conspired to form an alternative IC team founded on the concept that enjoyment of the game and a higher level of competitive play should not run screaming from each other, but walk hand-in-hand. They agreed to a style of play that would be considered by some to be undisciplined, but to them would embody the true spirit of the game, and from this discussion arose the lofty team name: Gods of Plastic.", 493559806]];
 
   // this.secondTest = function(){
   //   var highlightedText = "photographs in";

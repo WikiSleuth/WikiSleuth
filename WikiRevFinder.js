@@ -19,7 +19,6 @@ var WikiRevFinder = function(url) {
 
 		var affectedRevisionList = [];
 		while(this.revIDList.length > 1){
-
 			//UPDATE: I don't think we need this if statement????
 			// need to make new WikiEdDiff or it freaks out. only first 10 so that infinite loop still runs.
 			// if (this.round < 500){
@@ -58,7 +57,7 @@ var WikiRevFinder = function(url) {
 				//if list size is two, so we do this if list size is too
 				if(this.revIDList.length == 2){
 					//check later of two things in the list
-					this.revIDList = this.findFirstRevisionLinearSearch(this.revIDList, stringToCheck);
+					this.findFirstRevisionLinearSearch(this.revIDList, stringToCheck);
 					if (this.revIDList.length > 0){
 						affectedRevisionList.push([this.revIDList[0], this.revIDList[1]])
 					}
@@ -104,9 +103,6 @@ var WikiRevFinder = function(url) {
 	};
 
 	this.findFirstRevisionLinearSearch = function(revIdList, stringToCheck) {
-		var toReturn = [];
-
-
 		this.WikEdDiff = new WikEdDiff();
 		var secondItemContent = txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(revIdList[revIdList.length-1]['revid']));
 		secondItemContent = this.sanitizeInput(secondItemContent);
@@ -114,8 +110,9 @@ var WikiRevFinder = function(url) {
 		var secondItemDiffDictionary = secondItemDiffObject[0];
 
 		if(secondItemDiffDictionary['='].indexOf(stringToCheck) == -1 && this.mostCurrentRevisionContent.indexOf(stringToCheck) > -1){
-			toReturn = [revIdList[revIdList.length-1], secondItemDiffObject[1]];
-			return toReturn;
+			this.revIDList = [];
+			this.revIDList[0] = revIdList[revIdList.length-1], secondItemDiffObject[1];
+			return;
 		}
 
 		this.WikEdDiff = new WikEdDiff();
@@ -124,8 +121,9 @@ var WikiRevFinder = function(url) {
 		var firstItemDiffDictionary = secondItemDiffObject[0];
 
 		if(firstItemDiffDictionary['='].indexOf(stringToCheck) == -1 && this.mostCurrentRevisionContent.indexOf(stringToCheck) > -1){
-			toReturn = [revIdList[0], firstItemDiffObject[1]];
-			return toReturn;
+			this.revIDList = [];
+			this.revIDList[0] = revIdList[0], firstItemDiffObject[1];
+			return;
 		}
 		// console.log('TO RETURN: '+toReturn);
 		return toReturn;
