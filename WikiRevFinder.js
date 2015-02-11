@@ -66,15 +66,15 @@ var WikiRevFinder = function(url) {
 				//edge case: this has the potential to continue slicing infinitely, making a new list of the same size as before
 				//if list size is two, so we do this if list size is too
 				if(this.revIDList.length == 2){
+					//check later of two things in the list
+					this.findFirstRevisionLinearSearch(this.revIDList, stringToCheck);
 					var alreadyInList = false
 					for(var i = 0; i < affectedRevisionList.length; i++){
-						if(affectedRevisionList[i][0]['revid'] == this.revIDList[this.halfpoint]['revid']){
+						if(affectedRevisionList[i][0]['revid'] == this.revIDList[0]['revid']){
 							alreadyInList = true;
 							break;
 						}
 					}
-					//check later of two things in the list
-					this.findFirstRevisionLinearSearch(this.revIDList, stringToCheck);
 					if (this.revIDList.length > 0 && alreadyInList == false){
 						affectedRevisionList.push([this.revIDList[0], this.revIDList[1]])
 					}
