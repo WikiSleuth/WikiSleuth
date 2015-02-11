@@ -52,13 +52,30 @@ var WikiRevFinder = function(url) {
 			}
 
 			else{
-				affectedRevisionList.push([this.revIDList[this.halfpoint], diffObject[1]]);
+				//check to make sure this id isn't already in affected revision list
+				var alreadyInList = false
+				for(var i = 0; i < affectedRevisionList.length; i++){
+					if(affectedRevisionList[i][0]['revid'] == this.revIDList[this.halfpoint]['revid']){
+						alreadyInList = true;
+						break;
+					}
+				}
+				if(alreadyInList == false){
+					affectedRevisionList.push([this.revIDList[this.halfpoint], diffObject[1]]);
+				}
 				//edge case: this has the potential to continue slicing infinitely, making a new list of the same size as before
 				//if list size is two, so we do this if list size is too
 				if(this.revIDList.length == 2){
+					var alreadyInList = false
+					for(var i = 0; i < affectedRevisionList.length; i++){
+						if(affectedRevisionList[i][0]['revid'] == this.revIDList[this.halfpoint]['revid']){
+							alreadyInList = true;
+							break;
+						}
+					}
 					//check later of two things in the list
 					this.findFirstRevisionLinearSearch(this.revIDList, stringToCheck);
-					if (this.revIDList.length > 0){
+					if (this.revIDList.length > 0 && alreadyInList == false){
 						affectedRevisionList.push([this.revIDList[0], this.revIDList[1]])
 					}
 					break;
@@ -87,6 +104,7 @@ var WikiRevFinder = function(url) {
 
 		//sort the list of recent revisions, from earliest id to latest
 		var sortedList = affectedRevisionList.sort(function(dict1, dict2){return dict1['revid']-dict2['revid']});
+		var subsetList = sortedList.slice(0, 10);
 		return sortedList.slice(0,10);
 		//return affectedRevisionList.slice(0,10).reverse();
 	};
