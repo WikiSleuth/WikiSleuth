@@ -32,6 +32,8 @@ var WikiRevFinder = function(url) {
 			}
 			var midpointRevisionContent = this.getMidpointRevisionContent();
 			
+            //console.log("WIKIREVFINDER calling DIFF.JS  MOST CURRENT",this.mostCurrentRevisionContent);
+            //console.log("WIKIREVFINDER calling DIFF.js MIDPOINT: ", midpointRevisionContent);
 			var diffObject = this.WikEdDiff.diff(this.mostCurrentRevisionContent, midpointRevisionContent);
 			var diffDictionary = diffObject[0];
 
@@ -136,6 +138,7 @@ var WikiRevFinder = function(url) {
 	};
 
 	this.getWikiRevsInfo = function(stringToCheck) {
+        this.WikEdDiff = new WikEdDiff();
 		var revIDList = this.WikiAPI.findFirst500RevisionIDList();
 		this.revIDList = revIDList;
 		console.log("first item" + this.revIDList[0])

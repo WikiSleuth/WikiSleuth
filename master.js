@@ -2,6 +2,7 @@ var data = "";
 var WikiAPI = null;
 var isPaneDisplayed = false;
 var heatMapObject = null;
+var text_date_list = [];
 
 // Query chrome to get an array of all tabs in current window that are focused and active
 function queryForData() {
@@ -10,9 +11,12 @@ function queryForData() {
   }	
 }
 
-// start heatmap stuff
+// ****************** start heatmap stuff
 function initHeatmap(){
-    chrome.tabs.query({active: true, currentWindow: true}, startTheHeatMap);    
+    if (isOnWiki){
+        console.log("Initializing heatmap");
+        chrome.tabs.query({active: true, currentWindow: true}, startTheHeatMap); 
+    }   
 }
 
 function startTheHeatMap(tabs){
@@ -20,17 +24,8 @@ function startTheHeatMap(tabs){
 }
 
 function sendPageToModel(response) {
-    text_list = response[0][0];
-    text_date_list = [];
-    heatMapObject = new heatTest(text_list,response[0][1]);
-    for(i=0;i<text_list.length;i++){
-        text_date = [];
-        var daysElapsed = heatMapObject.getMostRecentRev(text_list[i]);  
-        text_date.push(text_list[i])
-        text_date.push(daysElapsed);
-        text_date_list.push(text_date);
-        console.log("***********************", text_date_list);
-    }
+    heatMapObject = new heatTest(response[0][1]);
+    text_date_list = heatMapObject.makeTextDateList(response[0][0]);  
     document.dispatchEvent(evt2);     
 }
 
@@ -39,9 +34,6 @@ function callTheColor(){
 }
 
 function injectedColorScript(tabs){
-    //chrome.tabs.executeScript(tabs[0].id, {file: 'colorPage.js'});
-    
-
     chrome.tabs.executeScript(tabs[0].id, {
         code: 'var text_date_list = ' + JSON.stringify(text_date_list)
     }, function() {
@@ -50,7 +42,7 @@ function injectedColorScript(tabs){
     });
 }
 
-// end heatmap stuff
+// ************************* end heatmap stuff
 
 // The first element of tabs will be the page the user is currently looking at. Execute code to get highlighted text.
 function getHighlightedText(tabs) {

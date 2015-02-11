@@ -6,12 +6,15 @@ function changeTextBackGroundColor(){
     for(i=0;i<myNodelist.length;i++){
         var smallSentList = myNodelist[i].outerText.split(".");
         for(j=0;j<smallSentList.length;j++){
-            var daysElapsed = text_date_list[j][1];
-            console.log("$$$$$$$$$", daysElapsed);
-            var color = chooseColor(daysElapsed);
-            smallSentList[j] = '<span style="background-color:' + color + '">' + smallSentList[j] + '</span>';
-            if(j!=smallSentList.length-1){
-                newPara = newPara + smallSentList[j]+".";
+            if(smallSentList[j] != ""){
+                console.log("^^^^^^^^^^^^^^", text_date_list[j]);
+                var daysElapsed = text_date_list[j][1];
+                console.log("$$$$$$$$$", daysElapsed);
+                var color = chooseColor(daysElapsed);
+                smallSentList[j] = '<span style="background-color:' + color + '">' + smallSentList[j] + '</span>';
+                if(j!=smallSentList.length-1){
+                    newPara = newPara + smallSentList[j]+".";
+                }   
             }
         }
         newPara = "<p>" + newPara + "</p>";
