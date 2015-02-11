@@ -9,8 +9,17 @@ var APICaller = function(url){
 		return;
 	};
 
-	this.findFirst500RevisionIDList = function(){
-		var action = 'format=json&action=query&titles=' + this.pageName + '&prop=revisions&rvprop=ids&rvlimit=500&continue='
+	this.findFirst500RevisionIDList = function(startID){
+		//make startID optional. such that if it's not supplied, we start with the most recent revision
+		startID = startID || 0;
+		var action = '';
+
+		if(startID != 0){
+			action = 'format=json&action=query&titles=' + this.pageName + '&prop=revisions&rvstartid='+ startID +'&rvprop=ids&rvlimit=500&continue='
+		}
+		else{
+			action = 'format=json&action=query&titles=' + this.pageName + '&prop=revisions&rvprop=ids&rvlimit=500&continue='
+		}
 		var apiRequestURL = this.endpoint + action;
 		var jsonObject = this.makeRequest(apiRequestURL);
 		return jsonObject['query']['pages'][Object.keys(jsonObject['query']['pages'])[0]]['revisions'];
