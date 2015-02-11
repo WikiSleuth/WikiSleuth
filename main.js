@@ -2,7 +2,8 @@
  var bgPage = chrome.extension.getBackgroundPage();
 
 function callHeatMap(){
-    chrome.tabs.executeScript(null,{file: "heatMapScripts/changeTextBackgroundColor.js"});
+    //chrome.tabs.executeScript(null,{file: "heatMapScripts/heattest.js"});
+    bgPage.initHeatmap();
 }
 
 function callHeatMap2(){
