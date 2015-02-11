@@ -40,21 +40,25 @@ iterations = 0;
 var i = 0;
 while (tempHighlightedString.length > 0 && i < sortedList[0][2].length && iterations < 1000){
 	iterations += 1;
+	console.log(iterations)
 	//for(var i=0; i<sortedList[0][2].length; i++) { 
 		switch(sortedList[0][2][i]['type']){
 			case '=':
 				fragmentTextArray = sortedList[0][2][i]['text'].replace(/\n+/g, " ").split(" ");
 				for(var j=0; j<fragmentTextArray.length; j++){
+					console.log(fragmentTextArray[j]);
 					indexOfFragMatch = tempHighlightedString.indexOf(fragmentTextArray[j]);
 					if(indexOfFragMatch == 0 & fragmentTextArray[j] != ""){
+						//console.log(i);
 						hasBegun = true;
 						tempHighlightedString = tempHighlightedString.replace(fragmentTextArray[j], "");
 						stringPriorToEdit += fragmentTextArray[j];
-						console.log(stringPriorToEdit);
+						//console.log(stringPriorToEdit);
 
 						if(tempHighlightedString[0] == " "){
-								tempHighlightedString = tempHighlightedString.replace(" ", "");
+								tempHighghtedString = tempHighlightedString.replace(" ", "");
 								stringPriorToEdit += " ";
+								console.log(stringPriorToEdit);
 						}
 					} else if (indexOfFragMatch > 0) {
 						tempHighlightedString = stringToCheck;
