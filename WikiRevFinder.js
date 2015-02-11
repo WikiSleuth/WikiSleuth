@@ -92,7 +92,8 @@ var WikiRevFinder = function(url) {
 		// }
 
 		//sort the list of recent revisions, from earliest id to latest
-		var sortedList = affectedRevisionList.sort(function(dict1, dict2){return dict1['revid']-dict2['revid']});
+		var sortedList = affectedRevisionList.sort(function(rev1, rev2){return rev2[0]['revid']-rev1[0]['revid']});
+		console.log(this.getStringPriorToEdit(stringToCheck, sortedList[0]));
 		return sortedList.slice(0,10);
 		//return affectedRevisionList.slice(0,10).reverse();
 	};
@@ -188,6 +189,53 @@ var WikiRevFinder = function(url) {
 			}
 
 		return this.iterativeBinarySearch(stringToCheck);
+	};
+
+	this.getStringPriorToEdit = function(stringToCheck, affectedRevision) {
+		var fragments = affectedRevision[2];
+		var stringPriorToEdit = '';
+		var tempHighlightedString = stringToCheck;
+		var indexOfFragMatch = 0;
+		var hasBegun = false;
+		var fragmentTextArray = [];
+		var i = 0;
+		while (tempHighlightedString.length > 0 && i < fragments.length){
+			switch(fragments[i]['type']){
+				case '=':
+					fragmentTextArray = fragments[i]['text'].replace(/\n+/g, " ").split(" ");
+					for(var j=0; j<fragmentTextArray.length; j++){
+						indexOfFragMatch = tempHighlightedString.indexOf(fragmentTextArray[j]);
+						if(indexOfFragMatch == 0 & fragmentTextArray[j] != ""){
+							hasBegun = true;
+							tempHighlightedString = tempHighlightedString.replace(fragmentTextArray[j], "");
+							stringPriorToEdit += fragmentTextArray[j];
+
+							if(tempHighlightedString[0] == " "){
+									tempHighlightedString = tempHighlightedString.replace(/\s+/, "");
+									stringPriorToEdit += " ";
+							}
+						} else if (indexOfFragMatch > 0) {
+							tempHighlightedString = stringToCheck;
+							hasBegun = false;
+						}
+					}
+					break;
+				case '+':
+					if(hasBegun){
+						stringPriorToEdit += fragments[i]['text'];
+					}
+					break;
+				case '-':
+					if(hasBegun){
+						tempHighlightedString = tempHighlightedString.replace(fragments[i]['text'], "");
+					}
+					break;
+			}
+			i += 1;
+		}
+		stringPriorToEdit = stringPriorToEdit.trim();
+
+		return stringPriorToEdit;
 	};
 
 
