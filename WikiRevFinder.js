@@ -19,12 +19,9 @@ var WikiRevFinder = function(url) {
 
 		var affectedRevisionList = [];
 		while(this.revIDList.length > 1){
-			//UPDATE: I don't think we need this if statement????
-			// need to make new WikiEdDiff or it freaks out. only first 10 so that infinite loop still runs.
-			// if (this.round < 500){
+			//If we don't create a new WikEdDiff object everytime, diff.js will freak out
 			this.WikEdDiff = new WikEdDiff();
-				// this.round = this.round + 1;
-			// }
+
 			var midpointRevisionContent = this.getMidpointRevisionContent();
 			midpointRevisionContent = this.sanitizeInput(midpointRevisionContent);
 			
