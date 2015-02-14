@@ -32,8 +32,8 @@ var WikiRevFinder = function(url) {
 			diffDictionary['='] = diffDictionary['='].replace(/\n\n/g, " ");
 			diffDictionary['+'] = diffDictionary['+'].replace(/\n\n/g, " ");
 			diffDictionary['-'] = diffDictionary['-'].replace(/\n\n/g, " ");
-			console.log("INDEX OF STRING: "+(diffDictionary['='].length));
-			if((diffDictionary['='].indexOf(stringToCheck) > -1 || this.mostCurrentRevisionContent.indexOf(stringToCheck) == -1)){
+			console.log("INDEX OF STRING: "+(diffDictionary['-'].length));
+			if((diffDictionary['='].indexOf(stringToCheck) > -1 || this.mostCurrentRevisionContent.indexOf(stringToCheck) == -1 || (diffDictionary['='].length == 0 && diffDictionary['-'].length == 0 && diffDictionary['+'].length == 0))){
 				//run binary search on older/right half of list of current revisions
 				//first, change this.revIdList to be the right half of the list, then call the two functions above again
 
@@ -57,6 +57,7 @@ var WikiRevFinder = function(url) {
 					}
 				}
 				if(alreadyInList == false){
+					console.log("this revision DID affect the string");
 					affectedRevisionList.push([this.revIDList[this.halfpoint], diffObject[1]]);
 				}
 				//edge case: this has the potential to continue slicing infinitely, making a new list of the same size as before
@@ -72,6 +73,7 @@ var WikiRevFinder = function(url) {
 					//check later of two things in the list
 					this.findFirstRevisionLinearSearch(this.revIDList, stringToCheck);
 					if (this.revIDList.length > 0 && alreadyInList == false){
+						console.log("this revision DID affect the string");
 						affectedRevisionList.push([this.revIDList[0], this.revIDList[1]])
 					}
 					break;
@@ -85,8 +87,7 @@ var WikiRevFinder = function(url) {
 				// diffDictionary = this.WikEdDiff.diff(this.mostCurrentRevisionContent, midpointRevisionContent);
 				// console.log("ending calling diff Dictionary");
 
-				console.log("this revision DID affect the string");
-				console.log("DIFF DICTIONARY FOR THIS ONE: "+diffDictionary['='].length);
+				// console.log("DIFF DICTIONARY FOR THIS ONE: "+diffDictionary['='].length);
 			}
 		}
 		//otherwise, run on newer/left half of current revisions
@@ -119,13 +120,14 @@ var WikiRevFinder = function(url) {
 	};
 
 	this.findFirstRevisionLinearSearch = function(revIdList, stringToCheck) {
+		console.log("DOING LINEAR SEARCH");
 		this.WikEdDiff = new WikEdDiff();
 		var secondItemContent = txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(revIdList[revIdList.length-1]['revid']));
 		secondItemContent = this.sanitizeInput(secondItemContent);
 		var secondItemDiffObject = this.WikEdDiff.diff(this.mostCurrentRevisionContent, secondItemContent);
 		var secondItemDiffDictionary = secondItemDiffObject[0];
 
-		if(secondItemDiffDictionary['='].indexOf(stringToCheck) == -1 && this.mostCurrentRevisionContent.indexOf(stringToCheck) > -1 && (diffDictionary['='].length == 0 && this.revIDList.length > 2)){
+		if(secondItemDiffDictionary['='].indexOf(stringToCheck) == -1 && this.mostCurrentRevisionContent.indexOf(stringToCheck) > -1 && (secondItemDiffDictionary['='].length != 0)){
 			this.revIDList = [];
 			this.revIDList[0] = revIdList[revIdList.length-1], secondItemDiffObject[1];
 			return;
@@ -136,7 +138,7 @@ var WikiRevFinder = function(url) {
 		var firstItemDiffObject = this.WikEdDiff.diff(this.mostCurrentRevisionContent, firstItemContent);
 		var firstItemDiffDictionary = secondItemDiffObject[0];
 
-		if(firstItemDiffDictionary['='].indexOf(stringToCheck) == -1 && this.mostCurrentRevisionContent.indexOf(stringToCheck) > -1 && (diffDictionary['='].length == 0 && this.revIDList.length > 2)){
+		if(firstItemDiffDictionary['='].indexOf(stringToCheck) == -1 && this.mostCurrentRevisionContent.indexOf(stringToCheck) > -1 && (firstItemDiffDictionary['='].length != 0)){
 			this.revIDList = [];
 			this.revIDList[0] = revIdList[0], firstItemDiffObject[1];
 			return;
