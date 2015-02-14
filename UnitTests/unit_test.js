@@ -215,32 +215,33 @@ var UnitTester = function() {
 }
 
 var tester = new UnitTester();
-for(var i = 0; i < tester.cakeTestCases.length; i++){
-  tester.runTest(tester.cakeTestCases[i][0], tester.cakeTestCases[i][1]);
-}
-// tester.firstTest();
-// tester.secondTest();
-// tester.thirdTest();
-// // tester.fourthTest();
-tester.init("https://en.wikipedia.org/wiki/User%3AGloery%2Fsandbox");
-for(var i = 0; i < tester.sandboxTestCases.length; i++){
-  tester.runTest(tester.sandboxTestCases[i][0], tester.sandboxTestCases[i][1]);
-}
-// tester.fifthTest();
-// tester.sixthTest();
-// tester.seventhTest();
-// tester.eigthTest();
-// tester.ninthTest();
-// tester.tenthTest();
-tester.init("https://en.wikipedia.org/wiki/Star_Trek");
-for(var i = 0; i < tester.trekTestCases.length; i++){
-  tester.runTest(tester.trekTestCases[i][0], tester.trekTestCases[i][1]);
-}
-// tester.eleventhTest();
-// tester.twelfthTest();
-// tester.thirteenthTest();
-tester.init("https://en.wikipedia.org/wiki/Gods_of_Plastic");
-for(var i = 0; i < tester.gopTestCases.length; i++){
-  tester.runTest(tester.gopTestCases[i][0], tester.gopTestCases[i][1]);
-}
-// tester.fourteenthTest();
+tester.runTest(tester.cakeTestCases[0][0], tester.cakeTestCases[0][1]);
+// for(var i = 0; i < tester.cakeTestCases.length; i++){
+//   tester.runTest(tester.cakeTestCases[i][0], tester.cakeTestCases[i][1]);
+// }
+// // tester.firstTest();
+// // tester.secondTest();
+// // tester.thirdTest();
+// // // tester.fourthTest();
+// tester.init("https://en.wikipedia.org/wiki/User%3AGloery%2Fsandbox");
+// for(var i = 0; i < tester.sandboxTestCases.length; i++){
+//   tester.runTest(tester.sandboxTestCases[i][0], tester.sandboxTestCases[i][1]);
+// }
+// // tester.fifthTest();
+// // tester.sixthTest();
+// // tester.seventhTest();
+// // tester.eigthTest();
+// // tester.ninthTest();
+// // tester.tenthTest();
+// tester.init("https://en.wikipedia.org/wiki/Star_Trek");
+// for(var i = 0; i < tester.trekTestCases.length; i++){
+//   tester.runTest(tester.trekTestCases[i][0], tester.trekTestCases[i][1]);
+// }
+// // tester.eleventhTest();
+// // tester.twelfthTest();
+// // tester.thirteenthTest();
+// tester.init("https://en.wikipedia.org/wiki/Gods_of_Plastic");
+// for(var i = 0; i < tester.gopTestCases.length; i++){
+//   tester.runTest(tester.gopTestCases[i][0], tester.gopTestCases[i][1]);
+// }
+// // tester.fourteenthTest();

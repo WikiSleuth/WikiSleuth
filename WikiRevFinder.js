@@ -15,7 +15,7 @@ var WikiRevFinder = function(url) {
 		return;
 	};
 
-	this.iterativeBinarySearch = function(stringToCheck) {
+	this.iterativeBinarySearch = function(stringToCheck, landmarkBefore, landmarkAfter) {
 
 		var affectedRevisionList = [];
 		while(this.revIDList.length > 1){
@@ -32,9 +32,8 @@ var WikiRevFinder = function(url) {
 			diffDictionary['='] = diffDictionary['='].replace(/\n\n/g, " ");
 			diffDictionary['+'] = diffDictionary['+'].replace(/\n\n/g, " ");
 			diffDictionary['-'] = diffDictionary['-'].replace(/\n\n/g, " ");
-
-
-			if(diffDictionary['='].indexOf(stringToCheck) > -1 || this.mostCurrentRevisionContent.indexOf(stringToCheck) == -1 || (diffDictionary['='].length == 0 && this.revIDList.length > 2)){
+			console.log("INDEX OF STRING: "+(diffDictionary['='].length));
+			if((diffDictionary['='].indexOf(stringToCheck) > -1 || this.mostCurrentRevisionContent.indexOf(stringToCheck) == -1)){
 				//run binary search on older/right half of list of current revisions
 				//first, change this.revIdList to be the right half of the list, then call the two functions above again
 
@@ -87,7 +86,7 @@ var WikiRevFinder = function(url) {
 				// console.log("ending calling diff Dictionary");
 
 				console.log("this revision DID affect the string");
-				// console.log("DIFF DICTIONARY FOR THIS ONE: "+diffDictionary['='].length);
+				console.log("DIFF DICTIONARY FOR THIS ONE: "+diffDictionary['='].length);
 			}
 		}
 		//otherwise, run on newer/left half of current revisions
@@ -102,6 +101,8 @@ var WikiRevFinder = function(url) {
 		//sort the list of recent revisions, from earliest id to latest
 		var sortedList = affectedRevisionList.sort(function(dict1, dict2){return dict1['revid']-dict2['revid']});
 		var subsetList = sortedList.slice(0, 10);
+		console.log("FIRST: "+subsetList[0][0]['revid']);
+		console.log("LAST: "+subsetList[subsetList.length-1][0]['revid']);
 		return sortedList.slice(0,10);
 		//return affectedRevisionList.slice(0,10).reverse();
 	};
@@ -124,7 +125,7 @@ var WikiRevFinder = function(url) {
 		var secondItemDiffObject = this.WikEdDiff.diff(this.mostCurrentRevisionContent, secondItemContent);
 		var secondItemDiffDictionary = secondItemDiffObject[0];
 
-		if(secondItemDiffDictionary['='].indexOf(stringToCheck) == -1 && this.mostCurrentRevisionContent.indexOf(stringToCheck) > -1){
+		if(secondItemDiffDictionary['='].indexOf(stringToCheck) == -1 && this.mostCurrentRevisionContent.indexOf(stringToCheck) > -1 && (diffDictionary['='].length == 0 && this.revIDList.length > 2)){
 			this.revIDList = [];
 			this.revIDList[0] = revIdList[revIdList.length-1], secondItemDiffObject[1];
 			return;
@@ -135,13 +136,18 @@ var WikiRevFinder = function(url) {
 		var firstItemDiffObject = this.WikEdDiff.diff(this.mostCurrentRevisionContent, firstItemContent);
 		var firstItemDiffDictionary = secondItemDiffObject[0];
 
-		if(firstItemDiffDictionary['='].indexOf(stringToCheck) == -1 && this.mostCurrentRevisionContent.indexOf(stringToCheck) > -1){
+		if(firstItemDiffDictionary['='].indexOf(stringToCheck) == -1 && this.mostCurrentRevisionContent.indexOf(stringToCheck) > -1 && (diffDictionary['='].length == 0 && this.revIDList.length > 2)){
 			this.revIDList = [];
 			this.revIDList[0] = revIdList[0], firstItemDiffObject[1];
 			return;
 		}
+		else{
+			console.log("NO AFFECTING STRINGS FROM LINEAR SEARCH");
+			this.revIDList = [];
+			return;
+		}
 		// console.log('TO RETURN: '+toReturn);
-		return toReturn;
+		// return toReturn;
 	};
 
 	this.getMostRecentRevisionContent = function() {
@@ -221,7 +227,7 @@ var WikiRevFinder = function(url) {
 				return toReturn;
 			}
 
-		return this.iterativeBinarySearch(stringToCheck);
+		return this.iterativeBinarySearch(stringToCheck, "Later, during the post-war boom, other American companies (notably General Mills) developed this idea further,", "Ever since, cake in a box has become a staple of supermarkets, and is complemented with frosting in a can.");
 	};
 
 
