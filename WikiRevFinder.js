@@ -32,8 +32,28 @@ var WikiRevFinder = function(url) {
 			diffDictionary['='] = diffDictionary['='].replace(/\n\n/g, " ");
 			diffDictionary['+'] = diffDictionary['+'].replace(/\n\n/g, " ");
 			diffDictionary['-'] = diffDictionary['-'].replace(/\n\n/g, " ");
-			console.log("INDEX OF STRING: "+(diffDictionary['-'].length));
+
+			//only look at the text between landmarks
+			var lowerLandmarkIndex = diffDictionary['='].indexOf(landmarkBefore)
+			var upperLandmarkIndex = diffDictionary['='].indexOf(landmarkAfter)
+
+
+			if((lowerLandmarkIndex > -1) && (upperLandmarkIndex > -1)){
+				console.log("BEFORE CHANGES: "+diffDictionary['=']);
+				diffDictionary['='] = diffDictionary['='].slice(lowerLandmarkIndex, upperLandmarkIndex + 1);
+				console.log("AFTER CHANGES: "+diffDictionary['=']);
+			}
+
+
 			if((diffDictionary['='].indexOf(stringToCheck) > -1 || this.mostCurrentRevisionContent.indexOf(stringToCheck) == -1 || (diffDictionary['='].length == 0 && diffDictionary['-'].length == 0 && diffDictionary['+'].length == 0))){
+
+				// if((diffDictionary['='].indexOf(landmarkBefore) > -1 && diffDictionary['='].indexOf(landmarkBefore) > -1)){
+				// 	console.log("between?? "+ (diffDictionary['='].indexOf(landmarkBefore) < diffDictionary['='].indexOf(stringToCheck)) &&(diffDictionary['='].indexOf(landmarkAfter) > diffDictionary['='].indexOf(stringToCheck)));
+				// }
+				// else{
+				// 	console.log("FALSE");
+				// }
+
 				//run binary search on older/right half of list of current revisions
 				//first, change this.revIdList to be the right half of the list, then call the two functions above again
 
