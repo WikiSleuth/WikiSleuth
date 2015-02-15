@@ -25,6 +25,8 @@ var WikiRevFinder = function(url) {
 			var midpointRevisionContent = this.getMidpointRevisionContent();
 			midpointRevisionContent = this.sanitizeInput(midpointRevisionContent);
 			
+            //console.log("WIKIREVFINDER calling DIFF.JS  MOST CURRENT",this.mostCurrentRevisionContent);
+            //console.log("WIKIREVFINDER calling DIFF.js MIDPOINT: ", midpointRevisionContent);
 			var diffObject = this.WikEdDiff.diff(this.mostCurrentRevisionContent, midpointRevisionContent);
 			var diffDictionary = diffObject[0];
 
@@ -87,21 +89,24 @@ var WikiRevFinder = function(url) {
 					}
 				}
 				if(alreadyInList == false){
+
 					console.log("this revision DID affect the string");
-					affectedRevisionList.push([this.revIDList[this.halfpoint], diffObject[1]]);
+	
+					affectedRevisionList.push([this.revIDList[this.halfpoint], diffObject[1], diffObject[2]]);
+
 				}
 				//edge case: this has the potential to continue slicing infinitely, making a new list of the same size as before
 				//if list size is two, so we do this if list size is too
 				if(this.revIDList.length == 2){
+					//check later of two things in the list
+					this.findFirstRevisionLinearSearch(this.revIDList, stringToCheck);
 					var alreadyInList = false
 					for(var i = 0; i < affectedRevisionList.length; i++){
-						if(affectedRevisionList[i][0]['revid'] == this.revIDList[this.halfpoint]['revid']){
+						if(affectedRevisionList[i][0]['revid'] == this.revIDList[0]['revid']){
 							alreadyInList = true;
 							break;
 						}
 					}
-					//check later of two things in the list
-					this.findFirstRevisionLinearSearch(this.revIDList, stringToCheck);
 					if (this.revIDList.length > 0 && alreadyInList == false){
 						console.log("this revision DID affect the string");
 						affectedRevisionList.push([this.revIDList[0], this.revIDList[1]])
@@ -130,11 +135,10 @@ var WikiRevFinder = function(url) {
 		// }
 
 		//sort the list of recent revisions, from earliest id to latest
-		var sortedList = affectedRevisionList.sort(function(dict1, dict2){return dict1['revid']-dict2['revid']});
-		var subsetList = sortedList.slice(0, 10);
-		console.log("WHOLE LIST: "+subsetList);
-		console.log("FIRST: "+subsetList[0][0]['revid']);
-		console.log("LAST: "+subsetList[subsetList.length-1][0]['revid']);
+
+		var sortedList = affectedRevisionList.sort(function(rev1, rev2){return rev2[0]['revid']-rev1[0]['revid']});
+		console.log(this.getStringPriorToEdit(stringToCheck, sortedList[0]));
+
 		return sortedList.slice(0,10);
 		//return affectedRevisionList.slice(0,10).reverse();
 	};
@@ -146,7 +150,14 @@ var WikiRevFinder = function(url) {
 	
 		console.log("halfpoint number we think: " + this.revIDList[this.halfpoint]['revid']);
 		//console.log("text: " + txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(this.revIDList[halfpoint]['revid'])))
-		return txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(this.revIDList[this.halfpoint]['revid']));
+		//return txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(this.revIDList[this.halfpoint]['revid']));
+		var revContent = this.WikiAPI.getRevisionContent(this.revIDList[this.halfpoint]['revid']);
+		if (revContent != undefined) {
+			revContent = txtwiki.parseWikitext(revContent);
+		} else {
+			revContent = "";
+		}
+		return revContent;
 		
 	};
 
@@ -227,8 +238,9 @@ var WikiRevFinder = function(url) {
 	};
 
 	this.getWikiRevsInfo = function(stringToCheck, revisionOffset) {
-
-
+		
+        this.WikEdDiff = new WikEdDiff();
+        
 		//sanitize string input
 		stringToCheck = this.sanitizeInput(stringToCheck);
 
@@ -245,6 +257,7 @@ var WikiRevFinder = function(url) {
 		else{
 			revIDList = this.WikiAPI.findFirst500RevisionIDList(this.oldestRevID)
 		}
+
 		this.revIDList = revIDList;
 		console.log("first item" + this.revIDList[0]);
 		this.mostCurrentRevisionContent = this.getMostRecentRevisionContent();
@@ -262,6 +275,55 @@ var WikiRevFinder = function(url) {
 			}
 
 		return this.iterativeBinarySearch(stringToCheck, "Later, during the post-war boom, other American companies (notably General Mills) developed this idea further,", "Ever since, cake in a box has become a staple of supermarkets, and is complemented with frosting in a can.");
+	};
+
+	this.getStringPriorToEdit = function(stringToCheck, affectedRevision) {
+		var fragments = affectedRevision[2];
+		var stringPriorToEdit = '';
+		var tempHighlightedString = stringToCheck;
+		var indexOfFragMatch = 0;
+		var hasBegun = false;
+		var fragmentTextArray = [];
+		var i = 0;
+		while (tempHighlightedString.length > 0 && i < fragments.length){
+			switch(fragments[i]['type']){
+				case '=':
+				case '>':
+					fragmentTextArray = fragments[i]['text'].replace(/\n+/g, " ").split(" ");
+					for(var j=0; j<fragmentTextArray.length; j++){
+						indexOfFragMatch = tempHighlightedString.indexOf(fragmentTextArray[j]);
+						if(indexOfFragMatch == 0 & fragmentTextArray[j] != ""){
+							hasBegun = true;
+							tempHighlightedString = tempHighlightedString.replace(fragmentTextArray[j], "");
+							stringPriorToEdit += fragmentTextArray[j];
+
+							if(tempHighlightedString[0] == " "){
+									tempHighlightedString = tempHighlightedString.replace(/\s+/, "");
+									stringPriorToEdit += " ";
+							}
+						} else if (indexOfFragMatch > 0) {
+							tempHighlightedString = stringToCheck;
+							hasBegun = false;
+							stringPriorToEdit = '';
+						}
+					}
+					break;
+				case '+':
+					if(hasBegun){
+						stringPriorToEdit += fragments[i]['text'];
+					}
+					break;
+				case '-':
+					if(hasBegun){
+						tempHighlightedString = tempHighlightedString.replace(fragments[i]['text'], "");
+					}
+					break;
+			}
+			i += 1;
+		}
+		stringPriorToEdit = stringPriorToEdit.trim();
+
+		return stringPriorToEdit;
 	};
 
 

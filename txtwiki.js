@@ -48,6 +48,10 @@ var txtwiki = (function(){
           link += out.text;
           pos = out.pos;
         } else {
+            /*console.log("***********************************");
+            console.log("HERE IS LINK: ", link);
+            console.log("Here is content: ", content);
+            console.log("Here is content[pos]: ", content[pos]);*/
           link += content[pos];
           pos++;
         }
