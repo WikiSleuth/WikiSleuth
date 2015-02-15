@@ -115,7 +115,14 @@ var WikiRevFinder = function(url) {
 	
 		console.log("halfpoint number we think: " + this.revIDList[this.halfpoint]['revid']);
 		//console.log("text: " + txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(this.revIDList[halfpoint]['revid'])))
-		return txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(this.revIDList[this.halfpoint]['revid']));
+		//return txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(this.revIDList[this.halfpoint]['revid']));
+		var revContent = this.WikiAPI.getRevisionContent(this.revIDList[this.halfpoint]['revid']);
+		if (revContent != undefined) {
+			revContent = txtwiki.parseWikitext(revContent);
+		} else {
+			revContent = "";
+		}
+		return revContent;
 		
 	};
 
