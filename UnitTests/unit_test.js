@@ -11,7 +11,7 @@ var UnitTester = function() {
     return;
   }
   this.cakeTestCases = [["in magazines", 624717323], ["photographs in", 624717323], ["cake-making", 623824895], ["phrase", 100970], ["Cake is often the dessert of choice for meals at ceremonial occasions,", 118544759], ["The Ancient Roman marriage ritual of confarreatio originated in the sharing of a cake.", 122900520], ["Modern cake, especially layer cakes, normally contain a combination", 460680331], [" springform pan and decorated", 413058311]];
-  this.sandboxTestCases = [["test movement", 630921907], ["bread-bread", 630886783], ["SCRAMBLED WORDS", 636395458], ["second movement", 636690302], ["Inserting phrase here.", 636530272], ["Lorem Ipsum is", 632220663]];
+  this.sandboxTestCases = [["test movement", 630921907], ["bread-bread", 636691444], ["SCRAMBLED WORDS", 636395458], ["second movement", 636690302], ["Inserting phrase here.", 636530272], ["Lorem Ipsum is", 632220663]];
   this.trekTestCases = [["to coincide with the franchise's 50th anniversary", 639940658], ["the next sequel to Into Darkness", 639940658], ["not as successful in the North American box office as its predecessor, internationally, in terms of box office receipts", 639390470], ["irst warp-five capable starship", 190350334], [" designers of technologies", 480548954], ["to Roddenberry, but he could not afford the $150,000", 427585614]];
   this.gopTestCases =  [["But during the 7th point of the game", 493559806], ["collegiate men's", 334109637], ["GoP was born late one February night in 1995 in a room on 2nd Nourse. A group of seniors - motivated by their love of Frisbee and a desire for a level of play higher than intramurals, but looking for a commitment and attitude softer than those necessary to play for Carleton’s official intercollegiate teams - conspired to form an alternative IC team founded on the concept that enjoyment of the game and a higher level of competitive play should not run screaming from each other, but walk hand-in-hand. They agreed to a style of play that would be considered by some to be undisciplined, but to them would embody the true spirit of the game, and from this discussion arose the lofty team name: Gods of Plastic.", 493559806]];
 
@@ -215,33 +215,34 @@ var UnitTester = function() {
 }
 
 var tester = new UnitTester();
-tester.runTest(tester.cakeTestCases[0][0], tester.cakeTestCases[0][1]);
-// for(var i = 0; i < tester.cakeTestCases.length; i++){
-//   tester.runTest(tester.cakeTestCases[i][0], tester.cakeTestCases[i][1]);
-// }
-// // tester.firstTest();
-// // tester.secondTest();
-// // tester.thirdTest();
-// // // tester.fourthTest();
-// tester.init("https://en.wikipedia.org/wiki/User%3AGloery%2Fsandbox");
-// for(var i = 0; i < tester.sandboxTestCases.length; i++){
-//   tester.runTest(tester.sandboxTestCases[i][0], tester.sandboxTestCases[i][1]);
-// }
-// // tester.fifthTest();
-// // tester.sixthTest();
-// // tester.seventhTest();
-// // tester.eigthTest();
-// // tester.ninthTest();
-// // tester.tenthTest();
-// tester.init("https://en.wikipedia.org/wiki/Star_Trek");
-// for(var i = 0; i < tester.trekTestCases.length; i++){
-//   tester.runTest(tester.trekTestCases[i][0], tester.trekTestCases[i][1]);
-// }
-// // tester.eleventhTest();
-// // tester.twelfthTest();
-// // tester.thirteenthTest();
 // tester.init("https://en.wikipedia.org/wiki/Gods_of_Plastic");
-// for(var i = 0; i < tester.gopTestCases.length; i++){
-//   tester.runTest(tester.gopTestCases[i][0], tester.gopTestCases[i][1]);
-// }
-// // tester.fourteenthTest();
+// tester.runTest(tester.gopTestCases[1][0], tester.gopTestCases[1][1]);
+for(var i = 0; i < tester.cakeTestCases.length; i++){
+  tester.runTest(tester.cakeTestCases[i][0], tester.cakeTestCases[i][1]);
+}
+// tester.firstTest();
+// tester.secondTest();
+// tester.thirdTest();
+// // tester.fourthTest();
+tester.init("https://en.wikipedia.org/wiki/User%3AGloery%2Fsandbox");
+for(var i = 0; i < tester.sandboxTestCases.length; i++){
+  tester.runTest(tester.sandboxTestCases[i][0], tester.sandboxTestCases[i][1]);
+}
+// tester.fifthTest();
+// tester.sixthTest();
+// tester.seventhTest();
+// tester.eigthTest();
+// tester.ninthTest();
+// tester.tenthTest();
+tester.init("https://en.wikipedia.org/wiki/Star_Trek");
+for(var i = 0; i < tester.trekTestCases.length; i++){
+  tester.runTest(tester.trekTestCases[i][0], tester.trekTestCases[i][1]);
+}
+// tester.eleventhTest();
+// tester.twelfthTest();
+// tester.thirteenthTest();
+tester.init("https://en.wikipedia.org/wiki/Gods_of_Plastic");
+for(var i = 0; i < tester.gopTestCases.length; i++){
+  tester.runTest(tester.gopTestCases[i][0], tester.gopTestCases[i][1]);
+}
+// tester.fourteenthTest();
