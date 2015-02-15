@@ -60,7 +60,7 @@ var WikiRevFinder = function(url) {
 					}
 				}
 				if(alreadyInList == false){
-					affectedRevisionList.push([this.revIDList[this.halfpoint], diffObject[1]]);
+					affectedRevisionList.push([this.revIDList[this.halfpoint], diffObject[1], diffObject[2]]);
 				}
 				//edge case: this has the potential to continue slicing infinitely, making a new list of the same size as before
 				//if list size is two, so we do this if list size is too
@@ -239,6 +239,7 @@ var WikiRevFinder = function(url) {
 		while (tempHighlightedString.length > 0 && i < fragments.length){
 			switch(fragments[i]['type']){
 				case '=':
+				case '>':
 					fragmentTextArray = fragments[i]['text'].replace(/\n+/g, " ").split(" ");
 					for(var j=0; j<fragmentTextArray.length; j++){
 						indexOfFragMatch = tempHighlightedString.indexOf(fragmentTextArray[j]);
@@ -254,6 +255,7 @@ var WikiRevFinder = function(url) {
 						} else if (indexOfFragMatch > 0) {
 							tempHighlightedString = stringToCheck;
 							hasBegun = false;
+							stringPriorToEdit = '';
 						}
 					}
 					break;
