@@ -1,6 +1,8 @@
 var data = "";
 var WikiAPI = null;
 var isPaneDisplayed = false;
+var heatMapObject = null;
+var text_date_list = [];
 
 // Query chrome to get an array of all tabs in current window that are focused and active
 function queryForData() {
@@ -8,6 +10,39 @@ function queryForData() {
     chrome.tabs.query({active: true, currentWindow: true}, getHighlightedText);
   }	
 }
+
+// ****************** start heatmap stuff
+function initHeatmap(){
+    if (isOnWiki){
+        console.log("Initializing heatmap");
+        chrome.tabs.query({active: true, currentWindow: true}, startTheHeatMap); 
+    }   
+}
+
+function startTheHeatMap(tabs){
+    chrome.tabs.executeScript(tabs[0].id, {file: 'getPageText.js'}, sendPageToModel);
+}
+
+function sendPageToModel(response) {
+    heatMapObject = new heatTest(response[0][1]);
+    text_date_list = heatMapObject.makeTextDateList(response[0][0]);  
+    document.dispatchEvent(evt2);     
+}
+
+function callTheColor(){
+    chrome.tabs.query({active: true, currentWindow: true}, injectedColorScript); 
+}
+
+function injectedColorScript(tabs){
+    chrome.tabs.executeScript(tabs[0].id, {
+        code: 'var text_date_list = ' + JSON.stringify(text_date_list)
+    }, function() {
+        console.log(text_date_list);
+        chrome.tabs.executeScript(tabs[0].id, {file: 'colorPage.js'});
+    });
+}
+
+// ************************* end heatmap stuff
 
 // The first element of tabs will be the page the user is currently looking at. Execute code to get highlighted text.
 function getHighlightedText(tabs) {
@@ -72,4 +107,6 @@ function handleCommand(command) {
 
 var evt = new CustomEvent("getInformation");
 document.addEventListener("getInformation", getPageWindow);
+var evt2 = new CustomEvent("coloring");
+document.addEventListener("coloring", callTheColor);
 chrome.commands.onCommand.addListener(handleCommand);

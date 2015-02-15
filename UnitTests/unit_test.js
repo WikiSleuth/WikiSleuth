@@ -14,6 +14,8 @@ var UnitTester = function() {
   this.sandboxTestCases = [["test movement", 630921907], ["bread-bread", 636691444], ["SCRAMBLED WORDS", 636395458], ["second movement", 636690302], ["Inserting phrase here.", 636530272], ["Lorem Ipsum is", 632220663]];
   this.trekTestCases = [["to coincide with the franchise's 50th anniversary", 639940658], ["the next sequel to Into Darkness", 639940658], ["not as successful in the North American box office as its predecessor, internationally, in terms of box office receipts", 639390470], ["irst warp-five capable starship", 190350334], [" designers of technologies", 480548954], ["to Roddenberry, but he could not afford the $150,000", 427585614]];
   this.gopTestCases =  [["But during the 7th point of the game", 493559806], ["collegiate men's", 334109637], ["GoP was born late one February night in 1995 in a room on 2nd Nourse. A group of seniors - motivated by their love of Frisbee and a desire for a level of play higher than intramurals, but looking for a commitment and attitude softer than those necessary to play for Carleton’s official intercollegiate teams - conspired to form an alternative IC team founded on the concept that enjoyment of the game and a higher level of competitive play should not run screaming from each other, but walk hand-in-hand. They agreed to a style of play that would be considered by some to be undisciplined, but to them would embody the true spirit of the game, and from this discussion arose the lofty team name: Gods of Plastic.", 493559806]];
+  this.artsMidwestTestCases = [["Arts Midwest was formed in 1985 through the merger of two RAOs, the Affiliated State Arts Agencies of the Upper Midwest and the Great Lakes Arts Alliance.", 352523160], ["red in Minneapolis, Minnesota", 180699239], ["Cooperation among states in their activities to support the arts can significantly serve the purposes", 352523160]]
+  this.fujiTestCases = [["The ships participated in the Russo-Japanese War of 1904–1905", 504620621], [" later Majestic-class and were protected by armoured hoods (gun turrets). The two ships of the class were almost identical even though they were designed by two different naval architects, Yashima by Philip Watts ", 186119953], ["(1.5 kg) projectiles at a muzzle velocity of 1,927 ft/s (587 m/s)", 186119953], ["The mountings were virtually identical to those used in the first Majestic-class battleships", 646122600]]
 
   // this.secondTest = function(){
   //   var highlightedText = "photographs in";
@@ -246,3 +248,12 @@ for(var i = 0; i < tester.gopTestCases.length; i++){
   tester.runTest(tester.gopTestCases[i][0], tester.gopTestCases[i][1]);
 }
 // tester.fourteenthTest();
+
+tester.init("http://en.wikipedia.org/wiki/Arts_Midwest");
+for(var i = 0; i < tester.artsMidwestTestCases.length; i++){
+  tester.runTest(tester.artsMidwestTestCases[i][0], tester.artsMidwestTestCases[i][1]);
+}
+tester.init("http://en.wikipedia.org/wiki/Fuji-class_battleship");
+for(var i = 0; i < tester.fujiTestCases.length; i++){
+  tester.runTest(tester.fujiTestCases[i][0], tester.fujiTestCases[i][1]);
+}
