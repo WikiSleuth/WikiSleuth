@@ -46,21 +46,21 @@ var WikiRevFinder = function(url) {
 			var upperLandmarkIndex = diffDictionary['='].indexOf(landmarkAfter)
 
 
-			// if((lowerLandmarkIndex > -1) && (upperLandmarkIndex > -1)){
-			// 	console.log("BEFORE CHANGES: "+diffDictionary['=']);
-			// 	diffDictionary['='] = diffDictionary['='].slice(lowerLandmarkIndex, upperLandmarkIndex + 1);
-			// 	console.log("AFTER CHANGES: "+diffDictionary['=']);
-			// }
+			if((lowerLandmarkIndex > -1) && (upperLandmarkIndex > -1)){
+				// console.log("BEFORE CHANGES: "+diffDictionary['=']);
+				diffDictionary['='] = diffDictionary['='].slice(lowerLandmarkIndex, upperLandmarkIndex + landmarkAfter.length);
+				// console.log("AFTER CHANGES: "+diffDictionary['=']);
+			}
 
-			// //we also need to deal with the case where lower landmark isn't there
-			// else if(lowerLandmarkIndex > -1){
-			// 	diffDictionary['='] = diffDictionary['='].slice(lowerLandmarkIndex, diffDictionary['='].length);
-			// }
+			//we also need to deal with the case where lower landmark isn't there
+			else if(lowerLandmarkIndex > -1){
+				diffDictionary['='] = diffDictionary['='].slice(lowerLandmarkIndex, diffDictionary['='].length);
+			}
 
-			// //or upper landmark isn't there.
-			// else if(upperLandmarkIndex > -1){
-			// 	diffDictionary['='] = diffDictionary['='].slice(0, diffDictionary['='].length);
-			// }
+			//or upper landmark isn't there.
+			else if(upperLandmarkIndex > -1){
+				diffDictionary['='] = diffDictionary['='].slice(0, upperLandmarkIndex + landmarkAfter.length);
+			}
 
 			if(this.revIDList.length == 2){
 					var alreadyInList = false
@@ -233,8 +233,7 @@ var WikiRevFinder = function(url) {
 		return txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(this.oldestRevID));
 	};
 
-	this.checkOldestRevision = function(stringToCheck) {
-		//TODO: PUT THIS IN ITS OWN FUNCTUION
+	this.checkOldestRevision = function(stringToCheck, landmarkBefore, landmarkAfter) {
 		//before searching the entire revision history, we just check the oldest item
 		//if there's nothing affecting the string in that revision, then nothing will have affected it
 		//in any more recent revisions, so we can just move on to the next set of revisions.
@@ -243,6 +242,28 @@ var WikiRevFinder = function(url) {
 		this.WikEdDiff = new WikEdDiff();
 		this.oldestItemDiffObject = this.WikEdDiff.diff(this.mostCurrentRevisionContent, oldestRevisionContent);
 		var oldestItemDiffDictionary = this.oldestItemDiffObject[0];
+
+
+	//only look at the text between landmarks
+		var lowerLandmarkIndex = oldestItemDiffDictionary['='].indexOf(landmarkBefore)
+		var upperLandmarkIndex = oldestItemDiffDictionary['='].indexOf(landmarkAfter)
+
+
+		if((lowerLandmarkIndex > -1) && (upperLandmarkIndex > -1)){
+			// console.log("BEFORE CHANGES: "+diffDictionary['=']);
+			oldestItemDiffDictionary['='] = oldestItemDiffDictionary['='].slice(lowerLandmarkIndex, upperLandmarkIndex + landmarkAfter.length);
+			// console.log("AFTER CHANGES: "+diffDictionary['=']);
+		}
+
+		//we also need to deal with the case where lower landmark isn't there
+		else if(lowerLandmarkIndex > -1){
+			oldestItemDiffDictionary['='] = oldestItemDiffDictionary['='].slice(lowerLandmarkIndex, oldestItemDiffDictionary['='].length);
+		}
+
+		//or upper landmark isn't there.
+		else if(upperLandmarkIndex > -1){
+			oldestItemDiffDictionary['='] = oldestItemDiffDictionary['='].slice(0, upperLandmarkIndex + landmarkAfter.length);
+		}
 
 		// console.log("OLDEST ITEM DIFF DICT: "+this.mostCurrentRevisionContent.indexOf(stringToCheck));
 		if((oldestItemDiffDictionary['='].indexOf(stringToCheck) > -1 || this.mostCurrentRevisionContent.indexOf(stringToCheck) == -1 || (oldestItemDiffDictionary['='].length == 0 && oldestItemDiffDictionary['-'].length == 0 && oldestItemDiffDictionary['+'].length == 0))){
@@ -271,12 +292,15 @@ var WikiRevFinder = function(url) {
 		return stringToCheck;
 	};
 
-	this.getWikiRevsInfo = function(stringToCheck, revisionOffset) {
+	this.getWikiRevsInfo = function(stringToCheck, landmarkBefore, landmarkAfter, revisionOffset) {
 		
         this.WikEdDiff = new WikEdDiff();
-        
+        console.log("BEFORE THING: "+landmarkBefore);
+        console.log("AFTER THING: "+landmarkAfter);
 		//sanitize string input
 		stringToCheck = this.sanitizeInput(stringToCheck);
+		landmarkBefore = this.sanitizeInput(landmarkBefore);
+		landmarkAfter = this.sanitizeInput(landmarkAfter);
 
 		//make this an optional parameter, set to 0 if not passed in
 		revisionOffset = revisionOffset || 0;
@@ -304,7 +328,7 @@ var WikiRevFinder = function(url) {
 
 		//first, check that the oldest revision in this block of 500 affects the string.
 		//If not, we can immediately move on to the next block of 500 revisions.
-		this.checkOldestRevision(stringToCheck);
+		this.checkOldestRevision(stringToCheck, landmarkBefore, landmarkAfter);
 
 		//if we've gone through the entire history, return oldest item
 		if (this.revIDList.length == 1){
@@ -313,7 +337,7 @@ var WikiRevFinder = function(url) {
 				return toReturn;
 			}
 
-		return this.iterativeBinarySearch(stringToCheck, "Later, during the post-war boom, other American companies (notably General Mills) developed this idea further,", "Ever since, cake in a box has become a staple of supermarkets, and is complemented with frosting in a can.");
+		return this.iterativeBinarySearch(stringToCheck, landmarkBefore, landmarkAfter);
 	};
 
 	this.getStringPriorToEdit = function(stringToCheck, affectedRevision) {
