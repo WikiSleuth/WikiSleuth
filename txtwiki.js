@@ -17,6 +17,7 @@ var txtwiki = (function(){
         continue;
       }
 
+      paragraphs[i] = paragraphs[i].replace(/(===?.*===?)/, '');
       paragraphs[i] = boldItalicPass(paragraphs[i]);
 
       parsed += paragraphs[i] + "\n";
