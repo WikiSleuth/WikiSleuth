@@ -15,7 +15,7 @@ var WikiRevFinder = function(url) {
 		return;
 	};
 
-	this.iterativeBinarySearch = function(stringToCheck) {
+	this.iterativeBinarySearch = function(stringToCheck, landmarkBefore, landmarkAfter) {
 
 		var affectedRevisionList = [];
 		while(this.revIDList.length > 1){
@@ -23,20 +23,71 @@ var WikiRevFinder = function(url) {
 			this.WikEdDiff = new WikEdDiff();
 
 			var midpointRevisionContent = this.getMidpointRevisionContent();
-			midpointRevisionContent = this.sanitizeInput(midpointRevisionContent);
+			var sanitizedMidpointRevisionContent = this.sanitizeInput(midpointRevisionContent);
+			if(sanitizedMidpointRevisionContent.length != 0 && midpointRevisionContent != 0){
+				midpointRevisionContent = sanitizedMidpointRevisionContent
+			// we DON'T want to do this if the sanitized input is empty, because this will result in the diff messing up and being disregarded (nothing in any of the diff dicts)
+			}
+
 			
             //console.log("WIKIREVFINDER calling DIFF.JS  MOST CURRENT",this.mostCurrentRevisionContent);
             //console.log("WIKIREVFINDER calling DIFF.js MIDPOINT: ", midpointRevisionContent);
 			var diffObject = this.WikEdDiff.diff(this.mostCurrentRevisionContent, midpointRevisionContent);
 			var diffDictionary = diffObject[0];
 
+
 			//make the dictionary entries more parseable by taking out newlines
 			diffDictionary['='] = diffDictionary['='].replace(/\n\n/g, " ");
 			diffDictionary['+'] = diffDictionary['+'].replace(/\n\n/g, " ");
 			diffDictionary['-'] = diffDictionary['-'].replace(/\n\n/g, " ");
 
+			//only look at the text between landmarks
+			var lowerLandmarkIndex = diffDictionary['='].indexOf(landmarkBefore)
+			var upperLandmarkIndex = diffDictionary['='].indexOf(landmarkAfter)
 
-			if(diffDictionary['='].indexOf(stringToCheck) > -1 || this.mostCurrentRevisionContent.indexOf(stringToCheck) == -1 || (diffDictionary['='].length == 0 && this.revIDList.length > 2)){
+
+			if((lowerLandmarkIndex > -1) && (upperLandmarkIndex > -1)){
+				// console.log("BEFORE CHANGES: "+diffDictionary['=']);
+				diffDictionary['='] = diffDictionary['='].slice(lowerLandmarkIndex, upperLandmarkIndex + landmarkAfter.length);
+				// console.log("AFTER CHANGES: "+diffDictionary['=']);
+			}
+
+			//we also need to deal with the case where lower landmark isn't there
+			else if(lowerLandmarkIndex > -1){
+				diffDictionary['='] = diffDictionary['='].slice(lowerLandmarkIndex, diffDictionary['='].length);
+			}
+
+			//or upper landmark isn't there.
+			else if(upperLandmarkIndex > -1){
+				diffDictionary['='] = diffDictionary['='].slice(0, upperLandmarkIndex + landmarkAfter.length);
+			}
+
+			if(this.revIDList.length == 2){
+					var alreadyInList = false
+					for(var i = 0; i < affectedRevisionList.length; i++){
+						if(affectedRevisionList[i][0]['revid'] == this.revIDList[this.halfpoint]['revid']){
+							alreadyInList = true;
+							break;
+						}
+					}
+					//check later of two things in the list
+					this.findFirstRevisionLinearSearch(this.revIDList, stringToCheck);
+					if (this.revIDList.length > 0 && alreadyInList == false){
+						console.log("this revision DID affect the string");
+						affectedRevisionList.push([this.revIDList[0], this.revIDList[1]])
+					}
+					break;
+			}
+
+			else if((diffDictionary['='].indexOf(stringToCheck) > -1 || this.mostCurrentRevisionContent.indexOf(stringToCheck) == -1 || (diffDictionary['='].length == 0 && diffDictionary['-'].length == 0 && diffDictionary['+'].length == 0))){
+
+				// if((diffDictionary['='].indexOf(landmarkBefore) > -1 && diffDictionary['='].indexOf(landmarkBefore) > -1)){
+				// 	console.log("between?? "+ (diffDictionary['='].indexOf(landmarkBefore) < diffDictionary['='].indexOf(stringToCheck)) &&(diffDictionary['='].indexOf(landmarkAfter) > diffDictionary['='].indexOf(stringToCheck)));
+				// }
+				// else{
+				// 	console.log("FALSE");
+				// }
+
 				//run binary search on older/right half of list of current revisions
 				//first, change this.revIdList to be the right half of the list, then call the two functions above again
 
@@ -60,7 +111,11 @@ var WikiRevFinder = function(url) {
 					}
 				}
 				if(alreadyInList == false){
+
+					console.log("this revision DID affect the string");
+	
 					affectedRevisionList.push([this.revIDList[this.halfpoint], diffObject[1], diffObject[2]]);
+
 				}
 				//edge case: this has the potential to continue slicing infinitely, making a new list of the same size as before
 				//if list size is two, so we do this if list size is too
@@ -76,6 +131,7 @@ var WikiRevFinder = function(url) {
 					}
 					if (this.revIDList.length > 0 && alreadyInList == false){
 						// rev id of 0 TODO ******************************************
+						console.log("this revision DID affect the string");
 						affectedRevisionList.push([this.revIDList[0], this.revIDList[1]])
 					}
 					break;
@@ -89,7 +145,6 @@ var WikiRevFinder = function(url) {
 				// diffDictionary = this.WikEdDiff.diff(this.mostCurrentRevisionContent, midpointRevisionContent);
 				// console.log("ending calling diff Dictionary");
 
-				console.log("this revision DID affect the string");
 				// console.log("DIFF DICTIONARY FOR THIS ONE: "+diffDictionary['='].length);
 			}
 		}
@@ -103,7 +158,8 @@ var WikiRevFinder = function(url) {
 		// }
 
 		//sort the list of recent revisions, from earliest id to latest
-		var sortedList = affectedRevisionList.sort(function(rev1, rev2){return rev2[0]['revid']-rev1[0]['revid']});
+
+		var sortedList = affectedRevisionList.sort(function(rev1, rev2){return rev1[0]['revid']-rev2[0]['revid']});
 		console.log(this.getStringPriorToEdit(stringToCheck, sortedList[0]));
 		return sortedList.slice(0,10);
 		//return affectedRevisionList.slice(0,10).reverse();
@@ -130,11 +186,15 @@ var WikiRevFinder = function(url) {
 	this.findFirstRevisionLinearSearch = function(revIdList, stringToCheck) {
 		this.WikEdDiff = new WikEdDiff();
 		var secondItemContent = txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(revIdList[revIdList.length-1]['revid']));
-		secondItemContent = this.sanitizeInput(secondItemContent);
+		var sanitizedSecondItemContent = this.sanitizeInput(secondItemContent);
+		if(sanitizedSecondItemContent.length != 0 && secondItemContent != 0){
+			secondItemContent = sanitizedSecondItemContent;
+			// we DON'T want to do this if the sanitized input is empty, because this will result in the diff messing up and being disregarded (nothing in any of the diff dicts)
+		}
 		var secondItemDiffObject = this.WikEdDiff.diff(this.mostCurrentRevisionContent, secondItemContent);
 		var secondItemDiffDictionary = secondItemDiffObject[0];
 
-		if(secondItemDiffDictionary['='].indexOf(stringToCheck) == -1 && this.mostCurrentRevisionContent.indexOf(stringToCheck) > -1){
+		if(secondItemDiffDictionary['='].indexOf(stringToCheck) == -1 && this.mostCurrentRevisionContent.indexOf(stringToCheck) > -1 && (secondItemDiffDictionary['='].length != 0)){
 			this.revIDList = [];
 			this.revIDList[0] = revIdList[revIdList.length-1], secondItemDiffObject[1];
 			return;
@@ -142,16 +202,28 @@ var WikiRevFinder = function(url) {
 
 		this.WikEdDiff = new WikEdDiff();
 		var firstItemContent = txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(revIdList[0]['revid']));
+		var sanitizedFirstItemContent = this.sanitizeInput(firstItemContent);
+		if(sanitizedFirstItemContent.length != 0 && firstItemContent != 0){
+			firstItemContent = sanitizedFirstItemContent;
+			// we DON'T want to do this if the sanitized input is empty, because this will result in the diff messing up and being disregarded (nothing in any of the diff dicts)
+		}
+
+
 		var firstItemDiffObject = this.WikEdDiff.diff(this.mostCurrentRevisionContent, firstItemContent);
 		var firstItemDiffDictionary = secondItemDiffObject[0];
 
-		if(firstItemDiffDictionary['='].indexOf(stringToCheck) == -1 && this.mostCurrentRevisionContent.indexOf(stringToCheck) > -1){
+		if(firstItemDiffDictionary['='].indexOf(stringToCheck) == -1 && this.mostCurrentRevisionContent.indexOf(stringToCheck) > -1 && (firstItemDiffDictionary['='].length != 0)){
 			this.revIDList = [];
 			this.revIDList[0] = revIdList[0], firstItemDiffObject[1];
 			return;
 		}
+		else{
+			console.log("NO AFFECTING STRINGS FROM LINEAR SEARCH");
+			this.revIDList = [];
+			return;
+		}
 		// console.log('TO RETURN: '+toReturn);
-		return toReturn;
+		// return toReturn;
 	};
 
 	this.getMostRecentRevisionContent = function() {
@@ -162,8 +234,7 @@ var WikiRevFinder = function(url) {
 		return txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(this.oldestRevID));
 	};
 
-	this.checkOldestRevision = function(stringToCheck) {
-		//TODO: PUT THIS IN ITS OWN FUNCTUION
+	this.checkOldestRevision = function(stringToCheck, landmarkBefore, landmarkAfter) {
 		//before searching the entire revision history, we just check the oldest item
 		//if there's nothing affecting the string in that revision, then nothing will have affected it
 		//in any more recent revisions, so we can just move on to the next set of revisions.
@@ -173,15 +244,41 @@ var WikiRevFinder = function(url) {
 		this.oldestItemDiffObject = this.WikEdDiff.diff(this.mostCurrentRevisionContent, oldestRevisionContent);
 		var oldestItemDiffDictionary = this.oldestItemDiffObject[0];
 
-		// console.log("OLDEST ITEM DIFF DICT: "+oldestItemDiffDictionary['=']);
-		if(oldestItemDiffDictionary['='].indexOf(stringToCheck) > -1 || this.mostCurrentRevisionContent.indexOf(stringToCheck) == -1){
+
+	//only look at the text between landmarks
+		var lowerLandmarkIndex = oldestItemDiffDictionary['='].indexOf(landmarkBefore)
+		var upperLandmarkIndex = oldestItemDiffDictionary['='].indexOf(landmarkAfter)
+
+
+		if((lowerLandmarkIndex > -1) && (upperLandmarkIndex > -1)){
+			// console.log("BEFORE CHANGES: "+diffDictionary['=']);
+			oldestItemDiffDictionary['='] = oldestItemDiffDictionary['='].slice(lowerLandmarkIndex, upperLandmarkIndex + landmarkAfter.length);
+			// console.log("AFTER CHANGES: "+diffDictionary['=']);
+		}
+
+		//we also need to deal with the case where lower landmark isn't there
+		else if(lowerLandmarkIndex > -1){
+			oldestItemDiffDictionary['='] = oldestItemDiffDictionary['='].slice(lowerLandmarkIndex, oldestItemDiffDictionary['='].length);
+		}
+
+		//or upper landmark isn't there.
+		else if(upperLandmarkIndex > -1){
+			oldestItemDiffDictionary['='] = oldestItemDiffDictionary['='].slice(0, upperLandmarkIndex + landmarkAfter.length);
+		}
+
+		// console.log("OLDEST ITEM DIFF DICT: "+this.mostCurrentRevisionContent.indexOf(stringToCheck));
+		if((oldestItemDiffDictionary['='].indexOf(stringToCheck) > -1 || this.mostCurrentRevisionContent.indexOf(stringToCheck) == -1 || (oldestItemDiffDictionary['='].length == 0 && oldestItemDiffDictionary['-'].length == 0 && oldestItemDiffDictionary['+'].length == 0))){
 			console.log("oldest revision does not affect string.");
+			// console.log("oldest diff: "+oldestItemDiffDictionary['=']);
 			if(this.revIDList.length == 1){
 				return;
 			}
 
 			//go farther back in revision history
 			this.getWikiRevsInfo(stringToCheck, this.oldestRevID);
+		}
+		else{
+			console.log("oldest revision DOES affect string: "+this.oldestRevID);
 		}
 	};
 
@@ -196,12 +293,15 @@ var WikiRevFinder = function(url) {
 		return stringToCheck;
 	};
 
-	this.getWikiRevsInfo = function(stringToCheck, revisionOffset) {
+	this.getWikiRevsInfo = function(stringToCheck, landmarkBefore, landmarkAfter, revisionOffset) {
 		
         this.WikEdDiff = new WikEdDiff();
-        
+        console.log("BEFORE THING: "+landmarkBefore);
+        console.log("AFTER THING: "+landmarkAfter);
 		//sanitize string input
 		stringToCheck = this.sanitizeInput(stringToCheck);
+		landmarkBefore = this.sanitizeInput(landmarkBefore);
+		landmarkAfter = this.sanitizeInput(landmarkAfter);
 
 		//make this an optional parameter, set to 0 if not passed in
 		revisionOffset = revisionOffset || 0;
@@ -218,13 +318,18 @@ var WikiRevFinder = function(url) {
 		}
 
 		this.revIDList = revIDList;
-		console.log("first item" + this.revIDList[0])
+		console.log("first item" + this.revIDList[0]);
 		this.mostCurrentRevisionContent = this.getMostRecentRevisionContent();
-		this.mostCurrentRevisionContent = this.sanitizeInput(this.mostCurrentRevisionContent);
+		var sanitizedMostCurrentRevisionContent = this.sanitizeInput(this.mostCurrentRevisionContent);
+		if(sanitizedMostCurrentRevisionContent.length != 0 && this.mostCurrentRevisionContent != 0){
+			this.mostCurrentRevisionContent = sanitizedMostCurrentRevisionContent;
+			// we DON'T want to do this if the sanitized input is empty, because this will result in the diff messing up and being disregarded (nothing in any of the diff dicts)
+		}
+
 
 		//first, check that the oldest revision in this block of 500 affects the string.
 		//If not, we can immediately move on to the next block of 500 revisions.
-		this.checkOldestRevision(stringToCheck);
+		this.checkOldestRevision(stringToCheck, landmarkBefore, landmarkAfter);
 
 		//if we've gone through the entire history, return oldest item
 		if (this.revIDList.length == 1){
@@ -233,7 +338,7 @@ var WikiRevFinder = function(url) {
 				return toReturn;
 			}
 
-		return this.iterativeBinarySearch(stringToCheck);
+		return this.iterativeBinarySearch(stringToCheck, landmarkBefore, landmarkAfter);
 	};
 
 	this.getStringPriorToEdit = function(stringToCheck, affectedRevision) {
