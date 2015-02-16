@@ -3,15 +3,34 @@ var WikiAPI = null;
 var isPaneDisplayed = false;
 var heatMapObject = null;
 var text_date_list = [];
+var isOnWiki = true;
+
 
 // Query chrome to get an array of all tabs in current window that are focused and active
 function queryForData() {
-  if (isOnWiki) {
+  if (this.isOnWiki) {
     chrome.tabs.query({active: true, currentWindow: true}, getHighlightedText);
   }	
 }
 
 // ****************** start heatmap stuff
+
+/*chrome.webNavigation.onCompleted.addListener(function(details){
+    var heatmap_worker = new Worker("heatMapWorker.js");
+    heatmap_worker.onmessage = function (event) {
+     code: alert("Got message from worker");
+   };
+});*/
+
+chrome.webNavigation.onCompleted.addListener(function(details){
+    console.log("******", this.isOnWiki);
+    if(this.isOnWiki){
+            chrome.tabs.executeScript(details.tabId, {
+            code: initHeatmap()
+        });  
+    }
+});
+
 function initHeatmap(){
     if (isOnWiki){
         console.log("Initializing heatmap");
@@ -24,9 +43,15 @@ function startTheHeatMap(tabs){
 }
 
 function sendPageToModel(response) {
-    heatMapObject = new heatTest(response[0][1]);
-    text_date_list = heatMapObject.makeTextDateList(response[0][0]);  
-    document.dispatchEvent(evt2);     
+    var heatmap_worker = new Worker("heatMapWorker.js");
+    new_message = [];
+    new_message.push(response[0][0]);
+    new_message.push(response[0][1]);
+    heatmap_worker.postMessage(new_message);
+    heatmap_worker.onmessage = function (event) {
+        text_date_list = event.data;
+   };
+    //document.dispatchEvent(evt2);     
 }
 
 function callTheColor(){
@@ -58,6 +83,7 @@ function getHighlightedText(tabs) {
 function sendTextToModel(response) {
   WikiAPI = new WikiRevFinder(response[0][1]);
   data = getAffectedRevisions(response[0][0]);
+   // console.log("&&&&&&&&&&&&&&&&&", data);
   document.dispatchEvent(evt);
 }
 
@@ -107,6 +133,6 @@ function handleCommand(command) {
 
 var evt = new CustomEvent("getInformation");
 document.addEventListener("getInformation", getPageWindow);
-var evt2 = new CustomEvent("coloring");
-document.addEventListener("coloring", callTheColor);
+//var evt2 = new CustomEvent("coloring");
+//document.addEventListener("coloring", callTheColor);
 chrome.commands.onCommand.addListener(handleCommand);

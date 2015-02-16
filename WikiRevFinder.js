@@ -47,7 +47,7 @@ var WikiRevFinder = function(url) {
 				// diffDictionary = this.WikEdDiff.diff(this.mostCurrentRevisionContent, midpointRevisionContent);
 				// console.log("ending calling diff Dictionary");
 
-				console.log('this revision did not affect the string');
+				//console.log('this revision did not affect the string');
 			}
 
 			else{
@@ -88,7 +88,7 @@ var WikiRevFinder = function(url) {
 				// diffDictionary = this.WikEdDiff.diff(this.mostCurrentRevisionContent, midpointRevisionContent);
 				// console.log("ending calling diff Dictionary");
 
-				console.log("this revision DID affect the string");
+				//console.log("this revision DID affect the string");
 				// console.log("DIFF DICTIONARY FOR THIS ONE: "+diffDictionary['='].length);
 			}
 		}
@@ -109,12 +109,13 @@ var WikiRevFinder = function(url) {
 	};
 
 	this.getMidpointRevisionContent = function() {
-		console.log("length:" + this.revIDList.length)
-		console.log("half length:" + this.revIDList.length/2)
+		//console.log("length:" + this.revIDList.length)
+		//console.log("half length:" + this.revIDList.length/2)
 		this.halfpoint = Math.floor(this.revIDList.length/2);
 	
-		console.log("halfpoint number we think: " + this.revIDList[this.halfpoint]['revid']);
-		//console.log("text: " + txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(this.revIDList[halfpoint]['revid'])))
+		//console.log("halfpoint number we think: " + this.revIDList[this.halfpoint]['revid']);
+		//console.log("text: " + txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(this.revIDList[halfpoint]['revid'])));
+        //console.log("############", this.WikiAPI.getRevisionContent(this.revIDList[this.halfpoint]['revid']));
 		return txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(this.revIDList[this.halfpoint]['revid']));
 		
 	};
@@ -167,7 +168,7 @@ var WikiRevFinder = function(url) {
 
 		// console.log("OLDEST ITEM DIFF DICT: "+oldestItemDiffDictionary['=']);
 		if(oldestItemDiffDictionary['='].indexOf(stringToCheck) > -1 || this.mostCurrentRevisionContent.indexOf(stringToCheck) == -1){
-			console.log("oldest revision does not affect string.");
+			//console.log("oldest revision does not affect string.");
 			if(this.revIDList.length == 1){
 				return;
 			}
@@ -210,7 +211,7 @@ var WikiRevFinder = function(url) {
 		}
 
 		this.revIDList = revIDList;
-		console.log("first item" + this.revIDList[0])
+		//console.log("first item" + this.revIDList[0])
 		this.mostCurrentRevisionContent = this.getMostRecentRevisionContent();
 		this.mostCurrentRevisionContent = this.sanitizeInput(this.mostCurrentRevisionContent);
 
@@ -224,7 +225,6 @@ var WikiRevFinder = function(url) {
 				toReturn[0] = [this.revIDList[0], this.oldestItemDiffObject[1]];
 				return toReturn;
 			}
-
 		return this.iterativeBinarySearch(stringToCheck);
 	};
 

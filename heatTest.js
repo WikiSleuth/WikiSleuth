@@ -1,6 +1,5 @@
 var heatTest = function(url) {
 
-	this.WikEdDiff = null;
 	this.WikiAPI = null;
     this.WikiRevFinder = null;
     this.date = null;
@@ -8,7 +7,6 @@ var heatTest = function(url) {
 
 	this.init = function() {
 		this.WikiAPI = new APICaller(url);
-		this.WikEdDiff = new WikEdDiff();
         this.WikiRevFinder = new WikiRevFinder(url);
         this.date = new Date();
         this.text_date_list = [];
