@@ -160,7 +160,7 @@ var WikiRevFinder = function(url) {
 		//sort the list of recent revisions, from earliest id to latest
 
 		var sortedList = affectedRevisionList.sort(function(rev1, rev2){return rev1[0]['revid']-rev2[0]['revid']});
-		console.log(this.getStringPriorToEdit(stringToCheck, sortedList[0]));
+		// console.log(this.getStringPriorToEdit(stringToCheck, sortedList[0]));
 		return sortedList.slice(0,10);
 		//return affectedRevisionList.slice(0,10).reverse();
 	};
@@ -250,7 +250,7 @@ var WikiRevFinder = function(url) {
 		var upperLandmarkIndex = oldestItemDiffDictionary['='].indexOf(landmarkAfter)
 
 
-		if((lowerLandmarkIndex > -1) && (upperLandmarkIndex > -1)){
+		if((lowerLandmarkIndex > -1) && (upperLandmarkIndex > -1) && (landmarkBefore.indexOf(stringToCheck) == -1)){
 			// console.log("BEFORE CHANGES: "+diffDictionary['=']);
 			oldestItemDiffDictionary['='] = oldestItemDiffDictionary['='].slice(lowerLandmarkIndex, upperLandmarkIndex + landmarkAfter.length);
 			// console.log("AFTER CHANGES: "+diffDictionary['=']);
@@ -275,7 +275,7 @@ var WikiRevFinder = function(url) {
 			}
 
 			//go farther back in revision history
-			this.getWikiRevsInfo(stringToCheck, this.oldestRevID);
+			this.getWikiRevsInfo(stringToCheck, landmarkBefore, landmarkAfter, this.oldestRevID);
 		}
 		else{
 			console.log("oldest revision DOES affect string: "+this.oldestRevID);
@@ -283,6 +283,7 @@ var WikiRevFinder = function(url) {
 	};
 
 	this.sanitizeInput = function(stringToCheck) {
+		// console.log("STRING: "+stringToCheck);
 		//take out links in stringToCheck, so we just have the string itself
 		//also newlines
 		// console.log("OLD STRING TO CHECK: "+stringToCheck);
@@ -296,12 +297,14 @@ var WikiRevFinder = function(url) {
 	this.getWikiRevsInfo = function(stringToCheck, landmarkBefore, landmarkAfter, revisionOffset) {
 		
         this.WikEdDiff = new WikEdDiff();
-        console.log("BEFORE THING: "+landmarkBefore);
-        console.log("AFTER THING: "+landmarkAfter);
 		//sanitize string input
+		console.log("before stringToCheck");
 		stringToCheck = this.sanitizeInput(stringToCheck);
+		console.log("before lower checkpoint: "+landmarkBefore);
 		landmarkBefore = this.sanitizeInput(landmarkBefore);
+		console.log("before higher checkpoint");
 		landmarkAfter = this.sanitizeInput(landmarkAfter);
+		console.log("after checkpoints");
 
 		//make this an optional parameter, set to 0 if not passed in
 		revisionOffset = revisionOffset || 0;
@@ -366,7 +369,7 @@ var WikiRevFinder = function(url) {
 								stringPriorToEdit += " ";
 							}
 						} else if (indexOfFragMatch > 0) {
-							console.log(stringPriorToEdit);
+							// console.log(stringPriorToEdit);
 							tempHighlightedString = stringToCheck;
 							hasBegun = false;
 							stringPriorToEdit = '';
@@ -393,7 +396,7 @@ var WikiRevFinder = function(url) {
 								hasBegun = true;
 								tempHighlightedString = tempHighlightedString.replace(fragments[i]['text'], "");
 							} else if (indexOfFragMatch > 0) {
-								console.log(stringPriorToEdit);
+								// console.log(stringPriorToEdit);
 								tempHighlightedString = stringToCheck;
 								hasBegun = false;
 								stringPriorToEdit = '';
