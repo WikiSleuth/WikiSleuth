@@ -15,6 +15,7 @@ var WikiRevFinder = function(url) {
 		return;
 	};
 
+
 	this.iterativeBinarySearch = function(stringToCheck, landmarkBefore, landmarkAfter) {
 
 		var affectedRevisionList = [];
@@ -161,9 +162,39 @@ var WikiRevFinder = function(url) {
 
 		var sortedList = affectedRevisionList.sort(function(rev1, rev2){return rev1[0]['revid']-rev2[0]['revid']});
 		// console.log(this.getStringPriorToEdit(stringToCheck, sortedList[0]));
-		return sortedList.slice(0,10);
+		//return sortedList.slice(0,10);
+		console.log("hey we're here")
+		console.log(sortedList.length)
+		return sortedList[sortedList.length-1]
 		//return affectedRevisionList.slice(0,10).reverse();
 	};
+
+
+
+	this.lastNrevisions = function(stringToCheck, landmarkBefore, landmarkAfter, n) {
+		var affectingRevs = [];
+		var currentString = stringToCheck;
+		var currLandmarkBefore = landmarkBefore;
+		var currLandmarkAfter = landmarkAfter;
+		var tempIDList = this.revIDList
+		for(var i = 0; i < n; i++){
+			this.revIDList = tempIDList
+			console.log("about to iterate");
+			var nextRev = this.iterativeBinarySearch(currentString, currLandmarkBefore, currLandmarkAfter)
+			console.log("about to push: ")
+			console.log(nextRev)
+			affectingRevs.push(nextRev);
+			console.log("appended")
+		
+
+			//currentString = getStringPriorToEdit(currentString, )//second param is "affectedRevision"
+
+		}
+		console.log("AT THE END OF lastNrevisions!!!");
+		return affectingRevs;
+
+	}
+
 
 	this.getMidpointRevisionContent = function() {
 		console.log("length:" + this.revIDList.length)
@@ -341,7 +372,7 @@ var WikiRevFinder = function(url) {
 				return toReturn;
 			}
 
-		return this.iterativeBinarySearch(stringToCheck, landmarkBefore, landmarkAfter);
+		return this.lastNrevisions(stringToCheck, landmarkBefore, landmarkAfter, 3);
 	};
 
 	this.getStringPriorToEdit = function(stringToCheck, affectedRevision) {
