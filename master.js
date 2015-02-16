@@ -51,7 +51,7 @@ function getHighlightedText(tabs) {
     isPaneDisplayed = false;
   } else {
     chrome.tabs.executeScript(tabs[0].id, {file: 'getTextAndURL.js'}, sendTextToModel); // ***** URL ALREADY GOTTEN? ******
-    console.log("done  calling SendTextToModel")
+    console.log("done  calling SendTextToModel");
   }
 }
 
@@ -59,8 +59,10 @@ function getHighlightedText(tabs) {
 function sendTextToModel(response) {
   WikiAPI = new WikiRevFinder(response[0][1]);
   data = getAffectedRevisions(response[0][0], response[0][2], response[0][3]);
-  console.log("done calling getAffectedRevisions");
+  console.log("data looks like: ");
+  console.log(data);
   document.dispatchEvent(evt);
+  console.log("event has been dispatched");
 }
 
 // Collects data recieved by the model ****** Should be moved somewhere that makes more sense ******
