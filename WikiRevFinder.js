@@ -75,6 +75,7 @@ var WikiRevFinder = function(url) {
 						}
 					}
 					if (this.revIDList.length > 0 && alreadyInList == false){
+						// rev id of 0 TODO ******************************************
 						affectedRevisionList.push([this.revIDList[0], this.revIDList[1]])
 					}
 					break;
@@ -256,10 +257,11 @@ var WikiRevFinder = function(url) {
 							stringPriorToEdit += fragmentTextArray[j];
 
 							if(tempHighlightedString[0] == " "){
-									tempHighlightedString = tempHighlightedString.replace(/\s+/, "");
-									stringPriorToEdit += " ";
+								tempHighlightedString = tempHighlightedString.replace(/\s+/, "");
+								stringPriorToEdit += " ";
 							}
 						} else if (indexOfFragMatch > 0) {
+							console.log(stringPriorToEdit);
 							tempHighlightedString = stringToCheck;
 							hasBegun = false;
 							stringPriorToEdit = '';
@@ -269,12 +271,31 @@ var WikiRevFinder = function(url) {
 				case '+':
 					if(hasBegun){
 						stringPriorToEdit += fragments[i]['text'];
+						if(tempHighlightedString[0] == " "){
+							tempHighlightedString = tempHighlightedString.replace(/\s+/, "");
+							stringPriorToEdit += " ";
+						}
 					}
 					break;
 				case '-':
 					if(hasBegun){
 						tempHighlightedString = tempHighlightedString.replace(fragments[i]['text'], "");
-					}
+					} else {
+						fragmentTextArray = fragments[i]['text'].replace(/\n+/g, " ").split(" ");
+						for(var j=0; j<fragmentTextArray.length; j++){
+							indexOfFragMatch = tempHighlightedString.indexOf(fragmentTextArray[j]);
+							if(indexOfFragMatch == 0 & fragmentTextArray[j] != ""){
+								hasBegun = true;
+								tempHighlightedString = tempHighlightedString.replace(fragments[i]['text'], "");
+							} else if (indexOfFragMatch > 0) {
+								console.log(stringPriorToEdit);
+								tempHighlightedString = stringToCheck;
+								hasBegun = false;
+								stringPriorToEdit = '';
+							}
+
+						}
+					} 
 					break;
 			}
 			i += 1;
