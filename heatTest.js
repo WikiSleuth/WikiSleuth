@@ -1,6 +1,5 @@
 var heatTest = function(url) {
 
-	this.WikEdDiff = null;
 	this.WikiAPI = null;
     this.WikiRevFinder = null;
     this.date = null;
@@ -8,7 +7,6 @@ var heatTest = function(url) {
 
 	this.init = function() {
 		this.WikiAPI = new APICaller(url);
-		this.WikEdDiff = new WikEdDiff();
         this.WikiRevFinder = new WikiRevFinder(url);
         this.date = new Date();
         this.text_date_list = [];
@@ -19,7 +17,7 @@ var heatTest = function(url) {
         console.log("Sentence that we're calling the algorithm on: ", text_to_color);
         var affectedRevs = [];
         var date_and_numRevs = [];
-        affectedRevs = this.WikiRevFinder.getWikiRevsInfo(text_to_color);
+        affectedRevs = this.WikiRevFinder.getWikiRevsInfo(text_to_color,'','','');
         var revisionDetails = null;
         var revisionDate = null;
         console.log(text_to_color);

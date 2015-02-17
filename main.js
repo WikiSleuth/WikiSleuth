@@ -3,7 +3,7 @@
 
 function callHeatMap(){
     //chrome.tabs.executeScript(null,{file: "heatMapScripts/heattest.js"});
-    bgPage.initHeatmap();
+    bgPage.callTheColor();
 }
 
 function callHeatMap2(){
@@ -29,3 +29,4 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('reset').addEventListener('click', callResetColors);
     document.getElementById('art').addEventListener('click', callBackgroundColor);
 });
+
