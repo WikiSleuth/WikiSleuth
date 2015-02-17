@@ -1,6 +1,10 @@
 var text = window.getSelection().toString();
 
-var textTagContent = window.getSelection().anchorNode.parentNode.textContent;
+var curNode = window.getSelection().anchorNode;
+while(curNode.parentNode.nodeName != "P"){
+	curNode = curNode.parentNode;
+}
+var textTagContent = curNode.parentNode.textContent;
 //insert '|' by any ending punctuation marks, credit to http://stackoverflow.com/questions/18914629/split-string-into-sentences-in-javascript
 textTagContent = textTagContent.replace(/\.(?!\d)|([^\d])\.(?=\d)/g,'$1.|');
 //create an array of sentences
