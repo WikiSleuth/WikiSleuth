@@ -165,6 +165,8 @@ var WikiRevFinder = function(url) {
 		//return sortedList.slice(0,10);
 		console.log("hey we're here")
 		console.log(sortedList.length)
+		console.log("In iterative binary search, object looks like: ")
+		console.log(sortedList[sortedList.length-1])
 		return sortedList[sortedList.length-1]
 		//return affectedRevisionList.slice(0,10).reverse();
 	};
@@ -178,19 +180,25 @@ var WikiRevFinder = function(url) {
 		var currLandmarkAfter = landmarkAfter;
 		var tempIDList = this.revIDList
 		for(var i = 0; i < n; i++){
+			//revIDList = this.WikiAPI.findFirst500RevisionIDList();
 			this.revIDList = tempIDList
-			console.log("about to iterate");
 			var nextRev = this.iterativeBinarySearch(currentString, currLandmarkBefore, currLandmarkAfter)
-			console.log("about to push: ")
+			nextRevid = nextRev[0]["revid"]
+			console.log("affecting rev:")
 			console.log(nextRev)
+			console.log("the id is:")
+			console.log(nextRev[0]["revid"]);
 			affectingRevs.push(nextRev);
-			console.log("appended")
-		
+
+			//revid is nextRev[0][5] i think
+
+			
 
 			//currentString = getStringPriorToEdit(currentString, )//second param is "affectedRevision"
 
 		}
-		console.log("AT THE END OF lastNrevisions!!!");
+		console.log("AT THE END OF lastNrevisions!!! affectingRevs looks like: ");
+		console.log(affectingRevs);
 		return affectingRevs;
 
 	}
@@ -325,6 +333,8 @@ var WikiRevFinder = function(url) {
 		return stringToCheck;
 	};
 
+
+	//This is the function that gets called by master, sends back all the revisions to be displayed
 	this.getWikiRevsInfo = function(stringToCheck, landmarkBefore, landmarkAfter, revisionOffset) {
 		
         this.WikEdDiff = new WikEdDiff();
