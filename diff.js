@@ -1625,7 +1625,7 @@ var WikEdDiff = function () {
 		var bordersUp;
 		if ( recursionLevel === 0 && repeating === false ) {
 			symbols = this.symbols;
-            console.log("GOT INTO FIRST if clause: ", this.symbols);
+            // console.log("GOT INTO FIRST if clause: ", this.symbols);
 			bordersDown = this.bordersDown;
 			bordersUp = this.bordersUp;
 		}

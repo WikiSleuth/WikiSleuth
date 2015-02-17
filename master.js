@@ -57,13 +57,13 @@ function getHighlightedText(tabs) {
 // Response of our executed script will have the highlighted text. Set our text var to equal that string and then trigger the next event
 function sendTextToModel(response) {
   WikiAPI = new WikiRevFinder(response[0][1]);
-  data = getAffectedRevisions(response[0][0]);
+  data = getAffectedRevisions(response[0][0], response[0][2], response[0][3]);
   document.dispatchEvent(evt);
 }
 
 // Collects data recieved by the model ****** Should be moved somewhere that makes more sense ******
-function getAffectedRevisions(highlightedText){
-  var affectedRevs = WikiAPI.getWikiRevsInfo(highlightedText);
+function getAffectedRevisions(highlightedText, landmarkBefore, landmarkAfter){
+  var affectedRevs = WikiAPI.getWikiRevsInfo(highlightedText, landmarkBefore, landmarkAfter);
   var revisionDetails = null;
 
   for (i = 0; i < affectedRevs.length; i++) {
