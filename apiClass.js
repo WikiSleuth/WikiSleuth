@@ -26,6 +26,59 @@ var APICaller = function(url){
 
 	};
 
+/*
+This is where Thor started his changes to the api class to incorporate user statistics
+*/
+
+	this.getAuthorDailyEdits = function(authorName){
+		var action = 'action=userdailycontribs&format=json&user=' + authorName + '&continue=';
+		var apiRequestURL = this.endpoint + action;
+		var jsonObject = this.makeRequest(apiRequest.URL);
+		return jsonObject['userdailycontribs']['totalEdits'];
+
+	};
+
+	this.getTotalNumAuthorEdits = function(authorName){
+		var action = 'action=userdailycontribs&format=json&user=' + authorName + '&basetimestamp=2001-01-15T00%3A00%3A00Z&continue=';
+		var apiRequestURL = this.endpoint + action;
+		var jsonObject = this.makeRequest(apiRequest.URL);
+		return jsonObject['userdailycontribs']['totalEdits'];
+
+	};
+
+	this.getNumEditsSinceDate = function(authorName, isoDate){
+		date = isoDate.replace(/:/g, '%3A');
+		var action = 'action=userdailycontribs&format=json&user=' + authorName + '&basetimestamp=' + date + '&continue=';
+		var apiRequestURL = this.endpoint + action;
+		var jsonObject = this.makeRequest(apiRequest.URL);
+		return jsonObject['userdailycontribs']['totalEdits'];
+
+	};
+
+	this.getNumEditsNumDaysAgo = function(authorName, numDays){
+		var action = 'action=userdailycontribs&format=json&user=' + authorName + 'daysago=' + numDays + '&continue=';
+		var apiRequestURL = this.endpoint + action;
+		var jsonObject = this.makeRequest(apiRequest.URL);
+		return jsonObject['userdailycontribs']['totalEdits'];
+
+
+	};
+
+	this.getRecentRevisionsByAuthor = function(authorName){
+		//real query is action=query&list=usercontribs&format=json&uclimit=10&ucuser=BabbaQ&ucprop=ids%7Ctitle%7Cparsedcomment&continue=
+		var action = 'action=query&prop=revisions&format=json&rvprop=ids&rvlimit=10&rvuser=' + authorName + '&continue=';
+		var apiRequestURL = this.endpoint + action;
+		var jsonObject = this.makeRequest(apiRequest.URL);
+		//gives an array of dictionaries that have data that we need, keys are: userid, user, pageid, revid, parentid, ns, title
+		return jsonObject['query']['usercontribs']
+
+	}
+
+/*
+this is where Thor's work stops
+*/
+
+
 	this.getRevisionStatistics = function(revID){
 		var action = 'format=json&action=query&prop=revisions&revids=' + revID + '&rvprop=user|timestamp|parsedcomment&continue=';
 		var apiRequestURL = this.endpoint + action;
