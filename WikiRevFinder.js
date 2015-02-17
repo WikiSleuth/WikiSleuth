@@ -15,6 +15,7 @@ var WikiRevFinder = function(url) {
 		return;
 	};
 
+
 	this.iterativeBinarySearch = function(stringToCheck, landmarkBefore, landmarkAfter) {
 
 		var affectedRevisionList = [];
@@ -163,10 +164,65 @@ var WikiRevFinder = function(url) {
 		//sort the list of recent revisions, from earliest id to latest
 
 		var sortedList = affectedRevisionList.sort(function(rev1, rev2){return rev1[0]['revid']-rev2[0]['revid']});
-		console.log(this.getStringPriorToEdit(stringToCheck, sortedList[0]));
-		return sortedList.slice(0,10);
+
+		// console.log(this.getStringPriorToEdit(stringToCheck, sortedList[0]));
+		//return sortedList.slice(0,10);
+		console.log("hey we're here")
+		console.log(sortedList.length)
+		console.log("In iterative binary search, object looks like: ")
+		console.log(sortedList[sortedList.length-1])
+		return sortedList[sortedList.length-1]
+
 		//return affectedRevisionList.slice(0,10).reverse();
 	};
+
+
+
+	this.lastNrevisions = function(stringToCheck, landmarkBefore, landmarkAfter, n) {
+		var affectingRevs = [];
+		var currentString = stringToCheck;
+		var currLandmarkBefore = landmarkBefore;
+		var currLandmarkAfter = landmarkAfter;
+		var tempIDList = this.revIDList
+		for(var i = 0; i < n; i++){
+			//revIDList = this.WikiAPI.findFirst500RevisionIDList();
+			//this.revIDList = tempIDList
+			var nextRev = this.iterativeBinarySearch(currentString, currLandmarkBefore, currLandmarkAfter)
+			nextRevid = nextRev[0]["revid"]
+			console.log("affecting rev:")
+			console.log(nextRev)
+			console.log("the id is:")
+			console.log(nextRev[0]["revid"]);
+			//affectingRevs.push(nextRev);
+			currentString = this.getStringPriorToEdit(stringToCheck, nextRev);
+			//alter nextRev so that it contains currentString after getting rebuilt
+			affectingRevs.push(nextRev);
+			currLandmarkBefore = this.getStringPriorToEdit(currLandmarkBefore, nextRev);
+			currLandmarkAfter = this.getStringPriorToEdit(currLandmarkAfter, nextRev);
+			console.log("bult up string: ")
+			console.log(currentString)
+
+			if (currentString == ""){
+				break;
+			}
+
+			this.revIDList = this.WikiAPI.findFirst500RevisionIDList(nextRevid);
+			this.checkOldestRevision(currentString, landmarkBefore, landmarkAfter);
+
+
+			//revid is nextRev[0][5] i think
+
+			
+
+			//currentString = getStringPriorToEdit(currentString, )//second param is "affectedRevision"
+
+		}
+		console.log("AT THE END OF lastNrevisions!!! affectingRevs looks like: ");
+		console.log(affectingRevs);
+		return affectingRevs;
+
+	}
+
 
 	this.getMidpointRevisionContent = function() {
 		//console.log("length:" + this.revIDList.length)
@@ -299,6 +355,8 @@ var WikiRevFinder = function(url) {
 		return stringToCheck;
 	};
 
+
+	//This is the function that gets called by master, sends back all the revisions to be displayed
 	this.getWikiRevsInfo = function(stringToCheck, landmarkBefore, landmarkAfter, revisionOffset) {
 		
         this.WikEdDiff = new WikEdDiff();
@@ -348,7 +406,7 @@ var WikiRevFinder = function(url) {
 				return toReturn;
 			}
 
-		return this.iterativeBinarySearch(stringToCheck, landmarkBefore, landmarkAfter);
+		return this.lastNrevisions(stringToCheck, landmarkBefore, landmarkAfter, 3);
 	};
 
 	this.getStringPriorToEdit = function(stringToCheck, affectedRevision) {

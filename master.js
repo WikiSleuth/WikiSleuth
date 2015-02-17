@@ -65,6 +65,7 @@ function getHighlightedText(tabs) {
     isPaneDisplayed = false;
   } else {
     chrome.tabs.executeScript(tabs[0].id, {file: 'getTextAndURL.js'}, sendTextToModel); // ***** URL ALREADY GOTTEN? ******
+    console.log("done  calling SendTextToModel");
   }
 }
 
@@ -73,12 +74,17 @@ function sendTextToModel(response) {
   WikiAPI = new WikiRevFinder(response[0][1]);
     console.log("&&&&&&&&&&&&&", response[0][0], response[0][2], response[0][3]);
   data = getAffectedRevisions(response[0][0], response[0][2], response[0][3]);
+  console.log("data looks like: ");
+  console.log(data);
   document.dispatchEvent(evt);
+  console.log("event has been dispatched");
 }
 
 // Collects data recieved by the model ****** Should be moved somewhere that makes more sense ******
 function getAffectedRevisions(highlightedText, landmarkBefore, landmarkAfter){
+  //console.log("about to call getWikiRevsInfo");
   var affectedRevs = WikiAPI.getWikiRevsInfo(highlightedText, landmarkBefore, landmarkAfter);
+  console.log("done calling getWikiRevsInfo");
   var revisionDetails = null;
 
   for (i = 0; i < affectedRevs.length; i++) {
