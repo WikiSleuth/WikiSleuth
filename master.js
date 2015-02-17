@@ -7,7 +7,8 @@ var text_date_list = [];
 // ****************** start heatmap stuff
 
 chrome.webNavigation.onCompleted.addListener(function(details){
-    if(isOnWiki){
+    console.log("is it on wiki in master tho?", details.url);
+    if(details.url.indexOf('wikipedia.org')>-1){
             chrome.tabs.executeScript(details.tabId, {
             code: initHeatmap()
         });  
