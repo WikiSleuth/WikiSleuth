@@ -8,7 +8,8 @@
     "tabs",
     "notifications",
     "http://*/",
-    "https://*/"
+    "https://*/",
+    "webNavigation"
   ],
 
   "optional_permissions": [
