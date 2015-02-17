@@ -4,14 +4,16 @@ var isPaneDisplayed = false;
 var heatMapObject = null;
 var text_date_list = [];
 
-// Query chrome to get an array of all tabs in current window that are focused and active
-function queryForData() {
-  if (isOnWiki) {
-    chrome.tabs.query({active: true, currentWindow: true}, getHighlightedText);
-  }	
-}
-
 // ****************** start heatmap stuff
+
+chrome.webNavigation.onCompleted.addListener(function(details){
+    if(isOnWiki){
+            chrome.tabs.executeScript(details.tabId, {
+            code: initHeatmap()
+        });  
+    }
+});
+
 function initHeatmap(){
     if (isOnWiki){
         console.log("Initializing heatmap");
@@ -24,9 +26,14 @@ function startTheHeatMap(tabs){
 }
 
 function sendPageToModel(response) {
-    heatMapObject = new heatTest(response[0][1]);
-    text_date_list = heatMapObject.makeTextDateList(response[0][0]);  
-    document.dispatchEvent(evt2);     
+    var heatmap_worker = new Worker("heatMapWorker.js");
+    new_message = [];
+    new_message.push(response[0][0]);
+    new_message.push(response[0][1]);
+    heatmap_worker.postMessage(new_message);
+    heatmap_worker.onmessage = function (event) {
+        text_date_list = event.data;
+   };   
 }
 
 function callTheColor(){
@@ -44,6 +51,13 @@ function injectedColorScript(tabs){
 
 // ************************* end heatmap stuff
 
+// Query chrome to get an array of all tabs in current window that are focused and active
+function queryForData() {
+  if (isOnWiki) {
+    chrome.tabs.query({active: true, currentWindow: true}, getHighlightedText);
+  }	
+}
+
 // The first element of tabs will be the page the user is currently looking at. Execute code to get highlighted text.
 function getHighlightedText(tabs) {
   if (isPaneDisplayed) {
@@ -57,6 +71,7 @@ function getHighlightedText(tabs) {
 // Response of our executed script will have the highlighted text. Set our text var to equal that string and then trigger the next event
 function sendTextToModel(response) {
   WikiAPI = new WikiRevFinder(response[0][1]);
+    console.log("&&&&&&&&&&&&&", response[0][0], response[0][2], response[0][3]);
   data = getAffectedRevisions(response[0][0], response[0][2], response[0][3]);
   document.dispatchEvent(evt);
 }
@@ -107,6 +122,4 @@ function handleCommand(command) {
 
 var evt = new CustomEvent("getInformation");
 document.addEventListener("getInformation", getPageWindow);
-var evt2 = new CustomEvent("coloring");
-document.addEventListener("coloring", callTheColor);
 chrome.commands.onCommand.addListener(handleCommand);

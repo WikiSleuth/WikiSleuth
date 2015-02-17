@@ -899,7 +899,7 @@ var WikEdDiff = function () {
 		}
 
 		// Add CSS stylescheet
-		this.addStyleSheet( this.config.stylesheet );
+		//this.addStyleSheet( this.config.stylesheet );
 
 		// Load block handler script
 		if ( this.config.showBlockMoves === true ) {
@@ -910,7 +910,7 @@ var WikEdDiff = function () {
 				this.addScript( script );
 			}
 			else {
-				window.wikEdDiffBlockHandler = this.config.blockHandler;
+				//window.wikEdDiffBlockHandler = this.config.blockHandler;
 			}
 		}
 		return;
@@ -1626,6 +1626,7 @@ var WikEdDiff = function () {
 		if ( recursionLevel === 0 && repeating === false ) {
 			symbols = this.symbols;
             // console.log("GOT INTO FIRST if clause: ", this.symbols);
+
 			bordersDown = this.bordersDown;
 			bordersUp = this.bordersUp;
 		}
@@ -4262,6 +4263,7 @@ var WikEdDiff = function () {
  *
  * @param string code JavaScript code
  */
+/*
 	this.addScript = function ( code ) {
 
 		if ( document.getElementById( 'wikEdDiffBlockHandler' ) === null ) {
@@ -4277,13 +4279,14 @@ var WikEdDiff = function () {
 		}
 		return;
 	};
-
+*/
 
 /**
  * Add stylesheet to document head, cross-browser >= IE6.
  *
  * @param string css CSS code
  */
+/*
 	this.addStyleSheet = function ( css ) {
 
 		if ( document.getElementById( 'wikEdDiffStyles' ) === null ) {
@@ -4305,7 +4308,7 @@ var WikEdDiff = function () {
 		}
 		return;
 	};
-
+*/
 
 /**
  * Recursive deep copy from target over source for customization import.
