@@ -4,6 +4,9 @@ function buildHTMLToAdd(tabs, data, callback) {
 		html = "<div id='panel'> <h2>WikiSleuth</h2>" +
 				"<ul id='expanding_list'>";
 		for (i=0; i<data.length; i++) {
+			if (data[i][0][2] == "") {
+				data[i][0][2] = "No Comment.";
+			}
 			html += "<li>" +
 					    "<label class='selectable_item' for='item" + i + "'><span class='timestamp'>"+data[i][0][0]+"</span> <span class='editor'>"+data[i][0][1]+"</span> <span class='comment'>"+data[i][0][2]+"</span></label>" +
 					    "<input type='checkbox' id='item" + i + "' />" +

@@ -74,7 +74,8 @@ var WikiRevFinder = function(url) {
 					this.findFirstRevisionLinearSearch(this.revIDList, stringToCheck);
 					if (this.revIDList.length > 0 && alreadyInList == false){
 						console.log("this revision DID affect the string");
-						affectedRevisionList.push([this.revIDList[0], this.revIDList[1]])
+						//affectedRevisionList.push([this.revIDList[0], this.revIDList[1]])
+						affectedRevisionList.push([this.revIDList[this.halfpoint], diffObject[1], diffObject[2]]);
 					}
 					break;
 			}
@@ -119,6 +120,7 @@ var WikiRevFinder = function(url) {
 				}
 				//edge case: this has the potential to continue slicing infinitely, making a new list of the same size as before
 				//if list size is two, so we do this if list size is too
+				// maybe else if??
 				if(this.revIDList.length == 2){
 					//check later of two things in the list
 					this.findFirstRevisionLinearSearch(this.revIDList, stringToCheck);
@@ -130,9 +132,9 @@ var WikiRevFinder = function(url) {
 						}
 					}
 					if (this.revIDList.length > 0 && alreadyInList == false){
-						// rev id of 0 TODO ******************************************
 						console.log("this revision DID affect the string");
-						affectedRevisionList.push([this.revIDList[0], this.revIDList[1]])
+						//affectedRevisionList.push([this.revIDList[0], this.revIDList[1]])
+						affectedRevisionList.push([this.revIDList[this.halfpoint], diffObject[1], diffObject[2]]);
 					}
 					break;
 				}
