@@ -29,6 +29,7 @@ function startTheHeatMap(tabs){
 function sendPageToModel(response) {
     var heatmap_worker = new Worker("heatMapWorker.js");
     new_message = [];
+    console.log("&&&&&&&&&&", response);
     new_message.push(response[0][0]);
     new_message.push(response[0][1]);
     heatmap_worker.postMessage(new_message);
