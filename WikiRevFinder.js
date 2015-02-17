@@ -181,7 +181,7 @@ var WikiRevFinder = function(url) {
 		var tempIDList = this.revIDList
 		for(var i = 0; i < n; i++){
 			//revIDList = this.WikiAPI.findFirst500RevisionIDList();
-			this.revIDList = tempIDList
+			//this.revIDList = tempIDList
 			var nextRev = this.iterativeBinarySearch(currentString, currLandmarkBefore, currLandmarkAfter)
 			nextRevid = nextRev[0]["revid"]
 			console.log("affecting rev:")
@@ -189,6 +189,17 @@ var WikiRevFinder = function(url) {
 			console.log("the id is:")
 			console.log(nextRev[0]["revid"]);
 			affectingRevs.push(nextRev);
+			currentString = this.getStringPriorToEdit(stringToCheck, nextRev);
+			currLandmarkBefore = this.getStringPriorToEdit(currLandmarkBefore, nextRev);
+			currLandmarkAfter = this.getStringPriorToEdit(currLandmarkAfter, nextRev);
+			console.log("bult up string: ")
+			console.log(currentString)
+			if (currentString == ""){
+				break;
+			}
+			this.revIDList = this.WikiAPI.findFirst500RevisionIDList(nextRevid);
+			this.checkOldestRevision(currentString, landmarkBefore, landmarkAfter);
+
 
 			//revid is nextRev[0][5] i think
 
