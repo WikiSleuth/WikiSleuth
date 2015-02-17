@@ -19,7 +19,6 @@ var UnitTester = function() {
 
 
   this.runTest = function(highlightedText, expectedId, landmarkBefore, landmarkAfter){
-    console.log("BEFORE HERE????? "+landmarkBefore);
     var revThing = this.WikiRevFinder.getWikiRevsInfo(highlightedText, landmarkBefore, landmarkAfter);
     var revID = revThing[revThing.length-1][0]['revid'];
     if(revID == expectedId){
@@ -39,7 +38,8 @@ var UnitTester = function() {
 
 var tester = new UnitTester();
 // tester.init("https://en.wikipedia.org/wiki/Gods_of_Plastic");
-// tester.runTest(tester.cakeTestCases[3][0], tester.cakeTestCases[3][1], tester.cakeTestCases[3][2], tester.cakeTestCases[3][3]);
+// tester.runTest(tester.cakeTestCases[1][0], tester.cakeTestCases[1][1], tester.cakeTestCases[1][2], tester.cakeTestCases[1][3]);
+// tester.runTest(tester.cakeTestCases[2][0], tester.cakeTestCases[2][1], tester.cakeTestCases[2][2], tester.cakeTestCases[2][3]);
 for(var i = 0; i < tester.cakeTestCases.length; i++){
   tester.runTest(tester.cakeTestCases[i][0], tester.cakeTestCases[i][1], tester.cakeTestCases[i][2], tester.cakeTestCases[i][3]);
 }

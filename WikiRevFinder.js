@@ -7,6 +7,7 @@ var WikiRevFinder = function(url) {
 	this.oldestRevID = 0;
 	this.oldestItemDiffObject = null;
 	this.halfpoint = 0;
+	this.cachedContent = {};
 
 	this.init = function() {
 		this.WikiAPI = new APICaller(url);
@@ -16,13 +17,23 @@ var WikiRevFinder = function(url) {
 	};
 
 	this.iterativeBinarySearch = function(stringToCheck, landmarkBefore, landmarkAfter) {
-
 		var affectedRevisionList = [];
 		while(this.revIDList.length > 1){
 			//If we don't create a new WikEdDiff object everytime, diff.js will freak out
 			this.WikEdDiff = new WikEdDiff();
 
-			var midpointRevisionContent = this.getMidpointRevisionContent();
+			this.halfpoint = Math.floor(this.revIDList.length/2);
+			console.log("halfpoint number we think: " + this.revIDList[this.halfpoint]['revid']);
+
+			var midpointRevisionContent = "";
+			if(this.cachedContent[this.halfpoint] == undefined){
+				midpointRevisionContent = this.getMidpointRevisionContent();
+				this.cachedContent[this.halfpoint] = midpointRevisionContent;
+			}
+			else{
+				console.log("CONTENT IS CACHED");
+				midpointRevisionContent = this.cachedContent[this.halfpoint];
+			}
 			var sanitizedMidpointRevisionContent = this.sanitizeInput(midpointRevisionContent);
 			if(sanitizedMidpointRevisionContent.length != 0 && midpointRevisionContent != 0){
 				midpointRevisionContent = sanitizedMidpointRevisionContent
@@ -74,7 +85,7 @@ var WikiRevFinder = function(url) {
 					this.findFirstRevisionLinearSearch(this.revIDList, stringToCheck);
 					if (this.revIDList.length > 0 && alreadyInList == false){
 						console.log("this revision DID affect the string");
-						affectedRevisionList.push([this.revIDList[0], this.revIDList[1]])
+						affectedRevisionList.push([this.revIDList[0], diffObject[1], diffObject[2]])
 					}
 					break;
 			}
@@ -119,26 +130,26 @@ var WikiRevFinder = function(url) {
 				}
 				//edge case: this has the potential to continue slicing infinitely, making a new list of the same size as before
 				//if list size is two, so we do this if list size is too
-				if(this.revIDList.length == 2){
-					//check later of two things in the list
-					this.findFirstRevisionLinearSearch(this.revIDList, stringToCheck);
-					var alreadyInList = false
-					for(var i = 0; i < affectedRevisionList.length; i++){
-						if(affectedRevisionList[i][0]['revid'] == this.revIDList[0]['revid']){
-							alreadyInList = true;
-							break;
-						}
-					}
-					if (this.revIDList.length > 0 && alreadyInList == false){
-						// rev id of 0 TODO ******************************************
-						console.log("this revision DID affect the string");
-						affectedRevisionList.push([this.revIDList[0], this.revIDList[1]])
-					}
-					break;
-				}
-				else{
-					this.revIDList = this.revIDList.slice(0, (this.revIDList.length/2) + 1);
-				}
+				// if(this.revIDList.length == 2){
+				// 	//check later of two things in the list
+				// 	this.findFirstRevisionLinearSearch(this.revIDList, stringToCheck);
+				// 	var alreadyInList = false
+				// 	for(var i = 0; i < affectedRevisionList.length; i++){
+				// 		if(affectedRevisionList[i][0]['revid'] == this.revIDList[0]['revid']){
+				// 			alreadyInList = true;
+				// 			break;
+				// 		}
+				// 	}
+				// 	if (this.revIDList.length > 0 && alreadyInList == false){
+				// 		// rev id of 0 TODO ******************************************
+				// 		console.log("this revision DID affect the string");
+				// 		affectedRevisionList.push([this.revIDList[0], this.revIDList[1]])
+				// 	}
+				// 	break;
+				// }
+				// else{
+				this.revIDList = this.revIDList.slice(0, (this.revIDList.length/2) + 1);
+				// }
 				// console.log("after slice:" + this.revIDList)
 				// midpointRevisionContent = this.getMidpointRevisionContent();
 				// console.log("starting calling diff Dictionary");
@@ -169,10 +180,6 @@ var WikiRevFinder = function(url) {
 	this.getMidpointRevisionContent = function() {
 		//console.log("length:" + this.revIDList.length)
 		//console.log("half length:" + this.revIDList.length/2)
-		this.halfpoint = Math.floor(this.revIDList.length/2);
-	
-
-		console.log("halfpoint number we think: " + this.revIDList[this.halfpoint]['revid']);
 		//console.log("text: " + txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(this.revIDList[halfpoint]['revid'])))
 		//return txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(this.revIDList[this.halfpoint]['revid']));
 		var revContent = this.WikiAPI.getRevisionContent(this.revIDList[this.halfpoint]['revid']);
@@ -298,6 +305,8 @@ var WikiRevFinder = function(url) {
 	};
 
 	this.getWikiRevsInfo = function(stringToCheck, landmarkBefore, landmarkAfter, revisionOffset) {
+		//need to clear the cache each time for some reason????
+		this.cachedContent = []
 		
         this.WikEdDiff = new WikEdDiff();
 		//sanitize string input
@@ -338,18 +347,21 @@ var WikiRevFinder = function(url) {
 		//first, check that the oldest revision in this block of 500 affects the string.
 		//If not, we can immediately move on to the next block of 500 revisions.
 		this.checkOldestRevision(stringToCheck, landmarkBefore, landmarkAfter);
-
+		if(this.revIDList.length == 0){
+			this.revIDList = revIDList;
+		}
 		//if we've gone through the entire history, return oldest item
 		if (this.revIDList.length == 1){
 				var toReturn = [];
 				toReturn[0] = [this.revIDList[0], this.oldestItemDiffObject[1]];
 				return toReturn;
 			}
-
+		// console.log("going here again?? "+arguments.callee.caller.toString());
 		return this.iterativeBinarySearch(stringToCheck, landmarkBefore, landmarkAfter);
 	};
 
 	this.getStringPriorToEdit = function(stringToCheck, affectedRevision) {
+		// console.log("frags here??? "+affectedRevision);
 		var fragments = affectedRevision[2];
 		var stringPriorToEdit = '';
 		var tempHighlightedString = stringToCheck;
@@ -389,7 +401,7 @@ var WikiRevFinder = function(url) {
 							stringPriorToEdit += " " + fragmentTextArray[j];
 							tempHighlightedString = tempHighlightedString.replace(/\s+/, "");
 						} else if (fragmentTextArray[j] != ""){
-							console.log(stringPriorToEdit);
+							// console.log(stringPriorToEdit);
 							tempHighlightedString = stringToCheck;
 							hasBegun = false;
 							stringPriorToEdit = '';
