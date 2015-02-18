@@ -203,6 +203,17 @@ var WikiRevFinder = function(url) {
 			affectingRevs.push(nextRev);
 			currLandmarkBefore = this.getStringPriorToEdit(currLandmarkBefore, nextRev);
 			currLandmarkAfter = this.getStringPriorToEdit(currLandmarkAfter, nextRev);
+
+			//need to update current, rebuilt rev to be "most current" revision, so that other revisions are checked against this one
+			console.log("OLD content: "+this.mostCurrentRevisionContent);
+			this.mostCurrentRevisionContent = this.getMostRecentRevisionContent(nextRevid);
+			var sanitizedMostCurrentRevisionContent = this.sanitizeInput(this.mostCurrentRevisionContent);
+			if(sanitizedMostCurrentRevisionContent.length != 0 && this.mostCurrentRevisionContent != 0){
+				this.mostCurrentRevisionContent = sanitizedMostCurrentRevisionContent;
+				// we DON'T want to do this if the sanitized input is empty, because this will result in the diff messing up and being disregarded (nothing in any of the diff dicts)
+			}
+			console.log("\n\nNEW content: "+this.mostCurrentRevisionContent);
+
 			console.log("bult up string: ")
 			console.log(currentString)
 
@@ -285,8 +296,14 @@ var WikiRevFinder = function(url) {
 		// return toReturn;
 	};
 
-	this.getMostRecentRevisionContent = function() {
-		return txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(this.revIDList[0]['revid']));
+	this.getMostRecentRevisionContent = function(optionalRevId) {
+		optionalRevId = optionalRevId || 0
+		if(optionalRevId == 0){
+			return txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(this.revIDList[0]['revid']));
+		}
+		else{
+			return txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(optionalRevId));
+		}
 	};
 
 	this.getOldestRevisionContent = function() {
