@@ -7,7 +7,8 @@ var text_date_list = [];
 // ****************** start heatmap stuff
 
 chrome.webNavigation.onCompleted.addListener(function(details){
-    if(isOnWiki){
+    console.log("is it on wiki in master tho?", details.url);
+    if(details.url.indexOf('wikipedia.org')>-1){
             chrome.tabs.executeScript(details.tabId, {
             code: initHeatmap()
         });  
@@ -28,6 +29,7 @@ function startTheHeatMap(tabs){
 function sendPageToModel(response) {
     var heatmap_worker = new Worker("heatMapWorker.js");
     new_message = [];
+    console.log("&&&&&&&&&&", response);
     new_message.push(response[0][0]);
     new_message.push(response[0][1]);
     heatmap_worker.postMessage(new_message);

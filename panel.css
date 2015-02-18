@@ -94,14 +94,20 @@
 }
 
 .text_added {
-	padding-bottom: 3%;
 	float: left;
 	width: 80%;
 	overflow-y: scroll;
+	word-wrap: break-word;
+	white-space: normal;
+	height: 50px;
 }
 
 #text_affected {
 
+}
+
+#diff_button {
+	color: rgb(70, 73, 80);
 }
 
 #author {

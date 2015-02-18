@@ -17,7 +17,7 @@ var heatTest = function(url) {
         console.log("Sentence that we're calling the algorithm on: ", text_to_color);
         var affectedRevs = [];
         var date_and_numRevs = [];
-        affectedRevs = this.WikiRevFinder.getWikiRevsInfo(text_to_color,'','','');
+        affectedRevs = this.WikiRevFinder.getWikiRevsInfo(text_to_color[0],text_to_color[1],text_to_color[2],'');
         var revisionDetails = null;
         var revisionDate = null;
         console.log(text_to_color);
