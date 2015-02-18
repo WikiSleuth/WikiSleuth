@@ -87,22 +87,27 @@
 
 .header_right {
 	float: left;
-	width: 60%;
+	width: 80%;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 }
 
 .text_added {
-	padding-top: 3%;
-	padding-bottom: 3%;
 	float: left;
 	width: 80%;
-	overflow: hidden;
+	overflow-y: scroll;
+	word-wrap: break-word;
+	white-space: normal;
+	height: 50px;
 }
 
 #text_affected {
-	padding-top: 3%;
+
+}
+
+#diff_button {
+	color: rgb(70, 73, 80);
 }
 
 #author {
