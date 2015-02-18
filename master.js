@@ -27,76 +27,18 @@ function startTheHeatMap(tabs){
 }
 
 function sendPageToModel(response) {
-    // split up list of words
-    
-    /* HOW WOULD THE WORKERMASTER CLASS WORK?
-    var workerMaster = new workerMaster(response[0][0], response[0][1]);
-    var worker1 = workerMaster.makeWorker();
-    var worker2 = workerMaster.makeWorker();
-    
-    OR
-    
-    workerMaster.startDoingThingsWithWorkers();
-    
-    */
-
-    console.log('RESPONSE: ', response[0][0]);
-    var half_length = Math.ceil(response[0][0].length/2);
-    worker_wordList1 = response[0][0];
-    worker_wordList1 = worker_wordList1.splice(0,half_length);
-    worker_wordList2 = response[0][0];
-    var length = response[0][0].length;
-    console.log('array length is: ', length);
-    console.log('HALF length is: ', half_length);
-    worker_wordList2 = worker_wordList2.splice(0,half_length);
-    console.log("worker1 list1", worker_wordList1);
-    console.log("worker2 list2", worker_wordList2);
-    
-    //Make first workers
-    var heatmap_worker = new Worker("heatMapWorker.js");
-    //Make first worker message
-    new_message = [];
-    //Push the first worker's list to the message and the url
-    new_message.push(worker_wordList1);
-    new_message.push(response[0][1]);
-    heatmap_worker.postMessage(new_message);
-    // listen for second worker message
-    heatmap_worker.onmessage = function (event) {
-        text_date_list1 = event.data;
-   }; 
-
-    // make second worker 
-    var heatmap_worker2 = new Worker("heatMapWorker.js");
-    // second worker message, push second half of the word list and the url
-    new_message2 = [];
-    new_message2.push(worker_wordList2);
-    new_message2.push(response[0][1]);
-    heatmap_worker2.postMessage(new_message);
-    //listen for second worker response
-    heatmap_worker2.onmessage = function (event) {
-        text_date_list2 = event.data;
-   };
-    /* KEEPING ONE WORKER CODE FOR TIME COMPARISON
-    var heatmap_worker = new Worker("heatMapWorker.js");
-    // second worker message, push second half of the word list and the url
-    new_message = [];
-    new_message.push(response[0][0]);
-    new_message.push(response[0][1]);
-    heatmap_worker.postMessage(new_message);
-    //listen for second worker response
-    heatmap_worker.onmessage = function (event) {
-        text_date_list = event.data;
-   };
-   */
-    
+    makeWorkersTextDateList(response[0][0],response[0][1]);
 }
+
 
 function callTheColor(){
     chrome.tabs.query({active: true, currentWindow: true}, injectedColorScript); 
 }
 
 function injectedColorScript(tabs){
-    text_date_list = text_date_list1.concat(text_date_list2);
+    text_date_list_first_half = text_date_list1.concat(text_date_list2);
+    text_date_list_second_half = text_date_list3.concat(text_date_list4);
+    text_date_list = text_date_list_first_half.concat(text_date_list_second_half);
     chrome.tabs.executeScript(tabs[0].id, {
         code: 'var text_date_list = ' + JSON.stringify(text_date_list)
     }, function() {
@@ -127,7 +69,6 @@ function getHighlightedText(tabs) {
 // Response of our executed script will have the highlighted text. Set our text var to equal that string and then trigger the next event
 function sendTextToModel(response) {
   WikiAPI = new WikiRevFinder(response[0][1]);
-    console.log("&&&&&&&&&&&&&", response[0][0], response[0][2], response[0][3]);
   data = getAffectedRevisions(response[0][0], response[0][2], response[0][3]);
   document.dispatchEvent(evt);
 }
