@@ -28,10 +28,11 @@ var WikiRevFinder = function(url) {
 			var midpointRevisionContent = "";
 			if(this.cachedContent[this.halfpoint] == undefined){
 				midpointRevisionContent = this.getMidpointRevisionContent();
+				//store the content in the cache for faster retrieval
 				this.cachedContent[this.halfpoint] = midpointRevisionContent;
 			}
 			else{
-				console.log("CONTENT IS CACHED");
+				//get the content from the cache instead of recalculating it using the API
 				midpointRevisionContent = this.cachedContent[this.halfpoint];
 			}
 			var sanitizedMidpointRevisionContent = this.sanitizeInput(midpointRevisionContent);
@@ -305,7 +306,8 @@ var WikiRevFinder = function(url) {
 	};
 
 	this.getWikiRevsInfo = function(stringToCheck, landmarkBefore, landmarkAfter, revisionOffset) {
-		//need to clear the cache each time for some reason????
+		//need to clear the cache each time, because we're taking diffs against a different revision, so the content will be different
+		//and therefore old entries will no longer be cache-able
 		this.cachedContent = []
 		
         this.WikEdDiff = new WikEdDiff();
