@@ -7,9 +7,9 @@ function changeTextBackGroundColor(){
         var smallSentList = myNodelist[i].outerText.split(".");
         for(j=0;j<smallSentList.length;j++){
             if(smallSentList[j] != ""){
-                console.log("^^^^^^^^^^^^^^", text_date_list[j]);
+                console.log("INSIDE OF COLORPAGE", text_date_list[j]);
                 var daysElapsed = text_date_list[j][1];
-                console.log("$$$$$$$$$", daysElapsed);
+                console.log("INSIDE OF COLORPAGE", daysElapsed);
                 var color = chooseColor(daysElapsed);
                 smallSentList[j] = '<span style="background-color:' + color + '">' + smallSentList[j] + '</span>';
                 if(j!=smallSentList.length-1){
