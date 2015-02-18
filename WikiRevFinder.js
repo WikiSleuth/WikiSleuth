@@ -86,6 +86,7 @@ var WikiRevFinder = function(url) {
 					this.findFirstRevisionLinearSearch(this.revIDList, stringToCheck);
 					if (this.revIDList.length > 0 && alreadyInList == false){
 						console.log("this revision DID affect the string");
+
 						affectedRevisionList.push([this.revIDList[0], diffObject[1], diffObject[2]])
 					}
 					break;
@@ -172,7 +173,7 @@ var WikiRevFinder = function(url) {
 
 		//sort the list of recent revisions, from earliest id to latest
 
-		var sortedList = affectedRevisionList.sort(function(rev1, rev2){return rev1[0]['revid']-rev2[0]['revid']});
+		var sortedList = affectedRevisionList.sort(function(rev1, rev2){return rev2[0]['revid']-rev1[0]['revid']});
 		console.log(this.getStringPriorToEdit(stringToCheck, sortedList[0]));
 		return sortedList.slice(0,10);
 		//return affectedRevisionList.slice(0,10).reverse();
