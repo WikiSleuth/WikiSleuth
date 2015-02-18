@@ -22,8 +22,13 @@ function callBackgroundPage(){
 	bgPage.queryForData();
 }
 
+function callAuthorScore(){
+    bgPage.initAuthorScore();
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('rev').addEventListener('click', callBackgroundPage);
+    document.getElementById('author').addEventListener('click', callAuthorScore);
     document.getElementById('para').addEventListener('click', callHeatMap);
     document.getElementById('sent').addEventListener('click', callHeatMap2);
     document.getElementById('reset').addEventListener('click', callResetColors);

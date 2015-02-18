@@ -1,8 +1,10 @@
 var data = "";
 var WikiAPI = null;
+var authorFinder = null;
 var isPaneDisplayed = false;
 var heatMapObject = null;
 var text_date_list = [];
+var authorRevList = [];
 
 // ****************** start heatmap stuff
 
@@ -20,6 +22,7 @@ function initHeatmap(){
         chrome.tabs.query({active: true, currentWindow: true}, startTheHeatMap); 
     }   
 }
+
 
 function startTheHeatMap(tabs){
     chrome.tabs.executeScript(tabs[0].id, {file: 'getPageText.js'}, sendPageToModel);
@@ -50,6 +53,55 @@ function injectedColorScript(tabs){
 }
 
 // ************************* end heatmap stuff
+
+// ************************* Begin Author Statistics 
+
+// Ensure that user is on wikipage
+function initAuthorScore(){
+  console.log("Initializing AuthorScore");
+    if(isOnWiki){
+      chrome.tabs.query({active: true, currentWindow: true}, startTheAuthorScore);
+    }
+}
+
+// Prompt User for Author Name
+function startTheAuthorScore(tabs){
+  chrome.tabs.executeScript(tabs[0].id, {file: 'promptUser.js'}, sendNameToModel);
+}
+
+// Generate Author Revisions list based on user input
+function sendNameToModel(response){
+  authorFinder = new AuthorStatisticsFinder(response[0][0]);
+  authorRevList = authorFinder.setRecentAuthorRevisionsList();
+  //authorRevList is defined at this point 
+  document.dispatchEvent(authorEvent);
+
+}
+
+// Reactivate the page
+function getAuthorPageWindow() {
+  chrome.tabs.query({active: true, currentWindow: true}, addAuthorInfo);
+}
+
+// Build HTML
+function addAuthorInfo(tabs) {
+  //authorRevList is undefined at this point
+  console.log(authorRevList);
+  var htmltoAdd = buildAuthorHTMLToAdd(tabs, authorRevList, buildAuthorPane);
+}
+
+
+function buildAuthorPane(tabs, html) {
+  chrome.tabs.insertCSS(tabs[0].id, {file: 'panelForAuthor.css'})
+  chrome.tabs.executeScript(tabs[0].id, { code: 'var panelHTML = ' + JSON.stringify(html) },
+   function() {
+    chrome.tabs.executeScript(tabs[0].id, {file: 'createPanel.js'});
+  });
+  isPaneDisplayed = true;
+}
+
+// **** End Author Statistics 
+
 
 // Query chrome to get an array of all tabs in current window that are focused and active
 function queryForData() {
@@ -122,4 +174,7 @@ function handleCommand(command) {
 
 var evt = new CustomEvent("getInformation");
 document.addEventListener("getInformation", getPageWindow);
+//authorEvent is for Author Statistics
+var authorEvent = new CustomEvent("getInformation");
+document.addEventListener("getInformation", getAuthorPageWindow);
 chrome.commands.onCommand.addListener(handleCommand);

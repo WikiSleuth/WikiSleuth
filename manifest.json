@@ -17,7 +17,7 @@
   ],
   
   "background": {
-    "scripts": ["apiClass.js", "diff.js", "txtwiki.js", "WikiRevFinder.js", "createPanel.js", "preProcess.js","panel.js", "processDataForUI.js","heatTest.js","master.js", "dateConverter.js"],
+    "scripts": ["apiClass.js", "diff.js", "txtwiki.js", "WikiRevFinder.js", "createPanel.js", "preProcess.js", "panel.js","processDataForAuthorUI.js", "processDataForUI.js","heatTest.js","AuthorFinder.js", "master.js", "dateConverter.js"],
     "persistent": true
   },
 
