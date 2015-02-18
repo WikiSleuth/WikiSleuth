@@ -1,2 +1,2 @@
-var authorName = prompt("Input Wikipedia Username to find 10 most recent contributions by that Author");
+var authorName = prompt("Input username to find their last 10 contributions");
 [authorName];

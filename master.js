@@ -5,6 +5,7 @@ var isPaneDisplayed = false;
 var heatMapObject = null;
 var text_date_list = [];
 var authorRevList = [];
+var message = '';
 
 // ****************** start heatmap stuff
 
@@ -95,10 +96,31 @@ function buildAuthorPane(tabs, html) {
   chrome.tabs.insertCSS(tabs[0].id, {file: 'panelForAuthor.css'})
   chrome.tabs.executeScript(tabs[0].id, { code: 'var panelHTML = ' + JSON.stringify(html) },
    function() {
-    chrome.tabs.executeScript(tabs[0].id, {file: 'createPanel.js'});
+    chrome.tabs.executeScript(tabs[0].id, {file: 'createPanelForAuthor.js'});
   });
   isPaneDisplayed = true;
+  //I think we can grab data through master flow, need to check this out with Pat and Gustav
+  //document.dispatchEvent(authorEventTwo);
 }
+/*
+function messagePassing(tabs){
+  console.log("doing the message passing thing injection");
+  chrome.tabs.executeScript(tabs[0].id, {file: 'getSearchText.js'});
+}
+*/
+
+//function getAuthorPageTwo() {
+ // chrome.tabs.query({active:true, currentWindow: true}, addSubmitInfo);
+//}
+
+//function addSubmitInfo(tabs) {
+  //chrome.tabs.executeScript(tabs[0].id, {file:'getSearchText.js'}, displayMessage);
+//}
+
+//function displayMessage(response){
+  //message = response[0][0];
+
+//}
 
 // **** End Author Statistics 
 
@@ -172,9 +194,18 @@ function handleCommand(command) {
   }
 }
 
+function handleAuthorCommand(command){
+  if(command === 'AuthorScore'){
+    initAuthorScore();
+  }
+}
+
 var evt = new CustomEvent("getInformation");
 document.addEventListener("getInformation", getPageWindow);
 //authorEvent is for Author Statistics
 var authorEvent = new CustomEvent("getInformation");
 document.addEventListener("getInformation", getAuthorPageWindow);
+//var authorEventTwo = new CustomEvent("getInformation");
+//document.addEventListener("getInformation", addSubmitInfo);
 chrome.commands.onCommand.addListener(handleCommand);
+chrome.commands.onCommand.addListener(handleAuthorCommand);

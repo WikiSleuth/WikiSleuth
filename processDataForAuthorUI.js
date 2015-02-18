@@ -1,6 +1,6 @@
 function buildAuthorHTMLToAdd(tabs, data, callback) {
 		if (data.length > 0) {
-			html = "<div id='panel'> <h2>WikiSleuth Author Revision History</h2>" +
+			html = "<div id='panel'> <h2>WikiSleuth Author Revision History<span class= 'shortcut'>Press CMD+Shift+F to search for new author</span></h2>" + 
 					"<ul id='expanding_list'>";
 			for (i=0; i<data.length; i++) {
 				html += "<li>" +
@@ -21,7 +21,7 @@ function buildAuthorHTMLToAdd(tabs, data, callback) {
 			}
 			html += "</ul></div>";
 		} else {
-			html = "<div id='panel'> <h2>WikiSleuth Author Revision History</h2> <p> User either does not exist, or has made no edits. </div>"
+			html = "<div id='panel'> <h2>WikiSleuth Author Revision History<span class= 'shortcut'>Press CMD+Shift+F to search for new author</span></h2><span class= 'normal'><p> User either does not exist, or has made no edits.</span></p></div>"
 		}
 		callback(tabs, html);
 }

@@ -12,6 +12,7 @@
 
 }
 
+
 #expanding_list .selectable_item {
 	cursor: pointer;
 	font-weight: bold;
@@ -92,6 +93,30 @@
 	white-space: nowrap;
 	text-overflow: ellipsis;
 }
+
+form {
+	float: right;
+	padding-right: 20px;
+
+}
+
+.normal {
+	float:left;
+	font-size: 100%;
+	font-weight: bold;
+	color: #ff0000;
+}
+.shortcut {
+	float:right;
+	text-align: right;
+	padding-right:20px;
+	font-size: 50%;
+	font-weight: bold;
+	color: #78DD77;
+}
+
+
+
 
 .text_added {
 	padding-top: 3%;

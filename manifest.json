@@ -17,14 +17,14 @@
   ],
   
   "background": {
-    "scripts": ["apiClass.js", "diff.js", "txtwiki.js", "WikiRevFinder.js", "createPanel.js", "preProcess.js", "panel.js","processDataForAuthorUI.js", "processDataForUI.js","heatTest.js","AuthorFinder.js", "master.js", "dateConverter.js"],
+    "scripts": ["apiClass.js", "diff.js", "txtwiki.js", "WikiRevFinder.js", "getSearchText.js", "createPanel.js", "createPanelForAuthor.js", "preProcess.js", "panel.js","processDataForAuthorUI.js", "processDataForUI.js","heatTest.js","AuthorFinder.js", "master.js", "dateConverter.js"],
     "persistent": true
   },
 
   "content_scripts": [
     {
       "matches": ["http://en.wikipedia.org/*"],
-      "js": ["apiClass.js", "diff.js", "txtwiki.js", "WikiRevFinder.js", "panel.js", "heatTest.js", "dateConverter.js"]
+      "js": ["apiClass.js", "diff.js", "txtwiki.js", "WikiRevFinder.js", "panel.js", "heatTest.js", "dateConverter.js", "getSearchText.js"]
     }
   ],
 
@@ -36,6 +36,16 @@
         "windows": "Ctrl+Shift+E"
         },
         "description": "WikiSleuth",
+        "global": true
+      },
+
+    "AuthorScore":{
+      "suggested_key":{
+        "default": "Ctrl+Shift+F",
+        "mac": "Command+Shift+F",
+        "windows": "Ctrl+Shift+F"
+        },
+        "description": "AuthorScore",
         "global": true
       },
 
