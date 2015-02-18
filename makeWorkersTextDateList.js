@@ -56,5 +56,12 @@ function makeWorkersTextDateList(sentList, URL){
     heatmap_worker4.onmessage = function (event) {
         text_date_list4 = event.data;
    };
+    
+    /*if(preProcess == false){
+        heatmap_worker1.terminate();
+        heatmap_worker2.terminate();
+        heatmap_worker3.terminate();
+        heatmap_worker4.terminate();
+    }*/
 
 }

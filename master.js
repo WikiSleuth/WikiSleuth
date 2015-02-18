@@ -3,12 +3,19 @@ var WikiAPI = null;
 var isPaneDisplayed = false;
 var heatMapObject = null;
 var text_date_list = [];
+var preProcess = false;
 
 // ****************** start heatmap stuff
 
+function preProcessTrue(){
+    preProcess = true;  
+}
+
+function preProcessFalse(){
+    preProcess = false;  
+}
 chrome.webNavigation.onCompleted.addListener(function(details){
-    console.log("is it on wiki in master tho?", details.url);
-    if(details.url.indexOf('wikipedia.org')>-1){
+    if((details.url.indexOf('wikipedia.org/wiki/')>-1) && (preProcess==true)){
             chrome.tabs.executeScript(details.tabId, {
             code: initHeatmap()
         });  
