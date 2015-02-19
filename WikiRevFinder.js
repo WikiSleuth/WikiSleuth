@@ -16,6 +16,28 @@ var WikiRevFinder = function(url) {
 		return;
 	};
 
+	this.getCorrectFragments = function(originalRevIdList, nextRevid){
+		//now we need to get the revision immediately after that one, take the diff of that and the first affecting revision,
+		//to get the right rebuilt string
+		var revIdToDiffTo = 0;
+
+		for(var i = 0; i < originalRevIdList.length; i++){
+			if(originalRevIdList[i]['revid'] == nextRevid){
+				//TODO: CHANGE THIS TO +1
+				revIdToDiffTo = originalRevIdList[i-1]['revid'];
+				break;
+			}
+		}
+
+		var contentToDiffTo = this.getMostRecentRevisionContent(revIdToDiffTo);
+
+		this.WikEdDiff = new WikEdDiff();
+
+		var diffObjectToRebuildWith = this.WikEdDiff.diff(this.mostCurrentRevisionContent, contentToDiffTo);
+		var diffFragments = diffObjectToRebuildWith[2];
+		return diffFragments;
+	};
+
 
 	this.iterativeBinarySearch = function(stringToCheck, landmarkBefore, landmarkAfter) {
 
@@ -133,8 +155,9 @@ var WikiRevFinder = function(url) {
 				if(alreadyInList == false){
 
 					console.log("this revision DID affect the string");
+					var correctFragments = this.getCorrectFragments(this.revIDList, this.revIDList[this.halfpoint]['revid']);
 	
-					affectedRevisionList.push([this.revIDList[this.halfpoint-1], diffObject[1], diffObject[2]]);
+					affectedRevisionList.push([this.revIDList[this.halfpoint-1], diffObject[1], correctFragments]);
 
 				}
 				//edge case: this has the potential to continue slicing infinitely, making a new list of the same size as before
@@ -215,24 +238,7 @@ var WikiRevFinder = function(url) {
 				// we DON'T want to do this if the sanitized input is empty, because this will result in the diff messing up and being disregarded (nothing in any of the diff dicts)
 			}
 
-			//now we need to get the revision immediately after that one, take the diff of that and the first affecting revision,
-			//to get the right rebuilt string
-			var revIdToDiffTo = 0;
-
-			for(var i = 0; i < originalRevIdList.length; i++){
-				if(originalRevIdList[i]['revid'] == nextRevid){
-					//TODO: CHANGE THIS TO +1
-					revIdToDiffTo = originalRevIdList[i+1]['revid'];
-					break;
-				}
-			}
-
-			var contentToDiffTo = this.getMostRecentRevisionContent(revIdToDiffTo);
-
-			this.WikEdDiff = new WikEdDiff();
-
-			var diffObjectToRebuildWith = this.WikEdDiff.diff(this.mostCurrentRevisionContent, contentToDiffTo);
-			var diffFragments = diffObjectToRebuildWith[2];
+			var diffFragments = this.getCorrectFragments(originalRevIdList, nextRevid);
 
 			nextRev[2] = diffFragments;
 			// console.log(diffFragments);
