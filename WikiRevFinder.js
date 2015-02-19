@@ -16,7 +16,12 @@ var WikiRevFinder = function(url) {
 		return;
 	};
 
+
 	this.iterativeBinarySearch = function(stringToCheck, landmarkBefore, landmarkAfter) {
+
+		landmarkBefore = landmarkBefore || null;
+		landmarkAfter = landmarkAfter || null;
+
 		var affectedRevisionList = [];
 		while(this.revIDList.length > 1){
 			//If we don't create a new WikEdDiff object everytime, diff.js will freak out
@@ -53,6 +58,8 @@ var WikiRevFinder = function(url) {
 			diffDictionary['+'] = diffDictionary['+'].replace(/\n\n/g, " ");
 			diffDictionary['-'] = diffDictionary['-'].replace(/\n\n/g, " ");
 
+			console.log("CHECKING: "+diffDictionary['=']+ " MINUS " +diffDictionary['-'] +" PLUS "+diffDictionary['+']);
+			console.log("\nLANDMARKS: "+landmarkAfter+"\n");
 			//only look at the text between landmarks
 			var lowerLandmarkIndex = diffDictionary['='].indexOf(landmarkBefore)
 			var upperLandmarkIndex = diffDictionary['='].indexOf(landmarkAfter)
@@ -175,9 +182,100 @@ var WikiRevFinder = function(url) {
 
 		var sortedList = affectedRevisionList.sort(function(rev1, rev2){return rev2[0]['revid']-rev1[0]['revid']});
 		console.log(this.getStringPriorToEdit(stringToCheck, sortedList[0]));
-		return sortedList.slice(0,10);
+		return sortedList[0]
 		//return affectedRevisionList.slice(0,10).reverse();
 	};
+
+
+
+	this.lastNrevisions = function(stringToCheck, landmarkBefore, landmarkAfter, n, originalRevIdList) {
+		var affectingRevs = [];
+		var currentString = stringToCheck;
+		var currLandmarkBefore = landmarkBefore;
+		var currLandmarkAfter = landmarkAfter;
+		var tempIDList = this.revIDList
+		var curIndex = 0;
+		while(curIndex < n){
+			//revIDList = this.WikiAPI.findFirst500RevisionIDList();
+			//this.revIDList = tempIDList
+			var nextRev = this.iterativeBinarySearch(currentString, currLandmarkBefore, currLandmarkAfter)
+			nextRevid = nextRev[0]["revid"]
+			console.log("affecting rev:")
+			console.log(nextRev)
+			console.log("the id is:")
+			console.log(nextRev[0]["revid"]);
+			//affectingRevs.push(nextRev);
+
+			//need to update current, rebuilt rev to be "most current" revision, so that other revisions are checked against this one
+			this.mostCurrentRevisionContent = this.getMostRecentRevisionContent(nextRevid);
+			var sanitizedMostCurrentRevisionContent = this.sanitizeInput(this.mostCurrentRevisionContent);
+			if(sanitizedMostCurrentRevisionContent.length != 0 && this.mostCurrentRevisionContent != 0){
+				this.mostCurrentRevisionContent = sanitizedMostCurrentRevisionContent;
+				// we DON'T want to do this if the sanitized input is empty, because this will result in the diff messing up and being disregarded (nothing in any of the diff dicts)
+			}
+
+			//now we need to get the revision immediately after that one, take the diff of that and the first affecting revision,
+			//to get the right rebuilt string
+			var revIdToDiffTo = 0;
+
+			for(var i = 0; i < originalRevIdList.length; i++){
+				if(originalRevIdList[i]['revid'] == nextRevid){
+					revIdToDiffTo = originalRevIdList[i-1]['revid'];
+					break;
+				}
+			}
+
+			var contentToDiffTo = this.getMostRecentRevisionContent(revIdToDiffTo);
+
+			this.WikEdDiff = new WikEdDiff();
+
+			var diffObjectToRebuildWith = this.WikEdDiff.diff(this.mostCurrentRevisionContent, contentToDiffTo);
+			var diffFragments = diffObjectToRebuildWith[2];
+
+			nextRev[2] = diffFragments;
+			// console.log(diffFragments);
+			
+
+			//TODO: what to do if revidtodiffto stays at 0.
+			// console.log("list: "+this.revIDList);
+
+
+
+			currentString = this.getStringPriorToEdit(stringToCheck, nextRev);
+			//alter nextRev so that it contains currentString after getting rebuilt
+			affectingRevs.push(nextRev);
+			currLandmarkBefore = this.getStringPriorToEdit(currLandmarkBefore, nextRev);
+			currLandmarkAfter = this.getStringPriorToEdit(currLandmarkAfter, nextRev);
+
+
+			console.log("bult up string: ")
+			console.log(currentString)
+
+			if (currentString == ""){
+				break;
+			}
+
+			this.revIDList = this.WikiAPI.findFirst500RevisionIDList(nextRevid);
+			this.checkOldestRevision(currentString, landmarkBefore, landmarkAfter);
+			if(this.revIDList.length == 0){
+				this.revIDList = revIDList;
+			}
+
+			//revid is nextRev[0][5] i think
+
+			
+
+			//currentString = getStringPriorToEdit(currentString, )//second param is "affectedRevision"
+			console.log("got here");
+			curIndex++;
+
+		}
+		console.log("AT THE END OF lastNrevisions!!! affectingRevs looks like: ");
+		console.log(affectingRevs);
+		return affectingRevs;
+
+	}
+
 
 	this.getMidpointRevisionContent = function() {
 		//console.log("length:" + this.revIDList.length)
@@ -236,8 +334,14 @@ var WikiRevFinder = function(url) {
 		// return toReturn;
 	};
 
-	this.getMostRecentRevisionContent = function() {
-		return txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(this.revIDList[0]['revid']));
+	this.getMostRecentRevisionContent = function(optionalRevId) {
+		optionalRevId = optionalRevId || 0
+		if(optionalRevId == 0){
+			return txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(this.revIDList[0]['revid']));
+		}
+		else{
+			return txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(optionalRevId));
+		}
 	};
 
 	this.getOldestRevisionContent = function() {
@@ -306,6 +410,8 @@ var WikiRevFinder = function(url) {
 		return stringToCheck;
 	};
 
+
+	//This is the function that gets called by master, sends back all the revisions to be displayed
 	this.getWikiRevsInfo = function(stringToCheck, landmarkBefore, landmarkAfter, revisionOffset) {
 		//need to clear the cache each time, because we're taking diffs against a different revision, so the content will be different
 		//and therefore old entries will no longer be cache-able
@@ -359,11 +465,12 @@ var WikiRevFinder = function(url) {
 				toReturn[0] = [this.revIDList[0], this.oldestItemDiffObject[1]];
 				return toReturn;
 			}
-		// console.log("going here again?? "+arguments.callee.caller.toString());
-		return this.iterativeBinarySearch(stringToCheck, landmarkBefore, landmarkAfter);
+
+		return this.lastNrevisions(stringToCheck, landmarkBefore, landmarkAfter, 10, revIDList);
 	};
 
 	this.getStringPriorToEdit = function(stringToCheck, affectedRevision) {
+		//NOTE: diff we actually want to rebuild from is the one immeidately after affectedRevision
 		// console.log("frags here??? "+affectedRevision);
 		var fragments = affectedRevision[2];
 		var stringPriorToEdit = '';
@@ -377,6 +484,7 @@ var WikiRevFinder = function(url) {
 			switch(fragments[i]['type']){
 				case '=':
 				case '>':
+					// console.log("EQUALGT "+fragments[i]['text']);
 					fragmentTextArray = fragments[i]['text'].replace(/\n+/g, " ").split(" ");
 					for(var j=0; j<fragmentTextArray.length; j++){
 						if(tempHighlightedString[0] == " "){
@@ -414,6 +522,7 @@ var WikiRevFinder = function(url) {
 					}
 					break;
 				case '+':
+					// console.log("added: "+fragments[i]['text']);
 					if(hasBegun){
 						stringPriorToEdit += fragments[i]['text'];
 						if(tempHighlightedString[0] == " "){
@@ -421,8 +530,46 @@ var WikiRevFinder = function(url) {
 							stringPriorToEdit += " ";
 						}
 					}
+					else{
+						fragmentTextArray = fragments[i]['text'].replace(/\n+/g, " ").split(" ");
+						for(var j=0; j<fragmentTextArray.length; j++){
+							if(tempHighlightedString[0] == " "){
+									tempHighlightedString = tempHighlightedString.replace(/\s+/, "");
+									if (lastRemovedItem[lastRemovedItem.length-1] != " ") {
+										stringPriorToEdit += " ";
+									}
+							}
+							if (tempHighlightedString.length <= 0) {
+								break;
+							}
+							indexOfFragMatch = tempHighlightedString.indexOf(fragmentTextArray[j]);
+							if(indexOfFragMatch == 0 & fragmentTextArray[j] != ""){
+								hasBegun = true;
+								tempHighlightedString = tempHighlightedString.replace(fragmentTextArray[j], "");
+								// stringPriorToEdit += fragmentTextArray[j];
+
+								if(tempHighlightedString[0] == " "){
+									tempHighlightedString = tempHighlightedString.replace(/\s+/, "");
+									stringPriorToEdit += " ";
+								}
+							} else if (indexOfFragMatch == 1 && tempHighlightedString[0] == " ") {
+								hasBegun = true;
+								tempHighlightedString = tempHighlightedString.replace(fragmentTextArray[j], "");
+								// stringPriorToEdit += " " + fragmentTextArray[j];
+								tempHighlightedString = tempHighlightedString.replace(/\s+/, "");
+							} else if (fragmentTextArray[j] != ""){
+								// console.log(stringPriorToEdit);
+								tempHighlightedString = stringToCheck;
+								hasBegun = false;
+								stringPriorToEdit = '';
+							} else {
+								stringPriorToEdit += " ";
+							}
+						}
+					}
 					break;
 				case '-':
+					// console.log("minus: "+fragments[i]['text']);
 					if(hasBegun){
 						tempHighlightedString = tempHighlightedString.replace(fragments[i]['text'], "");
 						//if (/\s+$/.test(fragments[i]['text']) && /\s+$/.test(stringPriorToEdit)) {
@@ -434,6 +581,7 @@ var WikiRevFinder = function(url) {
 						//	stringPriorToEdit += " ";
 						//}
 					} else {
+						// console.log("minus2: "+fragments[i]['text']);
 						fragmentTextArray = fragments[i]['text'].replace(/\n+/g, " ").split(" ");
 						for(var j=0; j<fragmentTextArray.length; j++){
 							indexOfFragMatch = tempHighlightedString.indexOf(fragmentTextArray[j]);

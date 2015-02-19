@@ -87,7 +87,9 @@ function sendTextToModel(response) {
 
 // Collects data recieved by the model ****** Should be moved somewhere that makes more sense ******
 function getAffectedRevisions(highlightedText, landmarkBefore, landmarkAfter){
+  //console.log("about to call getWikiRevsInfo");
   var affectedRevs = WikiAPI.getWikiRevsInfo(highlightedText, landmarkBefore, landmarkAfter);
+  console.log("done calling getWikiRevsInfo");
   var revisionDetails = null;
 
   for (i = 0; i < affectedRevs.length; i++) {

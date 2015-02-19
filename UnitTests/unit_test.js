@@ -38,11 +38,11 @@ var UnitTester = function() {
 
 var tester = new UnitTester();
 // tester.init("https://en.wikipedia.org/wiki/Gods_of_Plastic");
-// tester.runTest(tester.cakeTestCases[0][0], tester.cakeTestCases[0][1], tester.cakeTestCases[0][2], tester.cakeTestCases[0][3]);
+tester.runTest(tester.cakeTestCases[0][0], tester.cakeTestCases[0][1], tester.cakeTestCases[0][2], tester.cakeTestCases[0][3]);
 // tester.runTest(tester.cakeTestCases[2][0], tester.cakeTestCases[2][1], tester.cakeTestCases[2][2], tester.cakeTestCases[2][3]);
-for(var i = 0; i < tester.cakeTestCases.length; i++){
-  tester.runTest(tester.cakeTestCases[i][0], tester.cakeTestCases[i][1], tester.cakeTestCases[i][2], tester.cakeTestCases[i][3]);
-}
+// for(var i = 0; i < tester.cakeTestCases.length; i++){
+//   tester.runTest(tester.cakeTestCases[i][0], tester.cakeTestCases[i][1], tester.cakeTestCases[i][2], tester.cakeTestCases[i][3]);
+// }
 // // tester.firstTest();
 // // tester.secondTest();
 // // tester.thirdTest();
