@@ -95,7 +95,7 @@ function getAffectedRevisions(highlightedText, landmarkBefore, landmarkAfter){
   for (i = 0; i < affectedRevs.length; i++) {
     revisionDetails = WikiAPI.WikiAPI.getRevisionStatistics(affectedRevs[i][0]['revid']);
     //diffText = API.getDiffText(affectedRevs[i][0]);
-    affectedRevs[i][0] = [revisionDetails['timestamp'], revisionDetails['user'], revisionDetails['parsedcomment'], revisionDetails['user'], revisionDetails['timestamp'], affectedRevs[i][0]['revid'], affectedRevs[i][0]['parentid'], highlightedText];
+    affectedRevs[i][0] = [revisionDetails['timestamp'], revisionDetails['user'], revisionDetails['parsedcomment'], revisionDetails['user'], revisionDetails['timestamp'], affectedRevs[i][0]['revid'], affectedRevs[i][0]['parentid'], highlightedText, revisionDetails['title']];
   }
   return affectedRevs;
 }

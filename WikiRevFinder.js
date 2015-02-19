@@ -181,7 +181,7 @@ var WikiRevFinder = function(url) {
 		//sort the list of recent revisions, from earliest id to latest
 
 		var sortedList = affectedRevisionList.sort(function(rev1, rev2){return rev2[0]['revid']-rev1[0]['revid']});
-		console.log(this.getStringPriorToEdit(stringToCheck, sortedList[0]));
+		//console.log(this.getStringPriorToEdit(stringToCheck, sortedList[0])); #throws an error if sortedList is empty
 		return sortedList[0]
 		//return affectedRevisionList.slice(0,10).reverse();
 	};
@@ -199,6 +199,7 @@ var WikiRevFinder = function(url) {
 			//revIDList = this.WikiAPI.findFirst500RevisionIDList();
 			//this.revIDList = tempIDList
 			var nextRev = this.iterativeBinarySearch(currentString, currLandmarkBefore, currLandmarkAfter)
+			//  break out of loop if iterativebinarysearch returns nothing
 			nextRevid = nextRev[0]["revid"]
 			console.log("affecting rev:")
 			console.log(nextRev)
