@@ -134,7 +134,7 @@ var WikiRevFinder = function(url) {
 
 					console.log("this revision DID affect the string");
 	
-					affectedRevisionList.push([this.revIDList[this.halfpoint], diffObject[1], diffObject[2]]);
+					affectedRevisionList.push([this.revIDList[this.halfpoint-1], diffObject[1], diffObject[2]]);
 
 				}
 				//edge case: this has the potential to continue slicing infinitely, making a new list of the same size as before
@@ -220,7 +220,8 @@ var WikiRevFinder = function(url) {
 
 			for(var i = 0; i < originalRevIdList.length; i++){
 				if(originalRevIdList[i]['revid'] == nextRevid){
-					revIdToDiffTo = originalRevIdList[i-1]['revid'];
+					//TODO: CHANGE THIS TO +1
+					revIdToDiffTo = originalRevIdList[i+1]['revid'];
 					break;
 				}
 			}
