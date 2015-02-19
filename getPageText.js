@@ -6,7 +6,13 @@ for(i=0;i<myNodelist.length;i++){
         //create an array of sentences
         var sentences = textTagContent.split('|');
         var firstSentenceLandmark = sentences[0];
-        var endSentenceLandmark = sentences[sentences.length-2];
+        if(sentences.length>1){
+            var endSentenceLandmark = sentences[sentences.length-2];    
+        }
+        else{
+            var endSentenceLandmark = sentences[0];   
+        }
+        
         for(j=0;j<sentences.length;j++){
             var text_and_LM = [];
             if(sentences[j] != ""){

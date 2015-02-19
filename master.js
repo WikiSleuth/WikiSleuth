@@ -3,17 +3,24 @@ var WikiAPI = null;
 var isPaneDisplayed = false;
 var heatMapObject = null;
 var text_date_list = [];
+var preProcess = false;
 
 // ****************** start heatmap stuff
 
-// chrome.webNavigation.onCompleted.addListener(function(details){
-//     console.log("is it on wiki in master tho?", details.url);
-//     if(details.url.indexOf('wikipedia.org')>-1){
-//             chrome.tabs.executeScript(details.tabId, {
-//             code: initHeatmap()
-//         });  
-//     }
-// });
+function preProcessTrue(){
+    preProcess = true;  
+}
+
+function preProcessFalse(){
+    preProcess = false;  
+}
+chrome.webNavigation.onCompleted.addListener(function(details){
+    if((details.url.indexOf('wikipedia.org/wiki/')>-1) && (preProcess==true)){
+            chrome.tabs.executeScript(details.tabId, {
+            code: initHeatmap()
+        });  
+    }
+});
 
 function initHeatmap(){
     if (isOnWiki){
@@ -27,26 +34,22 @@ function startTheHeatMap(tabs){
 }
 
 function sendPageToModel(response) {
-    var heatmap_worker = new Worker("heatMapWorker.js");
-    new_message = [];
-    console.log("&&&&&&&&&&", response);
-    new_message.push(response[0][0]);
-    new_message.push(response[0][1]);
-    heatmap_worker.postMessage(new_message);
-    heatmap_worker.onmessage = function (event) {
-        text_date_list = event.data;
-   };   
+    makeWorkersTextDateList(response[0][0],response[0][1]);
 }
+
 
 function callTheColor(){
     chrome.tabs.query({active: true, currentWindow: true}, injectedColorScript); 
 }
 
 function injectedColorScript(tabs){
+    text_date_list_first_half = text_date_list1.concat(text_date_list2);
+    text_date_list_second_half = text_date_list3.concat(text_date_list4);
+    text_date_list = text_date_list_first_half.concat(text_date_list_second_half);
     chrome.tabs.executeScript(tabs[0].id, {
         code: 'var text_date_list = ' + JSON.stringify(text_date_list)
     }, function() {
-        console.log(text_date_list);
+        console.log("inside of master calling colorpage script ", text_date_list);
         chrome.tabs.executeScript(tabs[0].id, {file: 'colorPage.js'});
     });
 }
@@ -73,6 +76,7 @@ function getHighlightedText(tabs) {
 
 // Response of our executed script will have the highlighted text. Set our text var to equal that string and then trigger the next event
 function sendTextToModel(response) {
+<<<<<<< HEAD
   if (response[0][0]) {
     WikiAPI = new WikiRevFinder(response[0][1]);
     console.log("&&&&&&&&&&&&&", response[0][0], response[0][2], response[0][3]);
@@ -80,6 +84,11 @@ function sendTextToModel(response) {
     //document.dispatchEvent(evt);
     getPageWindow();
   }
+=======
+  WikiAPI = new WikiRevFinder(response[0][1]);
+  data = getAffectedRevisions(response[0][0], response[0][2], response[0][3]);
+  document.dispatchEvent(evt);
+>>>>>>> master
 }
 
 // Collects data recieved by the model ****** Should be moved somewhere that makes more sense ******
