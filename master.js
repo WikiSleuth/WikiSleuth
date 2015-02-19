@@ -6,14 +6,14 @@ var text_date_list = [];
 
 // ****************** start heatmap stuff
 
-chrome.webNavigation.onCompleted.addListener(function(details){
-    console.log("is it on wiki in master tho?", details.url);
-    if(details.url.indexOf('wikipedia.org')>-1){
-            chrome.tabs.executeScript(details.tabId, {
-            code: initHeatmap()
-        });  
-    }
-});
+// chrome.webNavigation.onCompleted.addListener(function(details){
+//     console.log("is it on wiki in master tho?", details.url);
+//     if(details.url.indexOf('wikipedia.org')>-1){
+//             chrome.tabs.executeScript(details.tabId, {
+//             code: initHeatmap()
+//         });  
+//     }
+// });
 
 function initHeatmap(){
     if (isOnWiki){
@@ -62,20 +62,24 @@ function queryForData() {
 
 // The first element of tabs will be the page the user is currently looking at. Execute code to get highlighted text.
 function getHighlightedText(tabs) {
-  if (isPaneDisplayed) {
-    chrome.tabs.executeScript(tabs[0].id, {file: 'hidePane.js'});
-    isPaneDisplayed = false;
-  } else {
-    chrome.tabs.executeScript(tabs[0].id, {file: 'getTextAndURL.js'}, sendTextToModel); // ***** URL ALREADY GOTTEN? ******
-  }
+  // if (isPaneDisplayed) {
+  //   chrome.tabs.executeScript(tabs[0].id, {file: 'hidePane.js'});
+  //   isPaneDisplayed = false;
+  // } else {
+    
+  // }
+  chrome.tabs.executeScript(tabs[0].id, {file: 'getTextAndURL.js'}, sendTextToModel); // ***** URL ALREADY GOTTEN? ******
 }
 
 // Response of our executed script will have the highlighted text. Set our text var to equal that string and then trigger the next event
 function sendTextToModel(response) {
-  WikiAPI = new WikiRevFinder(response[0][1]);
+  if (response[0][0]) {
+    WikiAPI = new WikiRevFinder(response[0][1]);
     console.log("&&&&&&&&&&&&&", response[0][0], response[0][2], response[0][3]);
-  data = getAffectedRevisions(response[0][0], response[0][2], response[0][3]);
-  document.dispatchEvent(evt);
+    data = getAffectedRevisions(response[0][0], response[0][2], response[0][3]);
+    //document.dispatchEvent(evt);
+    getPageWindow();
+  }
 }
 
 // Collects data recieved by the model ****** Should be moved somewhere that makes more sense ******
@@ -85,6 +89,7 @@ function getAffectedRevisions(highlightedText, landmarkBefore, landmarkAfter){
 
   for (i = 0; i < affectedRevs.length; i++) {
     revisionDetails = WikiAPI.WikiAPI.getRevisionStatistics(affectedRevs[i][0]['revid']);
+    //diffText = API.getDiffText(affectedRevs[i][0]);
     affectedRevs[i][0] = [revisionDetails['timestamp'], revisionDetails['user'], revisionDetails['parsedcomment'], revisionDetails['user'], revisionDetails['timestamp'], affectedRevs[i][0]['revid'], affectedRevs[i][0]['parentid'], highlightedText];
   }
   return affectedRevs;

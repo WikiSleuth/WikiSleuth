@@ -8,8 +8,12 @@
   padding: 0;
 }
 
-#expanding_list > li {
+.white_background {
+	background: #FFFFFF;
+}
 
+.grey_background {
+	background: #F9F9F9;
 }
 
 #expanding_list .selectable_item {
@@ -23,10 +27,12 @@
 
 #expanding_list > li > input[type=checkbox] + ul {
 	display: none;
+	background: inherit;
 }
 
 #expanding_list > li > input[type=checkbox]:checked + ul {
 	display: block;
+	background: inherit;
 }
 
 #panel {
@@ -36,10 +42,11 @@
     padding: 6px; 
     background-color: rgb(255, 255, 255);
 	height: 40%;
-	overflow: scroll;
+	overflow-y: scroll;
+	overflow-x: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
-	border: 3px solid rgb(0, 0, 0);
+	border-top: 3px solid rgb(0, 0, 0);
 	position: fixed;
 }
 
@@ -51,27 +58,60 @@
 	padding-left: 5%;
 }
 
-.timestamp {
+.sub_list {
+	margin-bottom: 0em;
+}
+
+.button {
+	width: 0.5%;
+	margin-right: 0.5%; 
+	height: 0;
+	margin-top: 1%;
+	padding-bottom: 0.5%;
+	border-radius: 50%;
+	overflow: hidden;
+	box-shadow: 0 0 3px rgb(128, 128, 128);
+	background-color: rgb(6, 69, 173);
 	float: left;
-	width: 20%;
-	color: #B19BDB;
+}
+
+.timestamp {
+	font-size: 0.875em;
+	font-family: sans-serif;
+	font-weight: normal;
+	float: left;
+	text-align: left;
+	text-decoration: none;
+	color: rgb(6, 69, 173);
+	background: none;
+	width: 15%;
+	padding-left: 1%;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 }
 
 .editor {
+	font-size: 0.875em;
+	color: rgb(37, 37, 37);
+	font-family: sans-serif;
+	font-weight: normal;
 	float: left;
-	width: 20%;
-	color: green;
+	width: 15%;
+	margin-right: 3%; 
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 }
 
 .comment {
+	font-size: 0.875em;
+	color: rgb(37, 37, 37);
+	font-family: sans-serif;
+	font-weight: normal;
 	float: right;
-	width: 60%;
+	width: 63%;
+	margin-right: 2%;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
@@ -79,35 +119,54 @@
 
 .header_left {
 	float: left;
-	width: 20%;
+	width: 15%;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 }
 
 .header_right {
+	font-size: 0.875em;
+	color: rgb(37, 37, 37);
+	font-family: sans-serif;
+	font-weight: normal;
 	float: left;
-	width: 80%;
+	width: 100%;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 }
 
 .text_added {
+	font-size: 0.875em;
+	color: rgb(37, 37, 37);
+	font-family: sans-serif;
+	font-weight: normal;
 	float: left;
-	width: 80%;
+	width: 83%;
+	margin-right: 2%;
 	overflow-y: scroll;
 	word-wrap: break-word;
 	white-space: normal;
-	height: 50px;
-}
-
-#text_affected {
-
+	height: auto;
 }
 
 #diff_button {
 	color: rgb(70, 73, 80);
+}
+
+#close_button {
+	font-size: 16px;
+	float: right;
+	margin-right: 3%;
+	padding:2px 5px;
+    background:#ccc;
+}
+
+#close_button:hover {
+    background:#ccc;
+    color:#fff;
+    cursor: pointer;
 }
 
 #author {
@@ -115,7 +174,7 @@
 }
 
 #date {
-	color: #EBD6BB;
+	color: #E5712B;
 }
 
 #revision {
@@ -127,5 +186,13 @@
 }
 
 #text_affected {
-	color: #78DD77;
+	font-size: 0.875em;
+	font-family: sans-serif;
+	font-weight: normal;
+	color: rgb(37, 37, 37);
+}
+
+#title {
+	color: #222222;
+	font-family: sans-serif;
 }
