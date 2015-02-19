@@ -76,7 +76,6 @@ function getHighlightedText(tabs) {
 
 // Response of our executed script will have the highlighted text. Set our text var to equal that string and then trigger the next event
 function sendTextToModel(response) {
-<<<<<<< HEAD
   if (response[0][0]) {
     WikiAPI = new WikiRevFinder(response[0][1]);
     console.log("&&&&&&&&&&&&&", response[0][0], response[0][2], response[0][3]);
@@ -84,11 +83,6 @@ function sendTextToModel(response) {
     //document.dispatchEvent(evt);
     getPageWindow();
   }
-=======
-  WikiAPI = new WikiRevFinder(response[0][1]);
-  data = getAffectedRevisions(response[0][0], response[0][2], response[0][3]);
-  document.dispatchEvent(evt);
->>>>>>> master
 }
 
 // Collects data recieved by the model ****** Should be moved somewhere that makes more sense ******
