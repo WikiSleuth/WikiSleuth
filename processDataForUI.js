@@ -8,7 +8,7 @@ function buildHTMLToAdd(tabs, data, callback) {
 				//"<span class='close_button'>"+ 
 				//	"<input id='closeMe' type='button' value='Close Pane' onclick=closePane(); />" +
 				//"</span>" +
-				"<ul id='expanding_list'>";
+				"<ul id='expanding_list' class='no-style'>";
 		var date = null;
 		for (i=0; i<data.length; i++) {
 			if (data[i][0][2] == "") {
@@ -18,9 +18,10 @@ function buildHTMLToAdd(tabs, data, callback) {
 			timeAry = date.toTimeString().split(":");
 			dateAry = date.toDateString().split(" ");
 			date = timeAry[0] + ":" + timeAry[1] + ", " + dateAry[1] + " " + dateAry[2] + " " + dateAry[3];
-			html += "<li>" +
+			html += "<li class='rev-list'>" +
 				//<span class='timestamp'>"+date+"</span>
-					    "<label class='selectable_item' for='item" + i + "'> <span class='button'></span> <a href='http://en.wikipedia.org/w/index.php?title=Cake&oldid="+data[i][0][5]+"' title='Cake' class='timestamp'>" + date + "</a>  <span class='editor'>"+data[i][0][1]+"</span> <span class='comment'>"+data[i][0][2]+"</span></label>" +
+					    "<label class='selectable_item' for='item" + i + "'> <span class='button'></span> <a href='http://en.wikipedia.org/w/index.php?title="+data[i][0][8]+"&oldid="+data[i][0][5]+"' title="+data[i][0][8]+" class='timestamp'>" + date + "</a>  <span class='editor'>"+data[i][0][1]+" (<a href='http://en.wikipedia.org/wiki/User_talk:"+data[i][0][1]+"' title="+data[i][0][1]+" class='talk'>talk</a> | "+"<a href='http://en.wikipedia.org/wiki/Special:Contributions/"+data[i][0][1]+"' title="+data[i][0][1]+" class='contribs'>contribs</a>) </span>"+
+					    "<span class='comment'>"+data[i][0][2]+"</span></label>" +
 					    "<input type='checkbox' id='item" + i + "' />" +
 					    "<ul class='item_list'>" +
 					  	 "<li class='sub_list'>" +
@@ -31,7 +32,7 @@ function buildHTMLToAdd(tabs, data, callback) {
 					      "<span id='text_affected' class='header_left'>TextAffected:</span><span class='text_added'>"+data[i][0][7]+"</span>" +
 					      "<span class='header_right'>"+ "<input id='clickMe' type='button' value='Compare Affected to Parent Revision' onclick=getDiffText('DIV"+i+"'); />" +"</span>" +
 					      //"<span id='diff_button' class='header_left'>Diff:</span><span class='header_right'>"+ "<input id='clickMe' type='button' value='Click For Diff' onclick=getPageContent('DIV"+i+"'); />" +"</span>" +
-					      "<div id='DIV"+i+"' style='display:none'>"+"http://en.wikipedia.org/w/index.php?title="+data[i][0][8]+"&diff="+data[i][0][5]+"&oldid="+data[i][0][6]+"</div>" +
+					      "<div id='DIV"+i+"' style='display:none'>"+"http://en.wikipedia.org/w/index.php?title="+data[i][0][8]+"&diff="+"next"+"&oldid="+data[i][0][5]+"</div>" +
 					     "</li>" +
 					    "</ul>" +
 					"</li>";

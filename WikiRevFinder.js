@@ -522,7 +522,7 @@ var WikiRevFinder = function(url) {
 						}
 					}
 					break;
-				case '+':
+				case '-':
 					// console.log("added: "+fragments[i]['text']);
 					if(hasBegun){
 						stringPriorToEdit += fragments[i]['text'];
@@ -569,7 +569,7 @@ var WikiRevFinder = function(url) {
 						}
 					}
 					break;
-				case '-':
+				case '+':
 					// console.log("minus: "+fragments[i]['text']);
 					if(hasBegun){
 						tempHighlightedString = tempHighlightedString.replace(fragments[i]['text'], "");
