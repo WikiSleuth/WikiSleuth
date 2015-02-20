@@ -6,10 +6,20 @@ var wikiPageFooter = document.querySelector("div#footer");
 wikiPageFooter.className += " addPaddingForPage";
 //element.getElementById("submitbutton").addEventListener("click", saveAuthorName);
 
+var g = document.createElement('div');
+g.setAttribute("id", "myuniquediv");
+document.body.appendChild(g);
+var script = document.createElement('script');
+script.setAttribute("type", "application/javascript");
+script.textContent = "var authorName = ''; function getName(){authorName = document.getElementById('Author').value;}";
+document.body.appendChild(script);
+// var info = g.innerHTML.toString();
+// console.log(info);
 
 
-
-/*var script = document.createElement('script');
+//"<script type= 'text/javascript'> document.getElementById('AuthorSearchBox').addEventListener('click', function(console.log('here');})); </script>" 
+/*
+var script = document.createElement('script');
 script.setAttribute("type", "text/javascript");
 console.log("CREATING PANEL FOR AUTHOR");
 
