@@ -29,7 +29,7 @@ function buildHTMLToAdd(tabs, data, callback) {
 					      //"<span id='date' class='header_left'>Date:</span><span id='date' class='header_right'>"+ new Date(data[i][0][4]).toDateString() +"</span> <br>" +
 					      //"<span id='revision' class='header_left'>RevisionID:</span><span id='revision' class='header_right'>"+data[i][0][5]+"</span> <br>" +
 					      //"<span id='parent_rev' class='header_left'>ParentID:</span><span id='parent_rev' class='header_right'>"+data[i][0][6]+"</span> <br>" +
-					      "<span id='text_affected' class='header_left'>TextAffected:</span><span class='text_added'>"+data[i][0][7]+"</span>" +
+					      "<span id='text_affected' class='header_left'>Edited String:</span><span class='text_added'>"+data[i][0][7]+"</span>" +
 					      "<span class='header_right'>"+ "<input id='clickMe' type='button' value='Compare Affected to Parent Revision' onclick=getDiffText('DIV"+i+"'); />" +"</span>" +
 					      //"<span id='diff_button' class='header_left'>Diff:</span><span class='header_right'>"+ "<input id='clickMe' type='button' value='Click For Diff' onclick=getPageContent('DIV"+i+"'); />" +"</span>" +
 					      "<div id='DIV"+i+"' style='display:none'>"+"http://en.wikipedia.org/w/index.php?title="+data[i][0][8]+"&diff="+"next"+"&oldid="+data[i][0][5]+"</div>" +

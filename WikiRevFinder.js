@@ -244,6 +244,8 @@ var WikiRevFinder = function(url) {
 
 			currentString = this.getStringPriorToEdit(stringToCheck, nextRev);
 			//alter nextRev so that it contains currentString after getting rebuilt
+			// Pat here, I think this will do it? Let me know if it should be different!
+			nextRev[3] = currentString;
 			affectingRevs.push(nextRev);
 			currLandmarkBefore = this.getStringPriorToEdit(currLandmarkBefore, nextRev);
 			currLandmarkAfter = this.getStringPriorToEdit(currLandmarkAfter, nextRev);
