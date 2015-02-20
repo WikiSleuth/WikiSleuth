@@ -30,10 +30,7 @@ var APICaller = function(url){
 		var action = 'format=json&action=query&prop=revisions&revids=' + revID + '&rvprop=user|timestamp|parsedcomment&continue=';
 		var apiRequestURL = this.endpoint + action;
 		var jsonObject = this.makeRequest(apiRequestURL);
-		var revStats = jsonObject['query']['pages'][Object.keys(jsonObject['query']['pages'])[0]]['revisions'][0];
-		revStats['title'] = jsonObject['query']['pages'][Object.keys(jsonObject['query']['pages'])[0]]['title'];
-		//return jsonObject['query']['pages'][Object.keys(jsonObject['query']['pages'])[0]]['revisions'][0];
-		return revStats;
+		return jsonObject['query']['pages'][Object.keys(jsonObject['query']['pages'])[0]]['revisions'][0];
 	}
 
 	this.findRevisionIDListFromStartID = function(startID){

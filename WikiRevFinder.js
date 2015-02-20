@@ -33,7 +33,7 @@ var WikiRevFinder = function(url) {
 
 		this.WikEdDiff = new WikEdDiff();
 
-		var diffObjectToRebuildWith = this.WikEdDiff.diff(contentToDiffTo, this.mostCurrentRevisionContent);
+		var diffObjectToRebuildWith = this.WikEdDiff.diff(this.mostCurrentRevisionContent, contentToDiffTo);
 		var diffFragments = diffObjectToRebuildWith[2];
 		return diffFragments;
 	};
@@ -529,8 +529,8 @@ var WikiRevFinder = function(url) {
 						}
 					}
 					break;
-				case '+':
-					// console.log("added: "+fragments[i]['text']);
+				case '-':
+					console.log("added: "+fragments[i]['text']);
 					if(hasBegun){
 						stringPriorToEdit += fragments[i]['text'];
 						if(tempHighlightedString[0] == " "){
@@ -540,44 +540,44 @@ var WikiRevFinder = function(url) {
 					}
 					else{
 						fragmentTextArray = fragments[i]['text'].replace(/\n+/g, " ").split(" ");
-						for(var j=0; j<fragmentTextArray.length; j++){
-							if(tempHighlightedString[0] == " "){
-									tempHighlightedString = tempHighlightedString.replace(/\s+/, "");
-									if (lastRemovedItem[lastRemovedItem.length-1] != " ") {
-										stringPriorToEdit += " ";
-									}
-							}
-							if (tempHighlightedString.length <= 0) {
-								break;
-							}
-							indexOfFragMatch = tempHighlightedString.indexOf(fragmentTextArray[j]);
-							if(indexOfFragMatch == 0 & fragmentTextArray[j] != ""){
-								hasBegun = true;
-								tempHighlightedString = tempHighlightedString.replace(fragmentTextArray[j], "");
-								// stringPriorToEdit += fragmentTextArray[j];
+						// for(var j=0; j<fragmentTextArray.length; j++){
+						// 	if(tempHighlightedString[0] == " "){
+						// 			tempHighlightedString = tempHighlightedString.replace(/\s+/, "");
+						// 			if (lastRemovedItem[lastRemovedItem.length-1] != " ") {
+						// 				stringPriorToEdit += " ";
+						// 			}
+						// 	}
+						// 	if (tempHighlightedString.length <= 0) {
+						// 		break;
+						// 	}
+						// 	indexOfFragMatch = tempHighlightedString.indexOf(fragmentTextArray[j]);
+						// 	if(indexOfFragMatch == 0 & fragmentTextArray[j] != ""){
+						// 		hasBegun = true;
+						// 		tempHighlightedString = tempHighlightedString.replace(fragmentTextArray[j], "");
+						// 		// stringPriorToEdit += fragmentTextArray[j];
 
-								if(tempHighlightedString[0] == " "){
-									tempHighlightedString = tempHighlightedString.replace(/\s+/, "");
-									stringPriorToEdit += " ";
-								}
-							} else if (indexOfFragMatch == 1 && tempHighlightedString[0] == " ") {
-								hasBegun = true;
-								tempHighlightedString = tempHighlightedString.replace(fragmentTextArray[j], "");
-								// stringPriorToEdit += " " + fragmentTextArray[j];
-								tempHighlightedString = tempHighlightedString.replace(/\s+/, "");
-							} else if (fragmentTextArray[j] != ""){
-								// console.log(stringPriorToEdit);
-								tempHighlightedString = stringToCheck;
-								hasBegun = false;
-								stringPriorToEdit = '';
-							} else {
-								stringPriorToEdit += " ";
-							}
-						}
+						// 		if(tempHighlightedString[0] == " "){
+						// 			tempHighlightedString = tempHighlightedString.replace(/\s+/, "");
+						// 			stringPriorToEdit += " ";
+						// 		}
+						// 	} else if (indexOfFragMatch == 1 && tempHighlightedString[0] == " ") {
+						// 		hasBegun = true;
+						// 		tempHighlightedString = tempHighlightedString.replace(fragmentTextArray[j], "");
+						// 		// stringPriorToEdit += " " + fragmentTextArray[j];
+						// 		tempHighlightedString = tempHighlightedString.replace(/\s+/, "");
+						// 	} else if (fragmentTextArray[j] != ""){
+						// 		// console.log(stringPriorToEdit);
+						// 		tempHighlightedString = stringToCheck;
+						// 		hasBegun = false;
+						// 		stringPriorToEdit = '';
+						// 	} else {
+						// 		stringPriorToEdit += " ";
+						// 	}
+						// }
 					}
 					break;
-				case '-':
-					// console.log("minus: "+fragments[i]['text']);
+				case '+':
+					console.log("minus: "+fragments[i]['text']);
 					if(hasBegun){
 						tempHighlightedString = tempHighlightedString.replace(fragments[i]['text'], "");
 						//if (/\s+$/.test(fragments[i]['text']) && /\s+$/.test(stringPriorToEdit)) {
