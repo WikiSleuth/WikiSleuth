@@ -157,7 +157,7 @@ var WikiRevFinder = function(url) {
 					console.log("this revision DID affect the string");
 					var correctFragments = this.getCorrectFragments(this.revIDList, this.revIDList[this.halfpoint]['revid']);
 	
-					affectedRevisionList.push([this.revIDList[this.halfpoint-1], diffObject[1], correctFragments]);
+					affectedRevisionList.push([this.revIDList[this.halfpoint], diffObject[1], diffObject[2]]);
 
 				}
 				//edge case: this has the potential to continue slicing infinitely, making a new list of the same size as before
