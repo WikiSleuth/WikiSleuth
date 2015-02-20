@@ -5,7 +5,7 @@ if (elem) {
 	wikiPageFooter.className = wikiPageFooter.className.replace(' addPaddingForPage', '');
 }
 
-var text = window.getSelection().toString();
+var text = window.getSelection().toString().trim();
 
 var curNode = window.getSelection().anchorNode;
 while(curNode.parentNode.nodeName != "P"){

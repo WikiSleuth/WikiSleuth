@@ -76,9 +76,9 @@ var WikiRevFinder = function(url) {
 
 
 			//make the dictionary entries more parseable by taking out newlines
-			diffDictionary['='] = diffDictionary['='].replace(/\n\n/g, " ");
-			diffDictionary['+'] = diffDictionary['+'].replace(/\n\n/g, " ");
-			diffDictionary['-'] = diffDictionary['-'].replace(/\n\n/g, " ");
+			diffDictionary['='] = diffDictionary['='].replace(/\n+/g, " ").replace(/\s+/g, " ");
+			diffDictionary['+'] = diffDictionary['+'].replace(/\n+/g, " ").replace(/\s+/g, " ");
+			diffDictionary['-'] = diffDictionary['-'].replace(/\n+/g, " ").replace(/\s+/g, " ");
 
 			console.log("CHECKING: "+diffDictionary['=']+ " MINUS " +diffDictionary['-'] +" PLUS "+diffDictionary['+']);
 			console.log("\nLANDMARKS: "+landmarkAfter+"\n");
