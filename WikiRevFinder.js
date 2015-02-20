@@ -492,6 +492,8 @@ var WikiRevFinder = function(url) {
 			switch(fragments[i]['type']){
 				case '=':
 				case '>':
+					//TODO: PAT: we're getting to the end of temp highlighted string, but then not breaking successfully
+					//this occurs in a minus block, so I think we have to do the same fragmentTextArray with the minus block as well.
 					console.log("EQUALGT "+fragments[i]['text']);
 					fragmentTextArray = fragments[i]['text'].replace(/\n+/g, " ").split(" ");
 					for(var j=0; j<fragmentTextArray.length; j++){
