@@ -33,7 +33,7 @@ var WikiRevFinder = function(url) {
 
 		this.WikEdDiff = new WikEdDiff();
 
-		var diffObjectToRebuildWith = this.WikEdDiff.diff(this.mostCurrentRevisionContent, contentToDiffTo);
+		var diffObjectToRebuildWith = this.WikEdDiff.diff(contentToDiffTo, this.mostCurrentRevisionContent);
 		var diffFragments = diffObjectToRebuildWith[2];
 		return diffFragments;
 	};
@@ -80,8 +80,8 @@ var WikiRevFinder = function(url) {
 			diffDictionary['+'] = diffDictionary['+'].replace(/\n+/g, " ").replace(/\s+/g, " ");
 			diffDictionary['-'] = diffDictionary['-'].replace(/\n+/g, " ").replace(/\s+/g, " ");
 
-			console.log("CHECKING: "+diffDictionary['=']+ " MINUS " +diffDictionary['-'] +" PLUS "+diffDictionary['+']);
-			console.log("\nLANDMARKS: "+landmarkAfter+"\n");
+			// console.log("CHECKING: "+diffDictionary['=']+ " MINUS " +diffDictionary['-'] +" PLUS "+diffDictionary['+']);
+			// console.log("\nLANDMARKS: "+landmarkAfter+"\n");
 			//only look at the text between landmarks
 			var lowerLandmarkIndex = diffDictionary['='].indexOf(landmarkBefore)
 			var upperLandmarkIndex = diffDictionary['='].indexOf(landmarkAfter)
@@ -155,7 +155,7 @@ var WikiRevFinder = function(url) {
 				if(alreadyInList == false){
 
 					console.log("this revision DID affect the string");
-					var correctFragments = this.getCorrectFragments(this.revIDList, this.revIDList[this.halfpoint]['revid']);
+					// var correctFragments = this.getCorrectFragments(this.revIDList, this.revIDList[this.halfpoint]['revid']);
 	
 					affectedRevisionList.push([this.revIDList[this.halfpoint], diffObject[1], diffObject[2]]);
 
@@ -492,7 +492,7 @@ var WikiRevFinder = function(url) {
 			switch(fragments[i]['type']){
 				case '=':
 				case '>':
-					// console.log("EQUALGT "+fragments[i]['text']);
+					console.log("EQUALGT "+fragments[i]['text']);
 					fragmentTextArray = fragments[i]['text'].replace(/\n+/g, " ").split(" ");
 					for(var j=0; j<fragmentTextArray.length; j++){
 						if(tempHighlightedString[0] == " "){
