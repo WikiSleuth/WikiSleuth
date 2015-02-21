@@ -512,7 +512,7 @@ var WikiRevFinder = function(url) {
 							hasBegun = true;
 							tempHighlightedString = tempHighlightedString.replace(fragmentTextArray[j], "");
 							stringPriorToEdit += fragmentTextArray[j];
-						} else if (indexOfFragMatch === -1 && tempHighlightedString.split(" ").length === 1 && tempHighlightedString.indexOf(fragmentTextArray[j].trim().split(" ")) === 0) {
+						} else if (indexOfFragMatch === -1 && tempHighlightedString.split(" ").length === 1 && fragmentTextArray[j].indexOf(tempHighlightedString.trim()) === 0) {
 							// Case: tempHighlightedString = 'especially', fragmentTextArray[j] = 'especially '
 							tempHighlightedString = '';
 							stringPriorToEdit += fragmentTextArray[j];
