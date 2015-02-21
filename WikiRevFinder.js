@@ -3,6 +3,7 @@ var WikiRevFinder = function(url) {
 	this.WikEdDiff = null;
 	this.WikiAPI = null;
 	this.revIDList = [];
+	this.referenceRevIDList = [];
 	this.mostCurrentRevisionContent = '';
 	this.oldestRevID = 0;
 	this.oldestItemDiffObject = null;
@@ -18,6 +19,7 @@ var WikiRevFinder = function(url) {
 
 
 	this.iterativeBinarySearch = function(stringToCheck, landmarkBefore, landmarkAfter) {
+		console.log("STRING TO CHECK: "+stringToCheck);
 
 		landmarkBefore = landmarkBefore || null;
 		landmarkAfter = landmarkAfter || null;
@@ -31,15 +33,15 @@ var WikiRevFinder = function(url) {
 			console.log("halfpoint number we think: " + this.revIDList[this.halfpoint]['revid']);
 
 			var midpointRevisionContent = "";
-			if(this.cachedContent[this.halfpoint] == undefined){
-				midpointRevisionContent = this.getMidpointRevisionContent();
+			// if(this.cachedContent[this.halfpoint] == undefined){
+			midpointRevisionContent = this.getMidpointRevisionContent();
 				//store the content in the cache for faster retrieval
-				this.cachedContent[this.halfpoint] = midpointRevisionContent;
-			}
-			else{
-				//get the content from the cache instead of recalculating it using the API
-				midpointRevisionContent = this.cachedContent[this.halfpoint];
-			}
+			// 	this.cachedContent[this.halfpoint] = midpointRevisionContent;
+			// }
+			// else{
+			// 	//get the content from the cache instead of recalculating it using the API
+			// 	midpointRevisionContent = this.cachedContent[this.halfpoint];
+			// }
 			var sanitizedMidpointRevisionContent = this.sanitizeInput(midpointRevisionContent);
 			if(sanitizedMidpointRevisionContent.length != 0 && midpointRevisionContent != 0){
 				midpointRevisionContent = sanitizedMidpointRevisionContent
@@ -58,8 +60,8 @@ var WikiRevFinder = function(url) {
 			diffDictionary['+'] = diffDictionary['+'].replace(/\n\n/g, " ");
 			diffDictionary['-'] = diffDictionary['-'].replace(/\n\n/g, " ");
 
-			console.log("CHECKING: "+diffDictionary['=']+ " MINUS " +diffDictionary['-'] +" PLUS "+diffDictionary['+']);
-			console.log("\nLANDMARKS: "+landmarkAfter+"\n");
+			// console.log("CHECKING: "+diffDictionary['=']+ " MINUS " +diffDictionary['-'] +" PLUS "+diffDictionary['+']);
+			// console.log("\nLANDMARKS: "+landmarkAfter+"\n");
 			//only look at the text between landmarks
 			var lowerLandmarkIndex = diffDictionary['='].indexOf(landmarkBefore)
 			var upperLandmarkIndex = diffDictionary['='].indexOf(landmarkAfter)
@@ -94,7 +96,10 @@ var WikiRevFinder = function(url) {
 					if (this.revIDList.length > 0 && alreadyInList == false){
 						console.log("this revision DID affect the string");
 
-						affectedRevisionList.push([this.revIDList[0], diffObject[1], diffObject[2]])
+
+						//CORNER CASE TO CONSIDER LATER: what if revIDList[0] is also referenceRevIDList[0]? need to get first of next 500.
+						var ourIndex = this.referenceRevIDList.indexOf(this.revIDList[0]);
+						affectedRevisionList.push([this.referenceRevIDList[ourIndex-1], diffObject[1], diffObject[2]])
 					}
 					break;
 			}
@@ -125,7 +130,7 @@ var WikiRevFinder = function(url) {
 				//check to make sure this id isn't already in affected revision list
 				var alreadyInList = false
 				for(var i = 0; i < affectedRevisionList.length; i++){
-					if(affectedRevisionList[i][0]['revid'] == this.revIDList[this.halfpoint]['revid']){
+					if(affectedRevisionList[i][0]['revid'] == this.revIDList[this.halfpoint-1]['revid']){
 						alreadyInList = true;
 						break;
 					}
@@ -134,7 +139,7 @@ var WikiRevFinder = function(url) {
 
 					console.log("this revision DID affect the string");
 	
-					affectedRevisionList.push([this.revIDList[this.halfpoint], diffObject[1], diffObject[2]]);
+					affectedRevisionList.push([this.revIDList[this.halfpoint-1], diffObject[1], diffObject[2]]);
 
 				}
 				//edge case: this has the potential to continue slicing infinitely, making a new list of the same size as before
@@ -183,6 +188,7 @@ var WikiRevFinder = function(url) {
 		var sortedList = affectedRevisionList.sort(function(rev1, rev2){return rev2[0]['revid']-rev1[0]['revid']});
 		//console.log(this.getStringPriorToEdit(stringToCheck, sortedList[0])); #throws an error if sortedList is empty
 		return sortedList[0]
+
 		//return affectedRevisionList.slice(0,10).reverse();
 	};
 
@@ -208,7 +214,7 @@ var WikiRevFinder = function(url) {
 			//affectingRevs.push(nextRev);
 
 			//need to update current, rebuilt rev to be "most current" revision, so that other revisions are checked against this one
-			this.mostCurrentRevisionContent = this.getMostRecentRevisionContent(nextRevid);
+			this.mostCurrentRevisionContent = this.getMostRecentRevisionContent(nextRev[0]["parentid"]);
 			var sanitizedMostCurrentRevisionContent = this.sanitizeInput(this.mostCurrentRevisionContent);
 			if(sanitizedMostCurrentRevisionContent.length != 0 && this.mostCurrentRevisionContent != 0){
 				this.mostCurrentRevisionContent = sanitizedMostCurrentRevisionContent;
@@ -217,16 +223,16 @@ var WikiRevFinder = function(url) {
 
 			//now we need to get the revision immediately after that one, take the diff of that and the first affecting revision,
 			//to get the right rebuilt string
-			var revIdToDiffTo = 0;
+			// var revIdToDiffTo = 0;
 
-			for(var i = 0; i < originalRevIdList.length; i++){
-				if(originalRevIdList[i]['revid'] == nextRevid){
-					revIdToDiffTo = originalRevIdList[i-1]['revid'];
-					break;
-				}
-			}
+			// for(var i = 0; i < originalRevIdList.length; i++){
+			// 	if(originalRevIdList[i]['revid'] == nextRevid){
+			// 		revIdToDiffTo = originalRevIdList[i-1]['revid'];
+			// 		break;
+			// 	}
+			// }
 
-			var contentToDiffTo = this.getMostRecentRevisionContent(revIdToDiffTo);
+			var contentToDiffTo = this.getMostRecentRevisionContent(nextRevid);
 
 			this.WikEdDiff = new WikEdDiff();
 
@@ -240,12 +246,12 @@ var WikiRevFinder = function(url) {
 			//TODO: what to do if revidtodiffto stays at 0.
 			// console.log("list: "+this.revIDList);
 
-
-
-			currentString = this.getStringPriorToEdit(stringToCheck, nextRev);
-			//alter nextRev so that it contains currentString after getting rebuilt
 			// Pat here, I think this will do it? Let me know if it should be different!
 			nextRev[3] = currentString;
+
+			currentString = this.getStringPriorToEdit(currentString, nextRev);
+			//alter nextRev so that it contains currentString after getting rebuilt
+			
 			affectingRevs.push(nextRev);
 			currLandmarkBefore = this.getStringPriorToEdit(currLandmarkBefore, nextRev);
 			currLandmarkAfter = this.getStringPriorToEdit(currLandmarkAfter, nextRev);
@@ -259,7 +265,8 @@ var WikiRevFinder = function(url) {
 			}
 
 			this.revIDList = this.WikiAPI.findFirst500RevisionIDList(nextRevid);
-			this.checkOldestRevision(currentString, landmarkBefore, landmarkAfter);
+			this.referenceRevIDList = this.revIDList;
+			this.checkOldestRevision(currentString, landmarkBefore, landmarkAfter, n);
 			if(this.revIDList.length == 0){
 				this.revIDList = revIDList;
 			}
@@ -351,7 +358,7 @@ var WikiRevFinder = function(url) {
 		return txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(this.oldestRevID));
 	};
 
-	this.checkOldestRevision = function(stringToCheck, landmarkBefore, landmarkAfter) {
+	this.checkOldestRevision = function(stringToCheck, landmarkBefore, landmarkAfter, numRevisions) {
 		//before searching the entire revision history, we just check the oldest item
 		//if there's nothing affecting the string in that revision, then nothing will have affected it
 		//in any more recent revisions, so we can just move on to the next set of revisions.
@@ -394,7 +401,7 @@ var WikiRevFinder = function(url) {
 			}
 
 			//go farther back in revision history
-			this.getWikiRevsInfo(stringToCheck, landmarkBefore, landmarkAfter, this.oldestRevID);
+			this.getWikiRevsInfo(stringToCheck, landmarkBefore, landmarkAfter, this.oldestRevID, numRevisions);
 		}
 		else{
 			console.log("oldest revision DOES affect string: "+this.oldestRevID);
@@ -415,7 +422,7 @@ var WikiRevFinder = function(url) {
 
 
 	//This is the function that gets called by master, sends back all the revisions to be displayed
-	this.getWikiRevsInfo = function(stringToCheck, landmarkBefore, landmarkAfter, revisionOffset) {
+	this.getWikiRevsInfo = function(stringToCheck, landmarkBefore, landmarkAfter, numRevisions, revisionOffset) {
 		//need to clear the cache each time, because we're taking diffs against a different revision, so the content will be different
 		//and therefore old entries will no longer be cache-able
 		this.cachedContent = []
@@ -445,6 +452,7 @@ var WikiRevFinder = function(url) {
 		}
 
 		this.revIDList = revIDList;
+		this.referenceRevIDList = this.revIDList
 
 		console.log("first item" + this.revIDList[0]);
 
@@ -458,7 +466,7 @@ var WikiRevFinder = function(url) {
 
 		//first, check that the oldest revision in this block of 500 affects the string.
 		//If not, we can immediately move on to the next block of 500 revisions.
-		this.checkOldestRevision(stringToCheck, landmarkBefore, landmarkAfter);
+		this.checkOldestRevision(stringToCheck, landmarkBefore, landmarkAfter, numRevisions);
 		if(this.revIDList.length == 0){
 			this.revIDList = revIDList;
 		}
@@ -469,12 +477,10 @@ var WikiRevFinder = function(url) {
 				return toReturn;
 			}
 
-		return this.lastNrevisions(stringToCheck, landmarkBefore, landmarkAfter, 10, revIDList);
+		return this.lastNrevisions(stringToCheck, landmarkBefore, landmarkAfter, numRevisions, revIDList);
 	};
 
 	this.getStringPriorToEdit = function(stringToCheck, affectedRevision) {
-		//NOTE: diff we actually want to rebuild from is the one immeidately after affectedRevision
-		// console.log("frags here??? "+affectedRevision);
 		var fragments = affectedRevision[2];
 		var stringPriorToEdit = '';
 		var tempHighlightedString = stringToCheck;
@@ -482,138 +488,108 @@ var WikiRevFinder = function(url) {
 		var hasBegun = false;
 		var fragmentTextArray = [];
 		var i = 0;
-		var lastRemovedItem = "";
+		console.log("str to check" + stringToCheck);
+		console.log("********************************\n\n");
 		while (tempHighlightedString.length > 0 && i < fragments.length){
+			fragments[i]['text'] = fragments[i]['text'].replace(/\n+/g, " ");
 			switch(fragments[i]['type']){
 				case '=':
 				case '>':
-					// console.log("EQUALGT "+fragments[i]['text']);
-					fragmentTextArray = fragments[i]['text'].replace(/\n+/g, " ").split(" ");
+					console.log("Fragments: " + fragments[i]['text']);
+					fragmentTextArray = fragments[i]['text'].split(/(\S+\s+)/).filter(function(n) {return n});
 					for(var j=0; j<fragmentTextArray.length; j++){
-						if(tempHighlightedString[0] == " "){
-								tempHighlightedString = tempHighlightedString.replace(/\s+/, "");
-								if (lastRemovedItem[lastRemovedItem.length-1] != " ") {
-									stringPriorToEdit += " ";
-								}
-						}
-						if (tempHighlightedString.length <= 0) {
+						
+						// If the string we are rebuilding is nothing we know to break (inside the for loop)
+						if (tempHighlightedString.length <= 0) { 
 							break;
 						}
+
+						// If next word in fragment text contains next word in highlighted string
 						indexOfFragMatch = tempHighlightedString.indexOf(fragmentTextArray[j]);
-						if(indexOfFragMatch == 0 & fragmentTextArray[j] != ""){
+						
+
+						// Does Contain!
+						if(indexOfFragMatch == 0) {
 							hasBegun = true;
 							tempHighlightedString = tempHighlightedString.replace(fragmentTextArray[j], "");
 							stringPriorToEdit += fragmentTextArray[j];
-
-							if(tempHighlightedString[0] == " "){
-								tempHighlightedString = tempHighlightedString.replace(/\s+/, "");
-								stringPriorToEdit += " ";
-							}
-						} else if (indexOfFragMatch == 1 && tempHighlightedString[0] == " ") {
-							hasBegun = true;
-							tempHighlightedString = tempHighlightedString.replace(fragmentTextArray[j], "");
-							stringPriorToEdit += " " + fragmentTextArray[j];
-							tempHighlightedString = tempHighlightedString.replace(/\s+/, "");
-						} else if (fragmentTextArray[j] != ""){
-							// console.log(stringPriorToEdit);
+						}else if (indexOfFragMatch === -1 && hasBegun == false && fragmentTextArray[j].lastIndexOf(tempHighlightedString.trim().split(" ")[0]) >= 0){
+							//corner case where only partial first word is highlighted
+							hasBegun = true
+							// tempHighlightedString = tempHighlightedString.replace(tempHighlightedString.trim().split(" ")[0], "");
+							var indexOfWordStart = fragmentTextArray[j].lastIndexOf(tempHighlightedString.trim().split(" ")[0]);
+							//we're keeping this as a temp variable so that we add the whole word to stringPriorToEdit,
+							//but still only remove the partial word from tempHighlightedString. <---- design choice
+							var tempFragmentText = fragmentTextArray[j].slice(indexOfWordStart, fragmentTextArray[j].length);
+							stringPriorToEdit += fragmentTextArray[j];
+							tempHighlightedString = tempHighlightedString.replace(tempFragmentText, "");
+						} else if (indexOfFragMatch === -1 && tempHighlightedString.split(" ").length === 1 && fragmentTextArray[j].indexOf(tempHighlightedString.trim()) === 0) {
+							// Case: tempHighlightedString = 'especially', fragmentTextArray[j] = 'especially '
+							tempHighlightedString = '';
+							stringPriorToEdit += fragmentTextArray[j];
+						} else {
+							// Does not contain, reset!
 							tempHighlightedString = stringToCheck;
 							hasBegun = false;
 							stringPriorToEdit = '';
-						} else {
-							stringPriorToEdit += " ";
 						}
 					}
+					console.log("Rebuilt String EQ "+i+": "+stringPriorToEdit);
+					console.log("Highlighted String: " + tempHighlightedString);
 					break;
 				case '-':
-					// console.log("added: "+fragments[i]['text']);
+					console.log("Fragments: " + fragments[i]['text']);
+					// We need to add to stringPriorToEdit because it is taken away from the parent with regards to current
 					if(hasBegun){
 						stringPriorToEdit += fragments[i]['text'];
-						if(tempHighlightedString[0] == " "){
-							tempHighlightedString = tempHighlightedString.replace(/\s+/, "");
-							stringPriorToEdit += " ";
-						}
 					}
-					else{
-						fragmentTextArray = fragments[i]['text'].replace(/\n+/g, " ").split(" ");
-						for(var j=0; j<fragmentTextArray.length; j++){
-							if(tempHighlightedString[0] == " "){
-									tempHighlightedString = tempHighlightedString.replace(/\s+/, "");
-									if (lastRemovedItem[lastRemovedItem.length-1] != " ") {
-										stringPriorToEdit += " ";
-									}
-							}
-							if (tempHighlightedString.length <= 0) {
-								break;
-							}
-							indexOfFragMatch = tempHighlightedString.indexOf(fragmentTextArray[j]);
-							if(indexOfFragMatch == 0 & fragmentTextArray[j] != ""){
-								hasBegun = true;
-								tempHighlightedString = tempHighlightedString.replace(fragmentTextArray[j], "");
-								// stringPriorToEdit += fragmentTextArray[j];
-
-								if(tempHighlightedString[0] == " "){
-									tempHighlightedString = tempHighlightedString.replace(/\s+/, "");
-									stringPriorToEdit += " ";
-								}
-							} else if (indexOfFragMatch == 1 && tempHighlightedString[0] == " ") {
-								hasBegun = true;
-								tempHighlightedString = tempHighlightedString.replace(fragmentTextArray[j], "");
-								// stringPriorToEdit += " " + fragmentTextArray[j];
-								tempHighlightedString = tempHighlightedString.replace(/\s+/, "");
-							} else if (fragmentTextArray[j] != ""){
-								// console.log(stringPriorToEdit);
-								tempHighlightedString = stringToCheck;
-								hasBegun = false;
-								stringPriorToEdit = '';
-							} else {
-								stringPriorToEdit += " ";
-							}
-						}
-					}
+					console.log("Rebuilt String - "+i+": "+stringPriorToEdit);
+					console.log("Highlighted String: " + tempHighlightedString);
 					break;
 				case '+':
-					// console.log("minus: "+fragments[i]['text']);
-					if(hasBegun){
-						tempHighlightedString = tempHighlightedString.replace(fragments[i]['text'], "");
-						//if (/\s+$/.test(fragments[i]['text']) && /\s+$/.test(stringPriorToEdit)) {
-						//	stringPriorToEdit.replace(/\s+$/, "");
-						//}
-						lastRemovedItem = fragments[i]['text'];
-						//if(tempHighlightedString[0] == " "){
-						//	tempHighlightedString = tempHighlightedString.replace(/\s+/, "");
-						//	stringPriorToEdit += " ";
-						//}
-					} else {
-						// console.log("minus2: "+fragments[i]['text']);
-						fragmentTextArray = fragments[i]['text'].replace(/\n+/g, " ").split(" ");
-						for(var j=0; j<fragmentTextArray.length; j++){
-							indexOfFragMatch = tempHighlightedString.indexOf(fragmentTextArray[j]);
-							if(indexOfFragMatch == 0 & fragmentTextArray[j] != ""){
-								hasBegun = true;
-								tempHighlightedString = tempHighlightedString.replace(fragments[i]['text'], "");
-
-								if(tempHighlightedString[0] == " "){
-									tempHighlightedString = tempHighlightedString.replace(/\s+/, "");
-									stringPriorToEdit += " ";
-								}
-							} else if (indexOfFragMatch > 0) {
-								// console.log(stringPriorToEdit);
-								tempHighlightedString = stringToCheck;
-								hasBegun = false;
-								stringPriorToEdit = '';
-							}
-
+					console.log("Fragments: " + fragments[i]['text']);
+					// We need to remove the text in fragments from tempHighlightedString because it did not exist in parent.
+					// if(hasBegun){
+					// 	tempHighlightedString = tempHighlightedString.replace(fragments[i]['text'], "");
+					// } else {
+						
+					fragmentTextArray = fragments[i]['text'].split(/(\S+\s+)/).filter(function(n) {return n});
+					// Check every word in fragments to the next word in tempHighlightedString. indexOf should return 0 if there is a match for the next word
+					for(var j=0; j<fragmentTextArray.length; j++){
+						
+						// If the string we are rebuilding is nothing we know to break (inside the for loop)
+						if (tempHighlightedString.length <= 0) { 
+							break;
 						}
-					} 
+
+						// If next word in fragment text contains next word in highlighted string
+						indexOfFragMatch = tempHighlightedString.indexOf(fragmentTextArray[j]);
+						
+						// Does Contain!
+						if(indexOfFragMatch == 0){
+							hasBegun = true;
+							tempHighlightedString = tempHighlightedString.replace(fragmentTextArray[j], "");
+						} else if (indexOfFragMatch === -1 && tempHighlightedString.split(" ").length === 1 && tempHighlightedString.indexOf(fragmentTextArray[j].trim().split(" ")) === 0) {
+							// Case: tempHighlightedString = 'especially', fragmentTextArray[j] = 'especially '
+							tempHighlightedString = '';
+						} else {
+							// Does not contain, reset!
+							tempHighlightedString = stringToCheck;
+							hasBegun = false;
+							stringPriorToEdit = '';
+						}
+					}
+					// } 
+					console.log("Rebuilt String + "+i+": "+stringPriorToEdit);
+					console.log("Highlighted String: " + tempHighlightedString);
 					break;
 			}
 			i += 1;
 		}
 		stringPriorToEdit = stringPriorToEdit.trim();
 
-		return stringPriorToEdit.replace(/\s+/g, " ");
+		return stringPriorToEdit;
 	};
-
 
 	this.init();
 };
