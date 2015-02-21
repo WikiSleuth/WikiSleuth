@@ -3,6 +3,7 @@ var WikiRevFinder = function(url) {
 	this.WikEdDiff = null;
 	this.WikiAPI = null;
 	this.revIDList = [];
+	this.referenceRevIDList = [];
 	this.mostCurrentRevisionContent = '';
 	this.oldestRevID = 0;
 	this.oldestItemDiffObject = null;
@@ -94,7 +95,10 @@ var WikiRevFinder = function(url) {
 					if (this.revIDList.length > 0 && alreadyInList == false){
 						console.log("this revision DID affect the string");
 
-						affectedRevisionList.push([this.revIDList[0], diffObject[1], diffObject[2]])
+
+						//CORNER CASE TO CONSIDER LATER: what if revIDList[0] is also referenceRevIDList[0]? need to get first of next 500.
+						var ourIndex = this.referenceList.indexOf(this.revIDList[0]);
+						affectedRevisionList.push([this.referenceRevIDList[ourIndex-1], diffObject[1], diffObject[2]])
 					}
 					break;
 			}
@@ -134,7 +138,7 @@ var WikiRevFinder = function(url) {
 
 					console.log("this revision DID affect the string");
 	
-					affectedRevisionList.push([this.revIDList[this.halfpoint], diffObject[1], diffObject[2]]);
+					affectedRevisionList.push([this.revIDList[this.halfpoint-1], diffObject[1], diffObject[2]]);
 
 				}
 				//edge case: this has the potential to continue slicing infinitely, making a new list of the same size as before
@@ -183,6 +187,7 @@ var WikiRevFinder = function(url) {
 		var sortedList = affectedRevisionList.sort(function(rev1, rev2){return rev2[0]['revid']-rev1[0]['revid']});
 		//console.log(this.getStringPriorToEdit(stringToCheck, sortedList[0])); #throws an error if sortedList is empty
 		return sortedList[0]
+
 		//return affectedRevisionList.slice(0,10).reverse();
 	};
 
@@ -259,6 +264,7 @@ var WikiRevFinder = function(url) {
 			}
 
 			this.revIDList = this.WikiAPI.findFirst500RevisionIDList(nextRevid);
+			this.referenceRevIDList = this.revIDList;
 			this.checkOldestRevision(currentString, landmarkBefore, landmarkAfter);
 			if(this.revIDList.length == 0){
 				this.revIDList = revIDList;
@@ -445,6 +451,7 @@ var WikiRevFinder = function(url) {
 		}
 
 		this.revIDList = revIDList;
+		this.referenceRevIDList = this.revIDList
 
 		console.log("first item" + this.revIDList[0]);
 
