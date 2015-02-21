@@ -248,7 +248,7 @@ var WikiRevFinder = function(url) {
 
 
 
-			currentString = this.getStringPriorToEdit(stringToCheck, nextRev);
+			currentString = this.getStringPriorToEdit(currentString, nextRev);
 			//alter nextRev so that it contains currentString after getting rebuilt
 			// Pat here, I think this will do it? Let me know if it should be different!
 			nextRev[3] = currentString;
@@ -481,8 +481,6 @@ var WikiRevFinder = function(url) {
 	};
 
 	this.getStringPriorToEdit = function(stringToCheck, affectedRevision) {
-		//NOTE: diff we actually want to rebuild from is the one immeidately after affectedRevision
-		// console.log("frags here??? "+affectedRevision);
 		var fragments = affectedRevision[2];
 		var stringPriorToEdit = '';
 		var tempHighlightedString = stringToCheck;
@@ -490,138 +488,97 @@ var WikiRevFinder = function(url) {
 		var hasBegun = false;
 		var fragmentTextArray = [];
 		var i = 0;
-		var lastRemovedItem = "";
+		console.log("str to check" + stringToCheck);
+		console.log("********************************\n\n");
 		while (tempHighlightedString.length > 0 && i < fragments.length){
+			fragments[i]['text'] = fragments[i]['text'].replace(/\n+/g, " ");
 			switch(fragments[i]['type']){
 				case '=':
 				case '>':
-					// console.log("EQUALGT "+fragments[i]['text']);
-					fragmentTextArray = fragments[i]['text'].replace(/\n+/g, " ").split(" ");
+					console.log("Fragments: " + fragments[i]['text']);
+					fragmentTextArray = fragments[i]['text'].split(/(\S+\s+)/).filter(function(n) {return n});
 					for(var j=0; j<fragmentTextArray.length; j++){
-						if(tempHighlightedString[0] == " "){
-								tempHighlightedString = tempHighlightedString.replace(/\s+/, "");
-								if (lastRemovedItem[lastRemovedItem.length-1] != " ") {
-									stringPriorToEdit += " ";
-								}
-						}
-						if (tempHighlightedString.length <= 0) {
+						
+						// If the string we are rebuilding is nothing we know to break (inside the for loop)
+						if (tempHighlightedString.length <= 0) { 
 							break;
 						}
+
+						// If next word in fragment text contains next word in highlighted string
 						indexOfFragMatch = tempHighlightedString.indexOf(fragmentTextArray[j]);
-						if(indexOfFragMatch == 0 & fragmentTextArray[j] != ""){
+						
+						// Does Contain!
+						if(indexOfFragMatch == 0) {
 							hasBegun = true;
 							tempHighlightedString = tempHighlightedString.replace(fragmentTextArray[j], "");
 							stringPriorToEdit += fragmentTextArray[j];
-
-							if(tempHighlightedString[0] == " "){
-								tempHighlightedString = tempHighlightedString.replace(/\s+/, "");
-								stringPriorToEdit += " ";
-							}
-						} else if (indexOfFragMatch == 1 && tempHighlightedString[0] == " ") {
-							hasBegun = true;
-							tempHighlightedString = tempHighlightedString.replace(fragmentTextArray[j], "");
-							stringPriorToEdit += " " + fragmentTextArray[j];
-							tempHighlightedString = tempHighlightedString.replace(/\s+/, "");
-						} else if (fragmentTextArray[j] != ""){
-							// console.log(stringPriorToEdit);
+						} else if (indexOfFragMatch === -1 && tempHighlightedString.split(" ").length === 1 && tempHighlightedString.indexOf(fragmentTextArray[j].trim().split(" ")) === 0) {
+							// Case: tempHighlightedString = 'especially', fragmentTextArray[j] = 'especially '
+							tempHighlightedString = '';
+							stringPriorToEdit += fragmentTextArray[j];
+						} else {
+							// Does not contain, reset!
 							tempHighlightedString = stringToCheck;
 							hasBegun = false;
 							stringPriorToEdit = '';
-						} else {
-							stringPriorToEdit += " ";
 						}
 					}
+					console.log("Rebuilt String EQ "+i+": "+stringPriorToEdit);
+					console.log("Highlighted String: " + tempHighlightedString);
 					break;
 				case '-':
-					// console.log("added: "+fragments[i]['text']);
+					console.log("Fragments: " + fragments[i]['text']);
+					// We need to add to stringPriorToEdit because it is taken away from the parent with regards to current
 					if(hasBegun){
 						stringPriorToEdit += fragments[i]['text'];
-						if(tempHighlightedString[0] == " "){
-							tempHighlightedString = tempHighlightedString.replace(/\s+/, "");
-							stringPriorToEdit += " ";
-						}
 					}
-					else{
-						fragmentTextArray = fragments[i]['text'].replace(/\n+/g, " ").split(" ");
-						for(var j=0; j<fragmentTextArray.length; j++){
-							if(tempHighlightedString[0] == " "){
-									tempHighlightedString = tempHighlightedString.replace(/\s+/, "");
-									if (lastRemovedItem[lastRemovedItem.length-1] != " ") {
-										stringPriorToEdit += " ";
-									}
-							}
-							if (tempHighlightedString.length <= 0) {
-								break;
-							}
-							indexOfFragMatch = tempHighlightedString.indexOf(fragmentTextArray[j]);
-							if(indexOfFragMatch == 0 & fragmentTextArray[j] != ""){
-								hasBegun = true;
-								tempHighlightedString = tempHighlightedString.replace(fragmentTextArray[j], "");
-								// stringPriorToEdit += fragmentTextArray[j];
-
-								if(tempHighlightedString[0] == " "){
-									tempHighlightedString = tempHighlightedString.replace(/\s+/, "");
-									stringPriorToEdit += " ";
-								}
-							} else if (indexOfFragMatch == 1 && tempHighlightedString[0] == " ") {
-								hasBegun = true;
-								tempHighlightedString = tempHighlightedString.replace(fragmentTextArray[j], "");
-								// stringPriorToEdit += " " + fragmentTextArray[j];
-								tempHighlightedString = tempHighlightedString.replace(/\s+/, "");
-							} else if (fragmentTextArray[j] != ""){
-								// console.log(stringPriorToEdit);
-								tempHighlightedString = stringToCheck;
-								hasBegun = false;
-								stringPriorToEdit = '';
-							} else {
-								stringPriorToEdit += " ";
-							}
-						}
-					}
+					console.log("Rebuilt String - "+i+": "+stringPriorToEdit);
+					console.log("Highlighted String: " + tempHighlightedString);
 					break;
 				case '+':
-					// console.log("minus: "+fragments[i]['text']);
-					if(hasBegun){
-						tempHighlightedString = tempHighlightedString.replace(fragments[i]['text'], "");
-						//if (/\s+$/.test(fragments[i]['text']) && /\s+$/.test(stringPriorToEdit)) {
-						//	stringPriorToEdit.replace(/\s+$/, "");
-						//}
-						lastRemovedItem = fragments[i]['text'];
-						//if(tempHighlightedString[0] == " "){
-						//	tempHighlightedString = tempHighlightedString.replace(/\s+/, "");
-						//	stringPriorToEdit += " ";
-						//}
-					} else {
-						// console.log("minus2: "+fragments[i]['text']);
-						fragmentTextArray = fragments[i]['text'].replace(/\n+/g, " ").split(" ");
-						for(var j=0; j<fragmentTextArray.length; j++){
-							indexOfFragMatch = tempHighlightedString.indexOf(fragmentTextArray[j]);
-							if(indexOfFragMatch == 0 & fragmentTextArray[j] != ""){
-								hasBegun = true;
-								tempHighlightedString = tempHighlightedString.replace(fragments[i]['text'], "");
-
-								if(tempHighlightedString[0] == " "){
-									tempHighlightedString = tempHighlightedString.replace(/\s+/, "");
-									stringPriorToEdit += " ";
-								}
-							} else if (indexOfFragMatch > 0) {
-								// console.log(stringPriorToEdit);
-								tempHighlightedString = stringToCheck;
-								hasBegun = false;
-								stringPriorToEdit = '';
-							}
-
+					console.log("Fragments: " + fragments[i]['text']);
+					// We need to remove the text in fragments from tempHighlightedString because it did not exist in parent.
+					// if(hasBegun){
+					// 	tempHighlightedString = tempHighlightedString.replace(fragments[i]['text'], "");
+					// } else {
+						
+					fragmentTextArray = fragments[i]['text'].split(/(\S+\s+)/).filter(function(n) {return n});
+					// Check every word in fragments to the next word in tempHighlightedString. indexOf should return 0 if there is a match for the next word
+					for(var j=0; j<fragmentTextArray.length; j++){
+						
+						// If the string we are rebuilding is nothing we know to break (inside the for loop)
+						if (tempHighlightedString.length <= 0) { 
+							break;
 						}
-					} 
+
+						// If next word in fragment text contains next word in highlighted string
+						indexOfFragMatch = tempHighlightedString.indexOf(fragmentTextArray[j]);
+						
+						// Does Contain!
+						if(indexOfFragMatch == 0){
+							hasBegun = true;
+							tempHighlightedString = tempHighlightedString.replace(fragmentTextArray[j], "");
+						} else if (indexOfFragMatch === -1 && tempHighlightedString.split(" ").length === 1 && tempHighlightedString.indexOf(fragmentTextArray[j].trim().split(" ")) === 0) {
+							// Case: tempHighlightedString = 'especially', fragmentTextArray[j] = 'especially '
+							tempHighlightedString = '';
+						} else {
+							// Does not contain, reset!
+							tempHighlightedString = stringToCheck;
+							hasBegun = false;
+							stringPriorToEdit = '';
+						}
+					}
+					// } 
+					console.log("Rebuilt String + "+i+": "+stringPriorToEdit);
+					console.log("Highlighted String: " + tempHighlightedString);
 					break;
 			}
 			i += 1;
 		}
 		stringPriorToEdit = stringPriorToEdit.trim();
 
-		return stringPriorToEdit.replace(/\s+/g, " ");
+		return stringPriorToEdit;
 	};
-
 
 	this.init();
 };
