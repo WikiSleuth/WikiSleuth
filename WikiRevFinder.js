@@ -448,11 +448,11 @@ var WikiRevFinder = function(url) {
 
 		//otherwise, we've already searched the first 500 (and possibly more), so search the next batch of 500
 		else{
-			revIDList = this.WikiAPI.findFirst500RevisionIDList(this.oldestRevID)
+			revIDList = this.WikiAPI.findFirst500RevisionIDList(this.oldestRevID);
 		}
 
 		this.revIDList = revIDList;
-		this.referenceRevIDList = this.revIDList
+		this.referenceRevIDList = this.revIDList;
 
 		console.log("first item" + this.revIDList[0]);
 
@@ -483,6 +483,7 @@ var WikiRevFinder = function(url) {
 	this.getStringPriorToEdit = function(stringToCheck, affectedRevision) {
 		var fragments = affectedRevision[2];
 		var stringPriorToEdit = '';
+		var formattedStringToBeDisplayed = '';
 		var tempHighlightedString = stringToCheck;
 		var indexOfFragMatch = 0;
 		var hasBegun = false;
@@ -513,6 +514,7 @@ var WikiRevFinder = function(url) {
 							hasBegun = true;
 							tempHighlightedString = tempHighlightedString.replace(fragmentTextArray[j], "");
 							stringPriorToEdit += fragmentTextArray[j];
+							formattedStringToBeDisplayed += "<span class='unchangedRev>" + fragmentTextArray[j] + "</span>";
 						}else if (indexOfFragMatch === -1 && hasBegun == false && fragmentTextArray[j].lastIndexOf(tempHighlightedString.trim().split(" ")[0]) >= 0){
 							//corner case where only partial first word is highlighted
 							hasBegun = true
@@ -523,10 +525,12 @@ var WikiRevFinder = function(url) {
 							var tempFragmentText = fragmentTextArray[j].slice(indexOfWordStart, fragmentTextArray[j].length);
 							stringPriorToEdit += fragmentTextArray[j];
 							tempHighlightedString = tempHighlightedString.replace(tempFragmentText, "");
+							formattedStringToBeDisplayed += "<span class='unchangedRev>" + fragmentTextArray[j] + "</span>";
 						} else if (indexOfFragMatch === -1 && tempHighlightedString.split(" ").length === 1 && fragmentTextArray[j].indexOf(tempHighlightedString.trim()) === 0) {
 							// Case: tempHighlightedString = 'especially', fragmentTextArray[j] = 'especially '
 							tempHighlightedString = '';
 							stringPriorToEdit += fragmentTextArray[j];
+							formattedStringToBeDisplayed += "<span class='unchangedRev>" + fragmentTextArray[j] + "</span>";
 						} else {
 							// Does not contain, reset!
 							tempHighlightedString = stringToCheck;
@@ -542,6 +546,7 @@ var WikiRevFinder = function(url) {
 					// We need to add to stringPriorToEdit because it is taken away from the parent with regards to current
 					if(hasBegun){
 						stringPriorToEdit += fragments[i]['text'];
+						formattedStringToBeDisplayed += "<span class='addedRev>" + fragmentTextArray[j] + "</span>";
 					}
 					console.log("Rebuilt String - "+i+": "+stringPriorToEdit);
 					console.log("Highlighted String: " + tempHighlightedString);
@@ -569,9 +574,11 @@ var WikiRevFinder = function(url) {
 						if(indexOfFragMatch == 0){
 							hasBegun = true;
 							tempHighlightedString = tempHighlightedString.replace(fragmentTextArray[j], "");
+							formattedStringToBeDisplayed += "<span class='delRev>" + fragmentTextArray[j] + "</span>";
 						} else if (indexOfFragMatch === -1 && tempHighlightedString.split(" ").length === 1 && tempHighlightedString.indexOf(fragmentTextArray[j].trim().split(" ")) === 0) {
 							// Case: tempHighlightedString = 'especially', fragmentTextArray[j] = 'especially '
 							tempHighlightedString = '';
+							formattedStringToBeDisplayed += "<span class='delRev>" + fragmentTextArray[j] + "</span>";
 						} else {
 							// Does not contain, reset!
 							tempHighlightedString = stringToCheck;
