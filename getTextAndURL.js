@@ -21,4 +21,14 @@ var firstSentenceLandmark = sentences[0];
 var endSentenceLandmark = sentences[sentences.length-2];
 
 var url = document.URL;
-[text, url, firstSentenceLandmark, endSentenceLandmark];
+var splitURL = url.split("=")
+var pageID 
+if (splitURL.length == 1) {
+	pageID = null;
+
+} else {
+	pageID = splitURL[splitURL.length-1];
+}
+//console.log("in getText.js, pageID:");
+//console.log(pageID);
+[text, url, firstSentenceLandmark, endSentenceLandmark, pageID];
