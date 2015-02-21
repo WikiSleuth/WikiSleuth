@@ -213,7 +213,7 @@ var WikiRevFinder = function(url) {
 			//affectingRevs.push(nextRev);
 
 			//need to update current, rebuilt rev to be "most current" revision, so that other revisions are checked against this one
-			this.mostCurrentRevisionContent = this.getMostRecentRevisionContent(nextRevid);
+			this.mostCurrentRevisionContent = this.getMostRecentRevisionContent(nextRev[0]["parentid"]);
 			var sanitizedMostCurrentRevisionContent = this.sanitizeInput(this.mostCurrentRevisionContent);
 			if(sanitizedMostCurrentRevisionContent.length != 0 && this.mostCurrentRevisionContent != 0){
 				this.mostCurrentRevisionContent = sanitizedMostCurrentRevisionContent;
@@ -222,16 +222,16 @@ var WikiRevFinder = function(url) {
 
 			//now we need to get the revision immediately after that one, take the diff of that and the first affecting revision,
 			//to get the right rebuilt string
-			var revIdToDiffTo = 0;
+			// var revIdToDiffTo = 0;
 
-			for(var i = 0; i < originalRevIdList.length; i++){
-				if(originalRevIdList[i]['revid'] == nextRevid){
-					revIdToDiffTo = originalRevIdList[i-1]['revid'];
-					break;
-				}
-			}
+			// for(var i = 0; i < originalRevIdList.length; i++){
+			// 	if(originalRevIdList[i]['revid'] == nextRevid){
+			// 		revIdToDiffTo = originalRevIdList[i-1]['revid'];
+			// 		break;
+			// 	}
+			// }
 
-			var contentToDiffTo = this.getMostRecentRevisionContent(revIdToDiffTo);
+			var contentToDiffTo = this.getMostRecentRevisionContent(nextRevid);
 
 			this.WikEdDiff = new WikEdDiff();
 
