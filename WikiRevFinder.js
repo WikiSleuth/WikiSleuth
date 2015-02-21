@@ -97,7 +97,7 @@ var WikiRevFinder = function(url) {
 
 
 						//CORNER CASE TO CONSIDER LATER: what if revIDList[0] is also referenceRevIDList[0]? need to get first of next 500.
-						var ourIndex = this.referenceList.indexOf(this.revIDList[0]);
+						var ourIndex = this.referenceRevIDList.indexOf(this.revIDList[0]);
 						affectedRevisionList.push([this.referenceRevIDList[ourIndex-1], diffObject[1], diffObject[2]])
 					}
 					break;
@@ -129,7 +129,7 @@ var WikiRevFinder = function(url) {
 				//check to make sure this id isn't already in affected revision list
 				var alreadyInList = false
 				for(var i = 0; i < affectedRevisionList.length; i++){
-					if(affectedRevisionList[i][0]['revid'] == this.revIDList[this.halfpoint]['revid']){
+					if(affectedRevisionList[i][0]['revid'] == this.revIDList[this.halfpoint-1]['revid']){
 						alreadyInList = true;
 						break;
 					}
