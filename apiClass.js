@@ -4,6 +4,7 @@ var APICaller = function(url){
 
 	this.init = function() {
 		var urlArray = url.split('/');
+		console.log("ARRAY: "+urlArray);
 		this.pageName = urlArray[urlArray.length - 1];
 		this.endpoint = 'http://en.wikipedia.org/w/api.php?';
 		return;
@@ -15,12 +16,17 @@ var APICaller = function(url){
 		var action = '';
 
 		if(startID != 0){
+			try{
+				this.pageName = this.pageName.split('title=')[1].split('&')[0];
+			} catch (err){
+			}
 			action = 'format=json&action=query&titles=' + this.pageName + '&prop=revisions&rvstartid='+ startID +'&rvprop=ids&rvlimit=500&continue='
 		}
 		else{
 			action = 'format=json&action=query&titles=' + this.pageName + '&prop=revisions&rvprop=ids&rvlimit=500&continue='
 		}
 		var apiRequestURL = this.endpoint + action;
+		console.log("URL::::: "+apiRequestURL);
 		var jsonObject = this.makeRequest(apiRequestURL);
 		return jsonObject['query']['pages'][Object.keys(jsonObject['query']['pages'])[0]]['revisions'];
 
