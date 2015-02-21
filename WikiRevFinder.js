@@ -507,11 +507,22 @@ var WikiRevFinder = function(url) {
 						// If next word in fragment text contains next word in highlighted string
 						indexOfFragMatch = tempHighlightedString.indexOf(fragmentTextArray[j]);
 						
+
 						// Does Contain!
 						if(indexOfFragMatch == 0) {
 							hasBegun = true;
 							tempHighlightedString = tempHighlightedString.replace(fragmentTextArray[j], "");
 							stringPriorToEdit += fragmentTextArray[j];
+						}else if (indexOfFragMatch === -1 && hasBegun == false && fragmentTextArray[j].lastIndexOf(tempHighlightedString.trim().split(" ")[0]) >= 0){
+							//corner case where only partial first word is highlighted
+							hasBegun = true
+							// tempHighlightedString = tempHighlightedString.replace(tempHighlightedString.trim().split(" ")[0], "");
+							var indexOfWordStart = fragmentTextArray[j].lastIndexOf(tempHighlightedString.trim().split(" ")[0]);
+							//we're keeping this as a temp variable so that we add the whole word to stringPriorToEdit,
+							//but still only remove the partial word from tempHighlightedString. <---- design choice
+							var tempFragmentText = fragmentTextArray[j].slice(indexOfWordStart, fragmentTextArray[j].length);
+							stringPriorToEdit += fragmentTextArray[j];
+							tempHighlightedString = tempHighlightedString.replace(tempFragmentText, "");
 						} else if (indexOfFragMatch === -1 && tempHighlightedString.split(" ").length === 1 && fragmentTextArray[j].indexOf(tempHighlightedString.trim()) === 0) {
 							// Case: tempHighlightedString = 'especially', fragmentTextArray[j] = 'especially '
 							tempHighlightedString = '';
