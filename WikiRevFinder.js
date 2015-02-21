@@ -19,6 +19,7 @@ var WikiRevFinder = function(url) {
 
 
 	this.iterativeBinarySearch = function(stringToCheck, landmarkBefore, landmarkAfter) {
+		console.log("STRING TO CHECK: "+stringToCheck);
 
 		landmarkBefore = landmarkBefore || null;
 		landmarkAfter = landmarkAfter || null;
@@ -32,15 +33,15 @@ var WikiRevFinder = function(url) {
 			console.log("halfpoint number we think: " + this.revIDList[this.halfpoint]['revid']);
 
 			var midpointRevisionContent = "";
-			if(this.cachedContent[this.halfpoint] == undefined){
-				midpointRevisionContent = this.getMidpointRevisionContent();
+			// if(this.cachedContent[this.halfpoint] == undefined){
+			midpointRevisionContent = this.getMidpointRevisionContent();
 				//store the content in the cache for faster retrieval
-				this.cachedContent[this.halfpoint] = midpointRevisionContent;
-			}
-			else{
-				//get the content from the cache instead of recalculating it using the API
-				midpointRevisionContent = this.cachedContent[this.halfpoint];
-			}
+			// 	this.cachedContent[this.halfpoint] = midpointRevisionContent;
+			// }
+			// else{
+			// 	//get the content from the cache instead of recalculating it using the API
+			// 	midpointRevisionContent = this.cachedContent[this.halfpoint];
+			// }
 			var sanitizedMidpointRevisionContent = this.sanitizeInput(midpointRevisionContent);
 			if(sanitizedMidpointRevisionContent.length != 0 && midpointRevisionContent != 0){
 				midpointRevisionContent = sanitizedMidpointRevisionContent
@@ -59,8 +60,8 @@ var WikiRevFinder = function(url) {
 			diffDictionary['+'] = diffDictionary['+'].replace(/\n\n/g, " ");
 			diffDictionary['-'] = diffDictionary['-'].replace(/\n\n/g, " ");
 
-			console.log("CHECKING: "+diffDictionary['=']+ " MINUS " +diffDictionary['-'] +" PLUS "+diffDictionary['+']);
-			console.log("\nLANDMARKS: "+landmarkAfter+"\n");
+			// console.log("CHECKING: "+diffDictionary['=']+ " MINUS " +diffDictionary['-'] +" PLUS "+diffDictionary['+']);
+			// console.log("\nLANDMARKS: "+landmarkAfter+"\n");
 			//only look at the text between landmarks
 			var lowerLandmarkIndex = diffDictionary['='].indexOf(landmarkBefore)
 			var upperLandmarkIndex = diffDictionary['='].indexOf(landmarkAfter)
