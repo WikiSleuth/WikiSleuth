@@ -79,6 +79,12 @@ function sendNameToModel(response){
 
 }
 
+function sendDOMNameToModel(name){
+  authorFinder = new AuthorStatisticsFinder(name);
+  authorRevList = authorFinder.setRecentAuthorRevisionsList();
+  document.dispatchEvent(authorEvent);
+}
+
 // Reactivate the page
 function getAuthorPageWindow() {
   chrome.tabs.query({active: true, currentWindow: true}, addAuthorInfo);
@@ -102,6 +108,7 @@ function buildAuthorPane(tabs, html) {
   //I think we can grab data through master flow, need to check this out with Pat and Gustav
   //document.dispatchEvent(authorEventTwo);
 }
+
 /*
 function messagePassing(tabs){
   console.log("doing the message passing thing injection");

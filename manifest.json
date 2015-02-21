@@ -17,14 +17,16 @@
   ],
   
   "background": {
-    "scripts": ["apiClass.js", "diff.js", "txtwiki.js", "WikiRevFinder.js", "getSearchText.js", "createPanel.js", "createPanelForAuthor.js", "preProcess.js", "panel.js","processDataForAuthorUI.js", "processDataForUI.js","heatTest.js","AuthorFinder.js", "master.js", "dateConverter.js"],
+    "scripts": ["background.js","apiClass.js", "diff.js", "txtwiki.js", "WikiRevFinder.js", "getSearchText.js", "createPanel.js", "createPanelForAuthor.js", "preProcess.js", "panel.js","processDataForAuthorUI.js", "processDataForUI.js","heatTest.js","AuthorFinder.js", "master.js", "dateConverter.js"],
     "persistent": true
   },
 
   "content_scripts": [
     {
       "matches": ["http://en.wikipedia.org/*"],
-      "js": ["apiClass.js", "diff.js", "txtwiki.js", "WikiRevFinder.js", "panel.js", "heatTest.js", "dateConverter.js", "getSearchText.js"]
+      "js": ["apiClass.js", "diff.js", "txtwiki.js", "WikiRevFinder.js", "panel.js", "createPanelForAuthor.js","heatTest.js", "dateConverter.js", "getSearchText.js"],
+      "all_frames": true,
+      "run_at": "document_start"
     }
   ],
 
