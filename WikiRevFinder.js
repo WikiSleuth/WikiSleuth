@@ -246,12 +246,12 @@ var WikiRevFinder = function(url) {
 			//TODO: what to do if revidtodiffto stays at 0.
 			// console.log("list: "+this.revIDList);
 
-
+			// Pat here, I think this will do it? Let me know if it should be different!
+			nextRev[3] = currentString;
 
 			currentString = this.getStringPriorToEdit(currentString, nextRev);
 			//alter nextRev so that it contains currentString after getting rebuilt
-			// Pat here, I think this will do it? Let me know if it should be different!
-			nextRev[3] = currentString;
+			
 			affectingRevs.push(nextRev);
 			currLandmarkBefore = this.getStringPriorToEdit(currLandmarkBefore, nextRev);
 			currLandmarkAfter = this.getStringPriorToEdit(currLandmarkAfter, nextRev);
