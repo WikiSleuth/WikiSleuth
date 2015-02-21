@@ -11,7 +11,8 @@ function callHeatMap2(){
 }
 
 function callResetColors(){
-    chrome.tabs.executeScript(null,{file: "heatMapScripts/resetColors.js"});
+    //chrome.tabs.executeScript(null,{file: "heatMapScripts/resetColors.js"});
+    bgPage.callResetFromButton();
 }
 
 function callBackgroundColor(){

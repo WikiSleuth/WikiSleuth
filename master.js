@@ -3,7 +3,7 @@ var WikiAPI = null;
 var isPaneDisplayed = false;
 var heatMapObject = null;
 var text_date_list = [];
-var preProcess = false;
+var preProcess = true;
 
 // ****************** start heatmap stuff
 
@@ -21,6 +21,7 @@ chrome.webNavigation.onCompleted.addListener(function(details){
         });  
     }
 });
+
 
 function initHeatmap(){
     if (isOnWiki){
@@ -53,6 +54,42 @@ function injectedColorScript(tabs){
         chrome.tabs.executeScript(tabs[0].id, {file: 'colorPage.js'});
     });
 }
+
+
+chrome.webNavigation.onCompleted.addListener(function(details){
+            chrome.tabs.executeScript(details.tabId, {
+            code: initColorReset()
+        });  
+});
+
+function initColorReset() {
+    chrome.tabs.query({active: true, currentWindow: true}, resetHTML);
+}
+
+function resetHTML(tabs){
+    chrome.tabs.executeScript(tabs[0].id, {file: 'getPageHTML.js'}, sendHTMLToModel); 
+}
+
+function sendHTMLToModel(response){
+    paragraphs_html = response[0][0];
+}
+
+function callResetFromButton(){
+    chrome.tabs.query({active: true, currentWindow: true}, finalResetCall); 
+}
+
+function finalResetCall(tabs){
+    console.log("GOT INTO THE FINAL CALL", paragraphs_html);
+    chrome.tabs.executeScript(tabs[0].id, {
+        code: 'var paragraphs_html = ' + JSON.stringify(paragraphs_html)
+    }, function() {
+        console.log("YOYOYOYOYO");
+        chrome.tabs.executeScript(tabs[0].id, {file: "resetColors.js"});
+    }); 
+    console.log("HEYHEYHEYHEYHEY");
+    
+}
+
 
 // ************************* end heatmap stuff
 
