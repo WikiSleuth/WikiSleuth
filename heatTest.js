@@ -1,4 +1,4 @@
-var heatTest = function(url) {
+var heatTest = function(url,pageID) {
 
 	this.WikiAPI = null;
     this.WikiRevFinder = null;
@@ -17,7 +17,7 @@ var heatTest = function(url) {
         console.log("Sentence that we're calling the algorithm on: ", text_to_color);
         var affectedRevs = [];
         var date_and_numRevs = [];
-        affectedRevs = this.WikiRevFinder.getWikiRevsInfo(text_to_color[0],text_to_color[1],text_to_color[2],1,'');
+        affectedRevs = this.WikiRevFinder.getWikiRevsInfo(text_to_color[0],text_to_color[1],text_to_color[2],pageID,1,0);
         console.log("HERE IS THE AFFECTED REV FROM HEATMAP CLASS ", affectedRevs);
         var revisionDetails = null;
         var revisionDate = null;

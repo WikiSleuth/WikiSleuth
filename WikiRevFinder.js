@@ -380,7 +380,7 @@ var WikiRevFinder = function(url) {
 	};
 
 	this.getMostRecentRevisionContent = function(optionalRevId) {
-		optionalRevId = optionalRevId || 0
+		optionalRevId = optionalRevId || 0;
 		if(optionalRevId == 0){
 			return txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(this.revIDList[0]['revid']));
 		}
@@ -494,7 +494,7 @@ var WikiRevFinder = function(url) {
 				console.log("453")
 				revIDList = this.WikiAPI.findFirst500RevisionIDList(this.oldestRevID);
 			} else {
-				console.log("456")
+				console.log("456", pageStartID, "<-----");
 				revIDList = this.WikiAPI.findFirst500RevisionIDList(pageStartID);
 			}
 		}
@@ -503,7 +503,6 @@ var WikiRevFinder = function(url) {
 
 		//console.log("first item" + this.revIDList[0]);
 
-		this.mostCurrentRevisionContent = this.getMostRecentRevisionContent();
 		var sanitizedMostCurrentRevisionContent = this.sanitizeInput(this.mostCurrentRevisionContent);
 		if(sanitizedMostCurrentRevisionContent.length != 0 && this.mostCurrentRevisionContent != 0){
 			this.mostCurrentRevisionContent = sanitizedMostCurrentRevisionContent;

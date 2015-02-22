@@ -22,10 +22,16 @@ for(i=0;i<myNodelist.length;i++){
         }
 }
 
-var myListList = document.getElementsByTagName("li");
-    
-
 var url = document.URL;
+var splitURL = url.split("=")
+var pageID;
+if (splitURL.length == 1) {
+	pageID = null;
+
+} else {
+	pageID = splitURL[splitURL.length-1];
+}
+
 console.log(bigSentList);
 console.log(url);
-[bigSentList, url];
+[bigSentList, url,pageID];

@@ -6,7 +6,7 @@ function startTheHeatMap() {
         console.log("the data in the worker", e.data[0]);
         data_array= e.data;
         importScripts('apiClass.js','diff.js','txtwiki.js','WikiRevFinder.js','heatTest.js');
-        heatMapObject = new heatTest(data_array[1]);
+        heatMapObject = new heatTest(data_array[1],data_array[2]);
         text_date_list = heatMapObject.makeTextDateList(data_array[0]);  
         console.log("$$$$$ heatmap worker is done");
         postMessage(text_date_list);

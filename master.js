@@ -41,8 +41,7 @@ function startTheHeatMap(tabs){
 }
 
 function sendPageToModel(response) {
-    console.log("this is the response ", response[0][0][0]);
-    makeWorkersTextDateList(response[0][0],response[0][1]);
+    makeWorkersTextDateList(response[0][0],response[0][1],response[0][2]);
     
 }
 

@@ -1,4 +1,4 @@
-function makeWorkersTextDateList(sentList, URL){
+function makeWorkersTextDateList(sentList, URL, pageID){
     console.log("CALLING THE MAKETEXTWORKERTHING");
     var quarter_length = Math.ceil(sentList.length/4);
     worker_wordList1 = sentList;
@@ -17,6 +17,7 @@ function makeWorkersTextDateList(sentList, URL){
     //Push the first worker's list to the message and the url
     new_message.push(worker_wordList1);
     new_message.push(URL);
+    new_message.push(pageID);
     heatmap_worker.postMessage(new_message);
     // listen for second worker message
     heatmap_worker.onmessage = function (event) {
@@ -29,6 +30,7 @@ function makeWorkersTextDateList(sentList, URL){
     new_message2 = [];
     new_message2.push(worker_wordList2);
     new_message2.push(URL);
+    new_message2.push(pageID);
     heatmap_worker2.postMessage(new_message);
     //listen for second worker response
     heatmap_worker2.onmessage = function (event) {
@@ -40,6 +42,7 @@ function makeWorkersTextDateList(sentList, URL){
     new_message3 = [];
     new_message3.push(worker_wordList3);
     new_message3.push(URL);
+    new_message3.push(pageID);
     heatmap_worker3.postMessage(new_message);
     //listen for second worker response
     heatmap_worker3.onmessage = function (event) {
@@ -51,6 +54,7 @@ function makeWorkersTextDateList(sentList, URL){
     new_message4 = [];
     new_message4.push(worker_wordList4);
     new_message4.push(URL);
+    new_message4.push(pageID);
     heatmap_worker4.postMessage(new_message);
     //listen for second worker response
     heatmap_worker4.onmessage = function (event) {
