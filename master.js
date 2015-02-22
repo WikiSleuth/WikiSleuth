@@ -79,16 +79,18 @@ function sendTextToModel(response) {
   if (response[0][0]) {
     WikiAPI = new WikiRevFinder(response[0][1]);
     console.log("&&&&&&&&&&&&&", response[0][0], response[0][2], response[0][3]);
-    data = getAffectedRevisions(response[0][0], response[0][2], response[0][3]);
+    console.log("in master sendTextToModel pageID:")
+    console.log(response[0][4]);
+    data = getAffectedRevisions(response[0][0], response[0][2], response[0][3], response[0][4]);
     //document.dispatchEvent(evt);
     getPageWindow();
   }
 }
 
 // Collects data recieved by the model ****** Should be moved somewhere that makes more sense ******
-function getAffectedRevisions(highlightedText, landmarkBefore, landmarkAfter){
+function getAffectedRevisions(highlightedText, landmarkBefore, landmarkAfter, pageStartID){
   //console.log("about to call getWikiRevsInfo");
-  var affectedRevs = WikiAPI.getWikiRevsInfo(highlightedText, landmarkBefore, landmarkAfter);
+  var affectedRevs = WikiAPI.getWikiRevsInfo(highlightedText, landmarkBefore, landmarkAfter, pageStartID, 10);
   console.log("done calling getWikiRevsInfo");
   var revisionDetails = null;
 

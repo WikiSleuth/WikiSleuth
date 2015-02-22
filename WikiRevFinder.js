@@ -270,7 +270,7 @@ var WikiRevFinder = function(url) {
 
 			this.revIDList = this.WikiAPI.findFirst500RevisionIDList(nextRevid);
 			this.referenceRevIDList = this.revIDList;
-			this.checkOldestRevision(currentString, landmarkBefore, landmarkAfter);
+			this.checkOldestRevision(currentString, landmarkBefore, landmarkAfter, n);
 			if(this.revIDList.length == 0){
 				this.revIDList = revIDList;
 			}
@@ -362,7 +362,7 @@ var WikiRevFinder = function(url) {
 		return txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(this.oldestRevID));
 	};
 
-	this.checkOldestRevision = function(stringToCheck, landmarkBefore, landmarkAfter) {
+	this.checkOldestRevision = function(stringToCheck, landmarkBefore, landmarkAfter, numRevisions) {
 		//before searching the entire revision history, we just check the oldest item
 		//if there's nothing affecting the string in that revision, then nothing will have affected it
 		//in any more recent revisions, so we can just move on to the next set of revisions.
@@ -405,7 +405,7 @@ var WikiRevFinder = function(url) {
 			}
 
 			//go farther back in revision history
-			this.getWikiRevsInfo(stringToCheck, landmarkBefore, landmarkAfter, this.oldestRevID);
+			this.getWikiRevsInfo(stringToCheck, landmarkBefore, landmarkAfter, this.oldestRevID, null, numRevisions);
 		}
 		else{
 			console.log("oldest revision DOES affect string: "+this.oldestRevID);
@@ -426,7 +426,12 @@ var WikiRevFinder = function(url) {
 
 
 	//This is the function that gets called by master, sends back all the revisions to be displayed
-	this.getWikiRevsInfo = function(stringToCheck, landmarkBefore, landmarkAfter, revisionOffset) {
+	this.getWikiRevsInfo = function(stringToCheck, landmarkBefore, landmarkAfter, pageStartID, numRevisions, revisionOffset) {
+		// console.log("start of getWikiRevsInfo page id:")
+		// console.log(pageStartID)
+		// if (pageStartID == null){
+		// 	console.log("page start id equal null")
+		// }
 		//need to clear the cache each time, because we're taking diffs against a different revision, so the content will be different
 		//and therefore old entries will no longer be cache-able
 		this.cachedContent = []
@@ -446,19 +451,29 @@ var WikiRevFinder = function(url) {
 		var revIDList = [];
 
 		//search the first 500 revisions in this case
-		if(revisionOffset == 0){
+		if(revisionOffset == 0 && pageStartID == null){
+			console.log("446")
 			revIDList = this.WikiAPI.findFirst500RevisionIDList();
 		}
 
 		//otherwise, we've already searched the first 500 (and possibly more), so search the next batch of 500
 		else{
-			revIDList = this.WikiAPI.findFirst500RevisionIDList(this.oldestRevID);
+			if (pageStartID == null){
+				console.log("453")
+				revIDList = this.WikiAPI.findFirst500RevisionIDList(this.oldestRevID);
+			} else {
+				console.log("456")
+				revIDList = this.WikiAPI.findFirst500RevisionIDList(pageStartID);
+				console.log("in the else block revIDList:")
+				console.log(revIDList)
+			}
 		}
-
+		console.log("line 457 revIdLIST:")
+		console.log(revIDList)
 		this.revIDList = revIDList;
 		this.referenceRevIDList = this.revIDList;
 
-		console.log("first item" + this.revIDList[0]);
+		//console.log("first item" + this.revIDList[0]);
 
 		this.mostCurrentRevisionContent = this.getMostRecentRevisionContent();
 		var sanitizedMostCurrentRevisionContent = this.sanitizeInput(this.mostCurrentRevisionContent);
@@ -470,7 +485,7 @@ var WikiRevFinder = function(url) {
 
 		//first, check that the oldest revision in this block of 500 affects the string.
 		//If not, we can immediately move on to the next block of 500 revisions.
-		this.checkOldestRevision(stringToCheck, landmarkBefore, landmarkAfter);
+		this.checkOldestRevision(stringToCheck, landmarkBefore, landmarkAfter, numRevisions);
 		if(this.revIDList.length == 0){
 			this.revIDList = revIDList;
 		}
@@ -481,7 +496,7 @@ var WikiRevFinder = function(url) {
 				return toReturn;
 			}
 
-		return this.lastNrevisions(stringToCheck, landmarkBefore, landmarkAfter, 10, revIDList);
+		return this.lastNrevisions(stringToCheck, landmarkBefore, landmarkAfter, numRevisions, revIDList);
 	};
 
 	this.getStringPriorToEdit = function(stringToCheck, affectedRevision) {
