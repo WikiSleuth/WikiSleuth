@@ -17,7 +17,8 @@ var heatTest = function(url) {
         console.log("Sentence that we're calling the algorithm on: ", text_to_color);
         var affectedRevs = [];
         var date_and_numRevs = [];
-        affectedRevs = this.WikiRevFinder.getWikiRevsInfo(text_to_color[0],text_to_color[1],text_to_color[2],'');
+        affectedRevs = this.WikiRevFinder.getWikiRevsInfo(text_to_color[0],text_to_color[1],text_to_color[2],1,'');
+        console.log("HERE IS THE AFFECTED REV FROM HEATMAP CLASS ", affectedRevs);
         var revisionDetails = null;
         var revisionDate = null;
         console.log(text_to_color);
@@ -41,7 +42,6 @@ var heatTest = function(url) {
             var date_and_numRevs = this.getMostRecentRev(text_list[i]);
             var daysElapsed = date_and_numRevs[0];
             var num_revs = date_and_numRevs[1];
-            console.log("&&&&&&&&& number of edits: ", num_revs);
             text_date.push(text_list[i])
             text_date.push(daysElapsed);
             text_date.push(num_revs);

@@ -1,5 +1,4 @@
 // resetColors.js
-console.log("inside of reset script", paragraphs_html);
 function reset() {
     var myNodelist = document.getElementsByTagName("p");
     for(i=0;i<myNodelist.length;i++){

@@ -3,7 +3,8 @@ var WikiAPI = null;
 var isPaneDisplayed = false;
 var heatMapObject = null;
 var text_date_list = [];
-var preProcess = true;
+var preProcess = false;
+var theURL = '';
 
 // ****************** start heatmap stuff
 
@@ -14,11 +15,16 @@ function preProcessTrue(){
 function preProcessFalse(){
     preProcess = false;  
 }
+
 chrome.webNavigation.onCompleted.addListener(function(details){
+    theURL = details.url; 
     if((details.url.indexOf('wikipedia.org/wiki/')>-1) && (preProcess==true)){
             chrome.tabs.executeScript(details.tabId, {
             code: initHeatmap()
-        });  
+        }, function() {
+            if (chrome.runtime.lastError) {
+                console.log();
+            }}); 
     }
 });
 
@@ -57,9 +63,14 @@ function injectedColorScript(tabs){
 
 
 chrome.webNavigation.onCompleted.addListener(function(details){
+     if(details.url.indexOf('wikipedia.org/wiki/')>-1){
             chrome.tabs.executeScript(details.tabId, {
             code: initColorReset()
-        });  
+        }, function() {
+            if (chrome.runtime.lastError) {
+                console.log();
+            }});
+     }
 });
 
 function initColorReset() {
@@ -79,14 +90,11 @@ function callResetFromButton(){
 }
 
 function finalResetCall(tabs){
-    console.log("GOT INTO THE FINAL CALL", paragraphs_html);
     chrome.tabs.executeScript(tabs[0].id, {
         code: 'var paragraphs_html = ' + JSON.stringify(paragraphs_html)
     }, function() {
-        console.log("YOYOYOYOYO");
         chrome.tabs.executeScript(tabs[0].id, {file: "resetColors.js"});
     }); 
-    console.log("HEYHEYHEYHEYHEY");
     
 }
 
@@ -113,7 +121,7 @@ function getHighlightedText(tabs) {
 
 // Response of our executed script will have the highlighted text. Set our text var to equal that string and then trigger the next event
 function sendTextToModel(response) {
-  if (response[0][0]) {
+  if (response[0][1].indexOf('wikipedia.org/wiki/')>-1) {
     WikiAPI = new WikiRevFinder(response[0][1]);
     console.log("&&&&&&&&&&&&&", response[0][0], response[0][2], response[0][3]);
     data = getAffectedRevisions(response[0][0], response[0][2], response[0][3]);
@@ -149,12 +157,14 @@ function addInfo(tabs) {
 
 // Send constructed pane to Wiki page along with the CSS for the pane
 function buildPane(tabs, html) {
-  chrome.tabs.insertCSS(tabs[0].id, {file: 'panel.css'})
-  chrome.tabs.executeScript(tabs[0].id, { code: 'var panelHTML = ' + JSON.stringify(html) },
-   function() {
-    chrome.tabs.executeScript(tabs[0].id, {file: 'createPanel.js'});
-  });
-  isPaneDisplayed = true;
+    if(isOnWiki){
+        chrome.tabs.insertCSS(tabs[0].id, {file: 'panel.css'})
+        chrome.tabs.executeScript(tabs[0].id, { code: 'var panelHTML = ' + JSON.stringify(html) },
+        function() {
+            chrome.tabs.executeScript(tabs[0].id, {file: 'createPanel.js'});
+        });
+        isPaneDisplayed = true; 
+    }
 }
 
 // Log the response we get returned from the message we sent to the UI. For debugging purposes.
