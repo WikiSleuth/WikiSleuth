@@ -34,10 +34,9 @@ This is where Thor started his changes to the api class to incorporate user stat
 
 	this.getDayOldRevisionsListByAuthor = function(authorName){
 		var currTime = this.timeCalculator.getTodayTimeStamp();
-		console.log(currTime);
 		var dayOldTime = this.timeCalculator.getYesterdayTimeStamp();
-		console.log(dayOldTime);
-		var action = 'action=query&list=usercontribs&format=json&uclimit=500&uccontinue=500&ucuser=' + authorName + '&ucstart=' + currTime + '&ucend=' + dayOldTime + '&ucprop=ids&continue=';
+		var action = 'action=query&list=usercontribs&format=json&uclimit=500&ucuser=' + authorName + '&ucstart=' + currTime + '&ucend=' + dayOldTime + '&ucprop=ids&continue=';
+		var action = action.replace(/:/g,'%3A');
 		var apiRequestURL = this.endpoint + action;
 		var jsonObject = this.makeRequest(apiRequestURL);
 		console.log(jsonObject['query']['usercontribs']);
@@ -49,7 +48,8 @@ This is where Thor started his changes to the api class to incorporate user stat
 	this.getWeekOldRevisionsListByAuthor = function(authorName){
 		var currTime = this.timeCalculator.getTodayTimeStamp();
 		var weekOldTime = this.timeCalculator.getPastWeekTimeStamp();
-		var action = 'action=query&list=usercontribs&format=json&uclimit=500&uccontinue=500&ucuser=' + authorName + '&ucstart=' + currTime + '&ucend=' + weekOldTime + '&ucprop=ids&continue=';
+		var action = 'action=query&list=usercontribs&format=json&uclimit=500&ucuser=' + authorName + '&ucstart=' + currTime + '&ucend=' + weekOldTime + '&ucprop=ids&continue=';
+		var action = action.replace(/:/g,'%3A');
 		var apiRequestURL = this.endpoint + action;
 		var jsonObject = this.makeRequest(apiRequestURL);
 		console.log(jsonObject['query']['usercontribs']);
@@ -61,8 +61,9 @@ This is where Thor started his changes to the api class to incorporate user stat
 
 	this.getMonthOldRevisionsListByAuthor = function(authorName){
 		var currTime = this.timeCalculator.getTodayTimeStamp();
-		var monthOldTime = this.timeCalculator.getPastWeekTimeStamp();
-		var action = 'action=query&list=usercontribs&format=json&uclimit=500&uccontinue=500&ucuser=' + authorName + '&ucstart=' + currTime + '&ucend=' + monthOldTime + '&ucprop=ids&continue=';
+		var monthOldTime = this.timeCalculator.getPastMonthTimeStamp();
+		var action = 'action=query&list=usercontribs&format=json&uclimit=500&ucuser=' + authorName + '&ucstart=' + currTime + '&ucend=' + monthOldTime + '&ucprop=ids&continue=';
+		var action = action.replace(/:/g,'%3A');
 		var apiRequestURL = this.endpoint + action;
 		var jsonObject = this.makeRequest(apiRequestURL);
 		console.log(jsonObject['query']['usercontribs']);
@@ -73,8 +74,9 @@ This is where Thor started his changes to the api class to incorporate user stat
 
 	this.getYearOldRevisionsListByAuthor = function(authorName){
 		var currTime = this.timeCalculator.getTodayTimeStamp();
-		var yearOldTime = this.timeCalculator.getPastWeekTimeStamp();
-		var action = 'action=query&list=usercontribs&format=json&uclimit=500&uccontinue=500&ucuser=' + authorName + '&ucstart=' + currTime + '&ucend=' + yearOldTime + '&ucprop=ids&continue=';
+		var yearOldTime = this.timeCalculator.getPastYearTimeStamp();
+		var action = 'action=query&list=usercontribs&format=json&uclimit=500&ucuser=' + authorName + '&ucstart=' + currTime + '&ucend=' + yearOldTime + '&ucprop=ids&continue=';
+		var action = action.replace(/:/g,'%3A');
 		var apiRequestURL = this.endpoint + action;
 		var jsonObject = this.makeRequest(apiRequestURL);
 		console.log(jsonObject['query']['usercontribs']);
@@ -85,7 +87,9 @@ This is where Thor started his changes to the api class to incorporate user stat
 
 	this.getTotalOldRevisionListByAuthor = function(authorName){
 		var currTime = this.timeCalculator.getTodayTimeStamp();
-		var action = 'action=query&list=usercontribs&format=json&uclimit=500&uccontinue=500&ucuser=' + authorName + '&ucstart=' + currTime + '&ucend=2001-01-15T00%3A00%3A00-06%3a00&ucprop=ids&continue=';
+		var decadeOldTime = this.timeCalculator.getPastDecadeTimeStamp();
+		var action = 'action=query&list=usercontribs&format=json&uclimit=500&ucuser=' + authorName + '&ucstart=' + currTime + '&ucend='+ decadeOldTime +'&ucprop=ids&continue=';
+		var action = action.replace(/:/g,'%3A');
 		var apiRequestURL = this.endpoint + action;
 		var jsonObject = this.makeRequest(apiRequestURL);
 		console.log(jsonObject['query']['usercontribs']);
@@ -101,6 +105,19 @@ This is where Thor started his changes to the api class to incorporate user stat
 		var jsonObject = this.makeRequest(apiRequestURL);
 		console.log(jsonObject['query']['usercontribs']);
 		//gives an array of dictionaries that have data that we need, keys are: userid, user, pageid, revid, parentid, ns, title
+		return jsonObject['query']['usercontribs'];
+
+	}
+
+	this.getTotalMajorEditsByAuthor = function(authorName){
+
+		var currTime = this.timeCalculator.getTodayTimeStamp();
+		var decadeOldTime = this.timeCalculator.getPastDecadeTimeStamp();
+		var action = 'action=query&list=usercontribs&format=json&uclimit=500&ucuser=' + authorName + '&ucstart=' + currTime + '&ucend='+ decadeOldTime +'&ucshow=!minor&ucprop=ids&continue=';
+		var action = action.replace(/:/g,'%3A');
+		var apiRequestURL = this.endpoint + action;
+		var jsonObject = this.makeRequest(apiRequestURL);
+		console.log(jsonObject['query']['usercontribs']);
 		return jsonObject['query']['usercontribs'];
 
 	}

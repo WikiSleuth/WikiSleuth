@@ -4,9 +4,9 @@ var authorFinder = null;
 var isPaneDisplayed = false;
 var heatMapObject = null;
 var text_date_list = [];
-var authorRevList = [];
-var frequencyRevList = [];
+var authorRevAndFreqList = null;
 var message = '';
+var htmltoAddToAuthorPane = '';
 
 // ****************** start heatmap stuff
 
@@ -73,18 +73,12 @@ function startTheAuthorScore(tabs){
 
 // Generate Author Revisions list based on user input
 function sendNameToModel(response){
+  console.log(response[0][0]);
   authorFinder = new AuthorStatisticsFinder(response[0][0]);
-  authorRevList = authorFinder.setRecentAuthorRevisionsList();
-  frequencyRevList = authorFinder.setFrequencyRevList();
+  authorRevAndFreqList = authorFinder.setFrequencyandRecentRevisionList();
   //authorRevList is defined at this point 
   document.dispatchEvent(authorEvent);
 
-}
-
-function sendDOMNameToModel(name){
-  authorFinder = new AuthorStatisticsFinder(name);
-  authorRevList = authorFinder.setRecentAuthorRevisionsList();
-  document.dispatchEvent(authorEvent);
 }
 
 // Reactivate the page
@@ -95,9 +89,7 @@ function getAuthorPageWindow() {
 // Build HTML
 function addAuthorInfo(tabs) {
   //authorRevList is undefined at this point
-  console.log(authorRevList);
-  console.log(frequencyRevList);
-  var htmltoAdd = buildAuthorHTMLToAdd(tabs, authorRevList, buildAuthorPane);
+  var htmltoAddToAuthorPane = buildAuthorHTMLToAdd(tabs, authorRevAndFreqList, buildAuthorPane);
 }
 
 
@@ -108,29 +100,8 @@ function buildAuthorPane(tabs, html) {
     chrome.tabs.executeScript(tabs[0].id, {file: 'createPanelForAuthor.js'});
   });
   isPaneDisplayed = true;
-  //I think we can grab data through master flow, need to check this out with Pat and Gustav
-  //document.dispatchEvent(authorEventTwo);
+  
 }
-
-/*
-function messagePassing(tabs){
-  console.log("doing the message passing thing injection");
-  chrome.tabs.executeScript(tabs[0].id, {file: 'getSearchText.js'});
-}
-*/
-
-//function getAuthorPageTwo() {
- // chrome.tabs.query({active:true, currentWindow: true}, addSubmitInfo);
-//}
-
-//function addSubmitInfo(tabs) {
-  //chrome.tabs.executeScript(tabs[0].id, {file:'getSearchText.js'}, displayMessage);
-//}
-
-//function displayMessage(response){
-  //message = response[0][0];
-
-//}
 
 // **** End Author Statistics 
 
