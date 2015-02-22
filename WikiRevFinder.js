@@ -223,6 +223,7 @@ var WikiRevFinder = function(url) {
 		var currLandmarkAfter = landmarkAfter;
 		var tempIDList = this.revIDList
 		var curIndex = 0;
+		var checkingVandelism = false;
 		while(curIndex < n){
 			//revIDList = this.WikiAPI.findFirst500RevisionIDList();
 			//this.revIDList = tempIDList
@@ -285,6 +286,14 @@ var WikiRevFinder = function(url) {
 				//alter nextRev so that it contains currentString after getting rebuilt
 				// Pat here, I think this will do it? Let me know if it should be different!
 				nextRev[3] = formattedStringToShow;
+				nextRev[4] = currentString;
+
+				if (currentString == ""){
+					currentString = affectingRevs[affectingRevs.length - 2][4];
+					stringPriorToEditList = this.getStringPriorToEdit(currentString, nextRev);
+					currentString = stringPriorToEditList[0];
+					formattedStringToShow = stringPriorToEditList[1];
+				}
 
 				affectingRevs.push(nextRev);
 				currLandmarkBefore = this.getStringPriorToEdit(currLandmarkBefore, nextRev)[0];
