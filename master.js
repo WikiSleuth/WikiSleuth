@@ -3,7 +3,7 @@ var WikiAPI = null;
 var isPaneDisplayed = false;
 var heatMapObject = null;
 var text_date_list = [];
-var preProcess = false;
+var preProcess = true;
 var theURL = '';
 
 // ****************** start heatmap stuff
@@ -41,7 +41,9 @@ function startTheHeatMap(tabs){
 }
 
 function sendPageToModel(response) {
+    console.log("this is the response ", response[0][0][0]);
     makeWorkersTextDateList(response[0][0],response[0][1]);
+    
 }
 
 
