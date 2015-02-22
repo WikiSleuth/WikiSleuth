@@ -29,8 +29,9 @@ var AuthorStatisticsFinder = function(authorName){
 		var numWeekOldEdits = this.WikiAPI.getWeekOldRevisionsListByAuthor(this.authorName).length;
 		var numMonthOldEdits = this.WikiAPI.getMonthOldRevisionsListByAuthor(this.authorName).length;
 		var numYearOldEdits = this.WikiAPI.getYearOldRevisionsListByAuthor(this.authorName).length;
-		var numTotalOldEdits = this.WikiAPI.getTotalOldRevisionListByAuthor(this.authorName).length;
-		var frequencyofRevsList = [numDayOldEdits, numWeekOldEdits,numMonthOldEdits, numYearOldEdits, numTotalOldEdits];
+		//var numTotalOldEdits = this.WikiAPI.getTotalOldRevisionListByAuthor(this.authorName).length;
+		var totalMajorEdits = this.WikiAPI.getTotalMajorEditsByAuthor(this.authorName).length;
+		var frequencyofRevsList = [numDayOldEdits, numWeekOldEdits,numMonthOldEdits, numYearOldEdits, totalMajorEdits];
 		return frequencyofRevsList;
 
 	};

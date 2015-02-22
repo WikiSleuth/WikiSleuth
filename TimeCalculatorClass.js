@@ -19,7 +19,7 @@ var TimeCalculator = function(){
 		var epochSeconds = this.tempTime.setDate(this.tempTime.getDate() - day);//epoch seconds
 		var epochConversion = new Date(epochSeconds);
 		var epochConversionString = epochConversion.toISOString();
-		var urlCompatibleString = epochConversionString.replace(/':'/g, '%3A');
+		var urlCompatibleString = epochConversionString.replace(/:/g, '%3A');
 		return urlCompatibleString;
 	};
 
@@ -29,7 +29,7 @@ var TimeCalculator = function(){
 		var epochSeconds = this.tempTime.setDate(this.tempTime.getDate() - day);//epoch seconds
 		var epochConversion = new Date(epochSeconds);
 		var epochConversionString = epochConversion.toISOString();
-		var urlCompatibleString = epochConversionString.replace(/':'/g, '%3A');
+		var urlCompatibleString = epochConversionString.replace(/:/g, '%3A');
 		console.log(urlCompatibleString);
 		return urlCompatibleString;
 
@@ -41,7 +41,7 @@ var TimeCalculator = function(){
 		var epochSeconds = this.tempTime.setDate(this.tempTime.getDate() - day);//epoch seconds
 		var epochConversion = new Date(epochSeconds);
 		var epochConversionString = epochConversion.toISOString();
-		var urlCompatibleString = epochConversionString.replace(/':'/g, '%3A');
+		var urlCompatibleString = epochConversionString.replace(/:/g, '%3A');
 		console.log(urlCompatibleString);
 		return urlCompatibleString;
 	};
@@ -52,10 +52,22 @@ var TimeCalculator = function(){
 		var epochSeconds = this.tempTime.setDate(this.tempTime.getDate() - day);//epoch seconds
 		var epochConversion = new Date(epochSeconds);
 		var epochConversionString = epochConversion.toISOString();
-		var urlCompatibleString = epochConversionString.replace(/':'/g, '%3A');
+		var urlCompatibleString = epochConversionString.replace(/:/g, '%3A');
 		console.log(urlCompatibleString);
 		return urlCompatibleString;
 	};
+
+	this.getPastDecadeTimeStamp = function(){
+		var day = 3650;
+		this.tempTime = this.currTime;
+		var epochSeconds = this.tempTime.setDate(this.tempTime.getDate() - day);//epoch seconds
+		var epochConversion = new Date(epochSeconds);
+		var epochConversionString = epochConversion.toISOString();
+		var urlCompatibleString = epochConversionString.replace(/:/g, '%3A');
+		console.log(urlCompatibleString);
+		return urlCompatibleString;
+	};
+
 
 	this.init();
 
