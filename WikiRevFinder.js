@@ -34,15 +34,15 @@ var WikiRevFinder = function(url) {
 			console.log("halfpoint number we think: " + this.revIDList[this.halfpoint]['revid']);
 
 			var midpointRevisionContent = "";
-			// if(this.cachedContent[this.halfpoint] == undefined){
+			if(this.cachedContent[this.halfpoint] == undefined){
 			midpointRevisionContent = this.getMidpointRevisionContent();
 				//store the content in the cache for faster retrieval
-			// 	this.cachedContent[this.halfpoint] = midpointRevisionContent;
-			// }
-			// else{
-			// 	//get the content from the cache instead of recalculating it using the API
-			// 	midpointRevisionContent = this.cachedContent[this.halfpoint];
-			// }
+				this.cachedContent[this.halfpoint] = midpointRevisionContent;
+			}
+			else{
+				//get the content from the cache instead of recalculating it using the API
+				midpointRevisionContent = this.cachedContent[this.halfpoint];
+			}
 			var sanitizedMidpointRevisionContent = this.sanitizeInput(midpointRevisionContent);
 			if(sanitizedMidpointRevisionContent.length != 0 && midpointRevisionContent != 0){
 				midpointRevisionContent = sanitizedMidpointRevisionContent
@@ -226,6 +226,7 @@ var WikiRevFinder = function(url) {
 		while(curIndex < n){
 			//revIDList = this.WikiAPI.findFirst500RevisionIDList();
 			//this.revIDList = tempIDList
+			this.cachedContent = [];
 			var nextRev = this.iterativeBinarySearch(currentString, currLandmarkBefore, currLandmarkAfter)
 			//  break out of loop if iterativebinarysearch returns nothing
 			nextRevid = nextRev[0]["revid"]
