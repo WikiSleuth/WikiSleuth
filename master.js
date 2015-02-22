@@ -95,12 +95,7 @@ function getAffectedRevisions(highlightedText, landmarkBefore, landmarkAfter, pa
   var revisionDetails = null;
 
   for (i = 0; i < affectedRevs.length; i++) {
-    if(affectedRevs[i][0]['revid'] != 0){
-      revisionDetails = WikiAPI.WikiAPI.getRevisionStatistics(affectedRevs[i][0]['revid']);
-    }
-    else{
-      revisionDetails = {"user":"page created", "timestamp":"0", "parsedcomment":"N/A", "title":"N/A"}
-    }
+    revisionDetails = WikiAPI.WikiAPI.getRevisionStatistics(affectedRevs[i][0]['revid']);
     //diffText = API.getDiffText(affectedRevs[i][0]);
     affectedRevs[i][0] = [revisionDetails['timestamp'], revisionDetails['user'], revisionDetails['parsedcomment'], revisionDetails['user'], revisionDetails['timestamp'], affectedRevs[i][0]['revid'], affectedRevs[i][0]['parentid'], affectedRevs[i][3], revisionDetails['title']];
   }
