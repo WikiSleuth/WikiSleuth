@@ -9,6 +9,7 @@ var WikiRevFinder = function(url) {
 	this.oldestItemDiffObject = null;
 	this.halfpoint = 0;
 	this.cachedContent = {};
+	this.contentToMove = [];
 
 	this.init = function() {
 		this.WikiAPI = new APICaller(url);
@@ -414,7 +415,7 @@ var WikiRevFinder = function(url) {
 		//also newlines
 		// console.log("OLD STRING TO CHECK: "+stringToCheck);
 		stringToCheck = stringToCheck.replace(/\[.*?\]/g, "");
-		stringToCheck = stringToCheck.replace(/\n/g, " ");
+		stringToCheck = stringToCheck.replace(/\n+/g, " ");
 		stringToCheck = stringToCheck.replace(/\{\{.*?\}\}/g, "");
 		// console.log("UPDATED STRING TO CHECK: "+stringToCheck);
 		return stringToCheck;
@@ -460,12 +461,8 @@ var WikiRevFinder = function(url) {
 			} else {
 				console.log("456")
 				revIDList = this.WikiAPI.findFirst500RevisionIDList(pageStartID);
-				console.log("in the else block revIDList:")
-				console.log(revIDList)
 			}
 		}
-		console.log("line 457 revIdLIST:")
-		console.log(revIDList)
 		this.revIDList = revIDList;
 		this.referenceRevIDList = this.revIDList;
 
@@ -503,13 +500,24 @@ var WikiRevFinder = function(url) {
 		var hasBegun = false;
 		var fragmentTextArray = [];
 		var i = 0;
+		var leftGroupNumber = 0;
+		var rightGroupNumber = 0;
 		console.log("str to check" + stringToCheck);
 		console.log("********************************\n\n");
 		while (tempHighlightedString.length > 0 && i < fragments.length){
 			fragments[i]['text'] = fragments[i]['text'].replace(/\n+/g, " ");
 			switch(fragments[i]['type']){
+				case '(<':
+				case '(>':
+					//TODO: maybe make a case for other group things too. (> means put next into list
+					leftGroupNumber++;
+					break;
+				case ')':
+					rightGroupNumber++;
+					break;
 				case '=':
 				case '>':
+				case '<':
 					console.log("Fragments: " + fragments[i]['text']);
 					fragmentTextArray = fragments[i]['text'].split(/(\S+\s+)/).filter(function(n) {return n});
 					for(var j=0; j<fragmentTextArray.length; j++){
@@ -527,7 +535,14 @@ var WikiRevFinder = function(url) {
 						if(indexOfFragMatch == 0) {
 							hasBegun = true;
 							tempHighlightedString = tempHighlightedString.replace(fragmentTextArray[j], "");
-							stringPriorToEdit += fragmentTextArray[j];
+							//TODO: this is a hotfix for the "Governors" page, we do not add to stringPriorToEdit if the previous fragment signals the beginning of a group
+							//e.g. the fragment was removed from one revision and then inserted into the current one, but NOT in the current paragraph.
+							if(fragments[i-1]['type'] != '(<' && fragments[i-1]['type'] != '(>'){
+								stringPriorToEdit += fragmentTextArray[j];
+							}
+							else{
+								console.log("UNEVEN GROUP NUMBERS: "+ leftGroupNumber + " "+rightGroupNumber);
+							}
 						}else if (indexOfFragMatch === -1 && hasBegun == false && fragmentTextArray[j].lastIndexOf(tempHighlightedString.trim().split(" ")[0]) >= 0){
 							//corner case where only partial first word is highlighted
 							hasBegun = true
