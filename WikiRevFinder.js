@@ -184,9 +184,24 @@ var WikiRevFinder = function(url) {
 		// }
 
 		//sort the list of recent revisions, from earliest id to latest
+		if (affectedRevisionList.length == 0){
+			console.log("empty affectedRevisionList. we think this means we're at creation of page")
+			var fakeFrag = {"type": "+", "text": stringToCheck};
 
+			var fakeRev = [this.revIDList[0], "", [fakeFrag]];
+
+			affectedRevisionList.push(fakeRev);
+			console.log("after pushing fakeRev, affectedRevisionList:")
+			console.log(affectedRevisionList);
+
+
+		} else {
+			console.log("we are not at creation, and affectedRevisionList is:")
+			console.log(affectedRevisionList)
+		}
 		var sortedList = affectedRevisionList.sort(function(rev1, rev2){return rev2[0]['revid']-rev1[0]['revid']});
 		//console.log(this.getStringPriorToEdit(stringToCheck, sortedList[0])); #throws an error if sortedList is empty
+		
 		return sortedList[0]
 
 		//return affectedRevisionList.slice(0,10).reverse();
@@ -212,72 +227,78 @@ var WikiRevFinder = function(url) {
 			console.log("the id is:")
 			console.log(nextRev[0]["revid"]);
 			//affectingRevs.push(nextRev);
-
-			//need to update current, rebuilt rev to be "most current" revision, so that other revisions are checked against this one
-			this.mostCurrentRevisionContent = this.getMostRecentRevisionContent(nextRev[0]["parentid"]);
-			var sanitizedMostCurrentRevisionContent = this.sanitizeInput(this.mostCurrentRevisionContent);
-			if(sanitizedMostCurrentRevisionContent.length != 0 && this.mostCurrentRevisionContent != 0){
-				this.mostCurrentRevisionContent = sanitizedMostCurrentRevisionContent;
-				// we DON'T want to do this if the sanitized input is empty, because this will result in the diff messing up and being disregarded (nothing in any of the diff dicts)
-			}
-
-			//now we need to get the revision immediately after that one, take the diff of that and the first affecting revision,
-			//to get the right rebuilt string
-			// var revIdToDiffTo = 0;
-
-			// for(var i = 0; i < originalRevIdList.length; i++){
-			// 	if(originalRevIdList[i]['revid'] == nextRevid){
-			// 		revIdToDiffTo = originalRevIdList[i-1]['revid'];
-			// 		break;
-			// 	}
-			// }
-
-			var contentToDiffTo = this.getMostRecentRevisionContent(nextRevid);
-
-			this.WikEdDiff = new WikEdDiff();
-
-			var diffObjectToRebuildWith = this.WikEdDiff.diff(this.mostCurrentRevisionContent, contentToDiffTo);
-			var diffFragments = diffObjectToRebuildWith[2];
-
-			nextRev[2] = diffFragments;
-			// console.log(diffFragments);
-			
-
-			//TODO: what to do if revidtodiffto stays at 0.
-			// console.log("list: "+this.revIDList);
-
-			// Pat here, I think this will do it? Let me know if it should be different!
-			nextRev[3] = currentString;
-
-			currentString = this.getStringPriorToEdit(currentString, nextRev);
-			//alter nextRev so that it contains currentString after getting rebuilt
-			
-			affectingRevs.push(nextRev);
-			currLandmarkBefore = this.getStringPriorToEdit(currLandmarkBefore, nextRev);
-			currLandmarkAfter = this.getStringPriorToEdit(currLandmarkAfter, nextRev);
-
-
-			console.log("bult up string: ")
-			console.log(currentString)
-
-			if (currentString == ""){
+			if (nextRev[0]["parentid"] == 0) {
+				nextRev[3] = currentString;
+				affectingRevs.push(nextRev)
 				break;
+
+			} else {
+				//need to update current, rebuilt rev to be "most current" revision, so that other revisions are checked against this one
+				this.mostCurrentRevisionContent = this.getMostRecentRevisionContent(nextRev[0]["parentid"]);
+				var sanitizedMostCurrentRevisionContent = this.sanitizeInput(this.mostCurrentRevisionContent);
+				if(sanitizedMostCurrentRevisionContent.length != 0 && this.mostCurrentRevisionContent != 0){
+					this.mostCurrentRevisionContent = sanitizedMostCurrentRevisionContent;
+					// we DON'T want to do this if the sanitized input is empty, because this will result in the diff messing up and being disregarded (nothing in any of the diff dicts)
+				}
+
+				//now we need to get the revision immediately after that one, take the diff of that and the first affecting revision,
+				//to get the right rebuilt string
+				// var revIdToDiffTo = 0;
+
+				// for(var i = 0; i < originalRevIdList.length; i++){
+				// 	if(originalRevIdList[i]['revid'] == nextRevid){
+				// 		revIdToDiffTo = originalRevIdList[i-1]['revid'];
+				// 		break;
+				// 	}
+				// }
+
+				var contentToDiffTo = this.getMostRecentRevisionContent(nextRevid);
+
+				this.WikEdDiff = new WikEdDiff();
+
+				var diffObjectToRebuildWith = this.WikEdDiff.diff(this.mostCurrentRevisionContent, contentToDiffTo);
+				var diffFragments = diffObjectToRebuildWith[2];
+
+				nextRev[2] = diffFragments;
+				// console.log(diffFragments);
+				
+
+				//TODO: what to do if revidtodiffto stays at 0.
+				// console.log("list: "+this.revIDList);
+
+				// Pat here, I think this will do it? Let me know if it should be different!
+				nextRev[3] = currentString;
+
+				currentString = this.getStringPriorToEdit(currentString, nextRev);
+				//alter nextRev so that it contains currentString after getting rebuilt
+				
+				affectingRevs.push(nextRev);
+				currLandmarkBefore = this.getStringPriorToEdit(currLandmarkBefore, nextRev);
+				currLandmarkAfter = this.getStringPriorToEdit(currLandmarkAfter, nextRev);
+
+
+				console.log("bult up string: ")
+				console.log(currentString)
+
+				if (currentString == ""){
+					break;
+				}
+
+				this.revIDList = this.WikiAPI.findFirst500RevisionIDList(nextRevid);
+				this.referenceRevIDList = this.revIDList;
+				this.checkOldestRevision(currentString, landmarkBefore, landmarkAfter, n);
+				if(this.revIDList.length == 0){
+					this.revIDList = revIDList;
+				}
+
+				//revid is nextRev[0][5] i think
+
+				
+
+				//currentString = getStringPriorToEdit(currentString, )//second param is "affectedRevision"
+				console.log("got here");
+				curIndex++;
 			}
-
-			this.revIDList = this.WikiAPI.findFirst500RevisionIDList(nextRevid);
-			this.referenceRevIDList = this.revIDList;
-			this.checkOldestRevision(currentString, landmarkBefore, landmarkAfter, n);
-			if(this.revIDList.length == 0){
-				this.revIDList = revIDList;
-			}
-
-			//revid is nextRev[0][5] i think
-
-			
-
-			//currentString = getStringPriorToEdit(currentString, )//second param is "affectedRevision"
-			console.log("got here");
-			curIndex++;
 
 		}
 		console.log("AT THE END OF lastNrevisions!!! affectingRevs looks like: ");
@@ -397,6 +418,7 @@ var WikiRevFinder = function(url) {
 			// console.log("oldest diff: "+oldestItemDiffDictionary['=']);
 
 			if(this.revIDList.length == 1){
+				console.log("this.revIDList only has one item, chill.")
 				return;
 			}
 
