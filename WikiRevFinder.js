@@ -606,6 +606,8 @@ var WikiRevFinder = function(url) {
 					console.log("Highlighted String: " + tempHighlightedString);
 					break;
 				case '+':
+					var tempBegun = hasBegun;
+
 					console.log("Fragments: " + fragments[i]['text']);
 					// We need to remove the text in fragments from tempHighlightedString because it did not exist in parent.
 					// if(hasBegun){
@@ -638,6 +640,16 @@ var WikiRevFinder = function(url) {
 							stringPriorToEdit = '';
 						}
 					}
+
+
+					if (tempBegun == false && hasBegun == true && i>0){
+					//checking for replacement. If the first bit of text was added, right after a deletion,
+					//we choose to treat that as a replacement, and add the deleted string.
+						if (fragments[i-1]["type"] == "-"){
+							stringPriorToEdit += fragments[i-1]['text'];
+						}
+					}
+
 					// } 
 					console.log("Rebuilt String + "+i+": "+stringPriorToEdit);
 					console.log("Highlighted String: " + tempHighlightedString);
