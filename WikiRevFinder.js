@@ -57,9 +57,9 @@ var WikiRevFinder = function(url) {
 
 
 			//make the dictionary entries more parseable by taking out newlines
-			diffDictionary['='] = diffDictionary['='].replace(/\n\n/g, " ");
-			diffDictionary['+'] = diffDictionary['+'].replace(/\n\n/g, " ");
-			diffDictionary['-'] = diffDictionary['-'].replace(/\n\n/g, " ");
+			diffDictionary['='] = diffDictionary['='].replace(/\n+/g, " ");
+			diffDictionary['+'] = diffDictionary['+'].replace(/\n+/g, " ");
+			diffDictionary['-'] = diffDictionary['-'].replace(/\n+/g, " ");
 
 			// console.log("CHECKING: "+diffDictionary['=']+ " MINUS " +diffDictionary['-'] +" PLUS "+diffDictionary['+']);
 			// console.log("\nLANDMARKS: "+landmarkAfter+"\n");
@@ -686,8 +686,9 @@ var WikiRevFinder = function(url) {
 						}
 					}
 
-
-					formattedStringToBeDisplayed += "<span class='delRev'><span class='added-rem-tag'>[Added: </span>" + textDeletedFromHighlightedString + "<span class='added-rem-tag'>]</span></span>";
+					if (/\S/.test(textDeletedFromHighlightedString)) {
+						formattedStringToBeDisplayed += "<span class='delRev'><span class='added-rem-tag'>[Added: </span>" + textDeletedFromHighlightedString + "<span class='added-rem-tag'>]</span></span>";
+					}
 
 					// } 
 					console.log("Rebuilt String + "+i+": "+stringPriorToEdit);
