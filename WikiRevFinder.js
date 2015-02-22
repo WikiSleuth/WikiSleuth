@@ -105,7 +105,7 @@ var WikiRevFinder = function(url) {
 					break;
 			}
 
-			else if((diffDictionary['='].indexOf(stringToCheck) > -1 || this.mostCurrentRevisionContent.indexOf(stringToCheck) == -1 || (diffDictionary['='].length == 0 && diffDictionary['-'].length == 0 && diffDictionary['+'].length == 0))){
+			else if(((diffDictionary['='].indexOf(stringToCheck) > -1 && diffDictionary['-'].indexOf(stringToCheck) == -1) || this.mostCurrentRevisionContent.indexOf(stringToCheck) == -1 || (diffDictionary['='].length == 0 && diffDictionary['-'].length == 0 && diffDictionary['+'].length == 0))){
 
 				// if((diffDictionary['='].indexOf(landmarkBefore) > -1 && diffDictionary['='].indexOf(landmarkBefore) > -1)){
 				// 	console.log("between?? "+ (diffDictionary['='].indexOf(landmarkBefore) < diffDictionary['='].indexOf(stringToCheck)) &&(diffDictionary['='].indexOf(landmarkAfter) > diffDictionary['='].indexOf(stringToCheck)));
@@ -191,10 +191,10 @@ var WikiRevFinder = function(url) {
 		//shit gets funky in this case, so we create a fake revision to return.
 		if (affectedRevisionList.length == 0){
 			console.log("empty affectedRevisionList. we think this means we're at creation of page")
-			var fakeFrag = {"type": "+", "text": stringToCheck};
-			var fakeRevisionBlock = {"revid":0, "parentid":0};
+			// var fakeFrag = {"type": "+", "text": stringToCheck};
+			var fakeRevisionBlock = {"revid":this.oldestRevID, "parentid":0};
 
-			var fakeRev = [fakeRevisionBlock, "", [fakeFrag]];
+			var fakeRev = [fakeRevisionBlock, "", this.oldestItemDiffObject[2]];
 
 			affectedRevisionList.push(fakeRev);
 			console.log("after pushing fakeRev, affectedRevisionList:")
@@ -349,7 +349,7 @@ var WikiRevFinder = function(url) {
 		var secondItemDiffObject = this.WikEdDiff.diff(this.mostCurrentRevisionContent, secondItemContent);
 		var secondItemDiffDictionary = secondItemDiffObject[0];
 
-		if(secondItemDiffDictionary['='].indexOf(stringToCheck) == -1 && this.mostCurrentRevisionContent.indexOf(stringToCheck) > -1 && (secondItemDiffDictionary['='].length != 0)){
+		if(secondItemDiffDictionary['='].indexOf(stringToCheck) != -1 && this.mostCurrentRevisionContent.indexOf(stringToCheck) > -1 && (secondItemDiffDictionary['='].length != 0)){
 			this.revIDList = [];
 			this.revIDList[0] = revIdList[revIdList.length-1], secondItemDiffObject[1];
 			return;
@@ -367,7 +367,7 @@ var WikiRevFinder = function(url) {
 		var firstItemDiffObject = this.WikEdDiff.diff(this.mostCurrentRevisionContent, firstItemContent);
 		var firstItemDiffDictionary = secondItemDiffObject[0];
 
-		if(firstItemDiffDictionary['='].indexOf(stringToCheck) == -1 && this.mostCurrentRevisionContent.indexOf(stringToCheck) > -1 && (firstItemDiffDictionary['='].length != 0)){
+		if(firstItemDiffDictionary['='].indexOf(stringToCheck) != -1 && this.mostCurrentRevisionContent.indexOf(stringToCheck) > -1 && (firstItemDiffDictionary['='].length != 0)){
 			this.revIDList = [];
 			this.revIDList[0] = revIdList[0], firstItemDiffObject[1];
 			return;
