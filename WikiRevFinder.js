@@ -34,15 +34,15 @@ var WikiRevFinder = function(url) {
 			console.log("halfpoint number we think: " + this.revIDList[this.halfpoint]['revid']);
 
 			var midpointRevisionContent = "";
-			// if(this.cachedContent[this.halfpoint] == undefined){
+			if(this.cachedContent[this.halfpoint] == undefined){
 			midpointRevisionContent = this.getMidpointRevisionContent();
 				//store the content in the cache for faster retrieval
-			// 	this.cachedContent[this.halfpoint] = midpointRevisionContent;
-			// }
-			// else{
-			// 	//get the content from the cache instead of recalculating it using the API
-			// 	midpointRevisionContent = this.cachedContent[this.halfpoint];
-			// }
+				this.cachedContent[this.halfpoint] = midpointRevisionContent;
+			}
+			else{
+				//get the content from the cache instead of recalculating it using the API
+				midpointRevisionContent = this.cachedContent[this.halfpoint];
+			}
 			var sanitizedMidpointRevisionContent = this.sanitizeInput(midpointRevisionContent);
 			if(sanitizedMidpointRevisionContent.length != 0 && midpointRevisionContent != 0){
 				midpointRevisionContent = sanitizedMidpointRevisionContent
@@ -226,6 +226,7 @@ var WikiRevFinder = function(url) {
 		while(curIndex < n){
 			//revIDList = this.WikiAPI.findFirst500RevisionIDList();
 			//this.revIDList = tempIDList
+			this.cachedContent = [];
 			var nextRev = this.iterativeBinarySearch(currentString, currLandmarkBefore, currLandmarkAfter)
 			//  break out of loop if iterativebinarysearch returns nothing
 			nextRevid = nextRev[0]["revid"]
@@ -619,6 +620,8 @@ var WikiRevFinder = function(url) {
 					console.log("Highlighted String: " + tempHighlightedString);
 					break;
 				case '+':
+					var tempBegun = hasBegun;
+
 					console.log("Fragments: " + fragments[i]['text']);
 					// We need to remove the text in fragments from tempHighlightedString because it did not exist in parent.
 					// if(hasBegun){
@@ -668,10 +671,22 @@ var WikiRevFinder = function(url) {
 							tempHighlightedString = stringToCheck;
 							hasBegun = false;
 							stringPriorToEdit = '';
-							formattedStringToBeDisplayed = '';
+							textDeletedFromHighlightedString = '';
 						}
 					}
+
+					if (tempBegun == false && hasBegun == true && i>0){
+					//checking for replacement. If the first bit of text was added, right after a deletion,
+					//we choose to treat that as a replacement, and add the deleted string.
+						if (fragments[i-1]["type"] == "-"){
+							stringPriorToEdit += fragments[i-1]['text'];
+							formattedStringToBeDisplayed += "<span class='addedRev'><span class='added-rem-tag'>[Deleted: </span>" + fragments[i-1]['text'] + "<span class='added-rem-tag'>]</span></span>";
+						}
+					}
+
+
 					formattedStringToBeDisplayed += "<span class='delRev'><span class='added-rem-tag'>[Added: </span>" + textDeletedFromHighlightedString + "<span class='added-rem-tag'>]</span></span>";
+
 					// } 
 					console.log("Rebuilt String + "+i+": "+stringPriorToEdit);
 					console.log("Highlighted String: " + tempHighlightedString);
