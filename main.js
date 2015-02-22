@@ -26,6 +26,15 @@ function callAuthorScore(){
     bgPage.initAuthorScore();
 }
 
+function turnHMOn(){
+    bgPage.preProcessTrue();
+}
+
+function turnHMOff(){
+    bgPage.preProcessFalse();
+
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('rev').addEventListener('click', callBackgroundPage);
     document.getElementById('author').addEventListener('click', callAuthorScore);
@@ -33,5 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('sent').addEventListener('click', callHeatMap2);
     document.getElementById('reset').addEventListener('click', callResetColors);
     document.getElementById('art').addEventListener('click', callBackgroundColor);
+    document.getElementById('on').onclick = turnHMOn;
+    document.getElementById('off').onclick = turnHMOff;
 });
 

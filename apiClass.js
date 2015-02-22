@@ -17,6 +17,10 @@ var APICaller = function(url){
 		var action = '';
 
 		if(startID != 0){
+			try{
+				this.pageName = this.pageName.split('title=')[1].split('&')[0];
+			} catch (err){
+			}
 			action = 'format=json&action=query&titles=' + this.pageName + '&prop=revisions&rvstartid='+ startID +'&rvprop=ids&rvlimit=500&continue='
 		}
 		else{
@@ -131,7 +135,10 @@ this is where Thor's work stops
 		var action = 'format=json&action=query&prop=revisions&revids=' + revID + '&rvprop=user|timestamp|parsedcomment&continue=';
 		var apiRequestURL = this.endpoint + action;
 		var jsonObject = this.makeRequest(apiRequestURL);
-		return jsonObject['query']['pages'][Object.keys(jsonObject['query']['pages'])[0]]['revisions'][0];
+		var revStats = jsonObject['query']['pages'][Object.keys(jsonObject['query']['pages'])[0]]['revisions'][0];
+		revStats['title'] = jsonObject['query']['pages'][Object.keys(jsonObject['query']['pages'])[0]]['title'];
+		//return jsonObject['query']['pages'][Object.keys(jsonObject['query']['pages'])[0]]['revisions'][0];
+		return revStats;
 	}
 
 	this.findRevisionIDListFromStartID = function(startID){

@@ -17,7 +17,7 @@
   ],
   
   "background": {
-    "scripts": ["background.js","apiClass.js", "diff.js", "txtwiki.js", "WikiRevFinder.js", "getSearchText.js", "createPanel.js", "createPanelForAuthor.js", "preProcess.js", "panel.js","processDataForAuthorUI.js", "processDataForUI.js","heatTest.js","AuthorFinder.js", "TimeCalculatorClass.js","master.js", "dateConverter.js"],
+    "scripts": ["background.js","apiClass.js", "diff.js", "txtwiki.js", "WikiRevFinder.js", "getSearchText.js", "createPanel.js", "createPanelForAuthor.js", "preProcess.js", "panel.js","processDataForAuthorUI.js", "processDataForUI.js","heatTest.js","makeWorkersTextDateList.js","AuthorFinder.js", "TimeCalculatorClass.js","master.js", "dateConverter.js"],
     "persistent": true
   },
 

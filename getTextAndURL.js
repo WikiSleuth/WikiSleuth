@@ -1,4 +1,11 @@
-var text = window.getSelection().toString();
+var elem = document.getElementById("panel");
+if (elem) {
+	elem.parentNode.removeChild(elem);
+	var wikiPageFooter = document.querySelector("div#footer");
+	wikiPageFooter.className = wikiPageFooter.className.replace(' addPaddingForPage', '');
+}
+
+var text = window.getSelection().toString().trim();
 
 var curNode = window.getSelection().anchorNode;
 while(curNode.parentNode.nodeName != "P"){
@@ -14,4 +21,14 @@ var firstSentenceLandmark = sentences[0];
 var endSentenceLandmark = sentences[sentences.length-2];
 
 var url = document.URL;
-[text, url, firstSentenceLandmark, endSentenceLandmark];
+var splitURL = url.split("=")
+var pageID 
+if (splitURL.length == 1) {
+	pageID = null;
+
+} else {
+	pageID = splitURL[splitURL.length-1];
+}
+//console.log("in getText.js, pageID:");
+//console.log(pageID);
+[text, url, firstSentenceLandmark, endSentenceLandmark, pageID];

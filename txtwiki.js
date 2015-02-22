@@ -17,7 +17,7 @@ var txtwiki = (function(){
         continue;
       }
 
-      paragraphs[i] = paragraphs[i].replace(/(===?.*===?)/, '');
+      //paragraphs[i] = paragraphs[i].replace(/(===?.*===?)/, '');
       paragraphs[i] = boldItalicPass(paragraphs[i]);
 
       parsed += paragraphs[i] + "\n";
@@ -231,7 +231,8 @@ var txtwiki = (function(){
         parsed += "\n\n";
       }
       else if (blocks[i].match(/^==+.+==+$/))
-        parsed += blocks[i] + "\n";
+        //parsed += blocks[i] + "\n";
+        parsed += "\n";
       else
         parsed += blocks[i];
     }
