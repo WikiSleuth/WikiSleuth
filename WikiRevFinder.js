@@ -185,6 +185,10 @@ var WikiRevFinder = function(url) {
 		// }
 
 		//sort the list of recent revisions, from earliest id to latest
+
+
+		//The following if else statement is to check if we are at "creation": the revision where the page was created.
+		//shit gets funky in this case, so we create a fake revision to return.
 		if (affectedRevisionList.length == 0){
 			console.log("empty affectedRevisionList. we think this means we're at creation of page")
 			var fakeFrag = {"type": "+", "text": stringToCheck};
@@ -228,6 +232,8 @@ var WikiRevFinder = function(url) {
 			console.log("the id is:")
 			console.log(nextRev[0]["revid"]);
 			//affectingRevs.push(nextRev);
+
+			//This is if we are at "Creation": the revision where the page was created.
 			if (nextRev[0]["parentid"] == 0) {
 				nextRev[3] = currentString;
 				affectingRevs.push(nextRev)
