@@ -1,4 +1,4 @@
-console.log("inside of thingy", text_date_list);
+console.log("inside of colorpage script", text_date_list);
 
 function changeTextBackGroundColor(){
     var myNodelist = document.getElementsByTagName("p");

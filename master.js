@@ -5,6 +5,15 @@ var heatMapObject = null;
 var text_date_list = [];
 var preProcess = true;
 var theURL = '';
+var heatmap_worker = null;
+var heatmap_worker2 = null;
+var heatmap_worker3 = null;
+var heatmap_worker4 = null;
+var text_date_list1 = [];
+var text_date_list2 = [];
+var text_date_list3 = [];
+var text_date_list4 = [];
+
 
 // ****************** start heatmap stuff
 
@@ -23,7 +32,7 @@ chrome.webNavigation.onCompleted.addListener(function(details){
             code: initHeatmap()
         }, function() {
             if (chrome.runtime.lastError) {
-                console.log();
+                console.log("preprocessing!");
             }}); 
     }
 });
@@ -47,9 +56,34 @@ function sendPageToModel(response) {
 
 function stopTheHeatMap(){
     console.log("GOT INTO STOPTHEHEATMAP");
-    console.log("stopping the worker", heatmap_worker);
-    var worker_message = 'cancel_request';
+    /*var worker_message = 'cancel_request';
     heatmap_worker.postMessage(worker_message);
+    heatmap_worker2.postMessage(worker_message);
+    heatmap_worker3.postMessage(worker_message);
+    heatmap_worker4.postMessage(worker_message);*/
+    heatmap_worker.terminate();
+    heatmap_worker2.terminate();
+    heatmap_worker3.terminate();
+    heatmap_worker4.terminate();
+    console.log("about to see if text_date_lists exists");
+    console.log("at the end of worker cancel requests!", text_date_list1);
+    console.log("at the end of worker cancel requests!", text_date_list2);
+    console.log("at the end of worker cancel requests!", text_date_list3);
+    console.log("at the end of worker cancel requests!", text_date_list4);
+    console.log("workers have been terminated! \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+}
+
+function endTheHeatMap(){
+    heatmap_worker.terminate();
+    heatmap_worker2.terminate();
+    heatmap_worker3.terminate();
+    heatmap_worker4.terminate();
+    console.log("about to see if text_date_lists exists");
+    console.log("at the end of worker cancel requests!", text_date_list1);
+    console.log("at the end of worker cancel requests!", text_date_list2);
+    console.log("at the end of worker cancel requests!", text_date_list3);
+    console.log("at the end of worker cancel requests!", text_date_list4);
+    console.log("workers have been terminated! \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 }
 
 function callTheColor(){
