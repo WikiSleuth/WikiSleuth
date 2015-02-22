@@ -6,8 +6,8 @@ function callHeatMap(){
     bgPage.callTheColor();
 }
 
-function callHeatMap2(){
-    chrome.tabs.executeScript(null,{file: "heatMapScripts/changeTextFontColor.js"});
+function callStopHeatMap(){
+    bgPage.stopTheHeatMap();
 }
 
 function callResetColors(){
@@ -34,7 +34,7 @@ function turnHMOff(){
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('rev').addEventListener('click', callBackgroundPage);
     document.getElementById('para').addEventListener('click', callHeatMap);
-    document.getElementById('sent').addEventListener('click', callHeatMap2);
+    document.getElementById('stop').addEventListener('click', callStopHeatMap);
     document.getElementById('reset').addEventListener('click', callResetColors);
     document.getElementById('art').addEventListener('click', callBackgroundColor);
     document.getElementById('on').onclick = turnHMOn;

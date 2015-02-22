@@ -45,6 +45,12 @@ function sendPageToModel(response) {
     
 }
 
+function stopTheHeatMap(){
+    console.log("GOT INTO STOPTHEHEATMAP");
+    console.log("stopping the worker", heatmap_worker);
+    var worker_message = 'cancel_request';
+    heatmap_worker.postMessage(worker_message);
+}
 
 function callTheColor(){
     chrome.tabs.query({active: true, currentWindow: true}, injectedColorScript); 
