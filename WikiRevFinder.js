@@ -138,7 +138,7 @@ var WikiRevFinder = function(url) {
 				}
 				if(alreadyInList == false){
 
-					console.log("this revision DID affect the string");
+					console.log("this revision DID affect the string, PUSHING "+this.revIDList[this.halfpoint-1]);
 	
 					affectedRevisionList.push([this.revIDList[this.halfpoint-1], diffObject[1], diffObject[2]]);
 
@@ -192,8 +192,9 @@ var WikiRevFinder = function(url) {
 		if (affectedRevisionList.length == 0){
 			console.log("empty affectedRevisionList. we think this means we're at creation of page")
 			var fakeFrag = {"type": "+", "text": stringToCheck};
+			var fakeRevisionBlock = {"revid":0, "parentid":0};
 
-			var fakeRev = [this.revIDList[0], "", [fakeFrag]];
+			var fakeRev = [fakeRevisionBlock, "", [fakeFrag]];
 
 			affectedRevisionList.push(fakeRev);
 			console.log("after pushing fakeRev, affectedRevisionList:")
@@ -301,7 +302,7 @@ var WikiRevFinder = function(url) {
 
 				this.revIDList = this.WikiAPI.findFirst500RevisionIDList(nextRevid);
 				this.referenceRevIDList = this.revIDList;
-				this.checkOldestRevision(currentString, landmarkBefore, landmarkAfter, n);
+				this.checkOldestRevision(currentString, currLandmarkBefore, currLandmarkAfter, n);
 				if(this.revIDList.length == 0){
 					this.revIDList = revIDList;
 				}
