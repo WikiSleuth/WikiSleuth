@@ -43,7 +43,7 @@ var txtwiki = (function(){
     if (content.slice(pos, pos + 2) == "[["){
       var link = "";
       pos += 2;
-      while ((content.slice(pos, pos + 2) != "]]") && (content.slice(pos, pos + 2) != "")){
+      while (content.slice(pos, pos + 2) != "]]"){
         if (content.slice(pos, pos + 2) == "[["){
           var out = parseLink(content, pos);
           link += out.text;
