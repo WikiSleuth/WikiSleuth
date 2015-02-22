@@ -5,6 +5,7 @@ var isPaneDisplayed = false;
 var heatMapObject = null;
 var text_date_list = [];
 var authorRevList = [];
+var frequencyRevList = [];
 var message = '';
 
 // ****************** start heatmap stuff
@@ -74,6 +75,7 @@ function startTheAuthorScore(tabs){
 function sendNameToModel(response){
   authorFinder = new AuthorStatisticsFinder(response[0][0]);
   authorRevList = authorFinder.setRecentAuthorRevisionsList();
+  frequencyRevList = authorFinder.setFrequencyRevList();
   //authorRevList is defined at this point 
   document.dispatchEvent(authorEvent);
 
@@ -94,6 +96,7 @@ function getAuthorPageWindow() {
 function addAuthorInfo(tabs) {
   //authorRevList is undefined at this point
   console.log(authorRevList);
+  console.log(frequencyRevList);
   var htmltoAdd = buildAuthorHTMLToAdd(tabs, authorRevList, buildAuthorPane);
 }
 

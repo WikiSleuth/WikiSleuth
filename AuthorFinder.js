@@ -24,9 +24,19 @@ var AuthorStatisticsFinder = function(authorName){
 
 	*/
 
-	
+	this.setFrequencyRevList = function(){
+		var numDayOldEdits = this.WikiAPI.getDayOldRevisionsListByAuthor(this.authorName).length;
+		var numWeekOldEdits = this.WikiAPI.getWeekOldRevisionsListByAuthor(this.authorName).length;
+		var numMonthOldEdits = this.WikiAPI.getMonthOldRevisionsListByAuthor(this.authorName).length;
+		var numYearOldEdits = this.WikiAPI.getYearOldRevisionsListByAuthor(this.authorName).length;
+		var numTotalOldEdits = this.WikiAPI.getTotalOldRevisionListByAuthor(this.authorName).length;
+		var frequencyofRevsList = [numDayOldEdits, numWeekOldEdits,numMonthOldEdits, numYearOldEdits, numTotalOldEdits];
+		return frequencyofRevsList;
+
+	};
 	this.setRecentAuthorRevisionsList = function(){
 		var authorWikiRevList = this.WikiAPI.getRecentRevisionsByAuthor(this.authorName);
+		console.log(authorWikiRevList);
 		//we want rev id, title of page, 
 		return authorWikiRevList;
 
@@ -34,15 +44,6 @@ var AuthorStatisticsFinder = function(authorName){
 
 	};
 	
-
-	this.setAuthorStatisticsArray = function(){
-		var totalDailyEdits = this.WikiAPI.getAuthorDailyEdits(this.getAuthor);
-		var totalEditsSinceDate = this.WikiAPI.getNumEditsSinceDate(this.getAuthor, this.getIsoDate)
-		return this.authorStatistics.push(totalDailyEdits, totalEditsSinceDate);
-
-
-	};
-
 
 	this.init();
 

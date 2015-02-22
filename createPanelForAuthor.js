@@ -9,6 +9,7 @@ wikiPageFooter.className += " addPaddingForPage";
 //var g = document.createElement('div');
 //g.setAttribute("id", "myuniquediv");
 //document.body.appendChild(g);
+/*
 var EVENT_FROM_PAGE = '__rw_chrome_ext_' + new Date().getTime();
 var EVENT_REPLY = '__rw_chrome_ext_reply_' + new Date().getTime();
 var script = document.createElement('script');
