@@ -8,6 +8,40 @@
   padding: 0;
 }
 
+.added-rem-tag {
+    font-weight: lighter;
+}
+
+/* Source: http://jsfiddle.net/MTB2q/ */
+.legend { 
+    list-style: none; 
+    width: 100%;
+}
+.legend li { 
+    float: left; margin-right: 10px; 
+}
+.legend span { 
+    border: 1px solid #ccc; float: left; width: 12px; height: 12px; margin: 2px; 
+}
+
+.legend #removed { 
+    background: rgb(216, 236, 255);
+}
+.legend #added { 
+    background: rgb(254, 238, 200);
+}
+/* End Source */
+
+.delRev {
+    background: rgb(216, 236, 255);
+    font-weight: bold;
+}
+
+.addedRev {
+    background: rgb(254, 238, 200);
+    font-weight: bold;
+}
+
 .white_background {
 	background: #FFFFFF;
 }

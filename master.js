@@ -121,19 +121,25 @@ function getHighlightedText(tabs) {
 
 // Response of our executed script will have the highlighted text. Set our text var to equal that string and then trigger the next event
 function sendTextToModel(response) {
-  if (response[0][1].indexOf('wikipedia.org/wiki/')>-1) {
+  if ((response[0][1].indexOf('wikipedia.org/wiki/')>-1) && (isOnWiki == true)) {
     WikiAPI = new WikiRevFinder(response[0][1]);
     console.log("&&&&&&&&&&&&&", response[0][0], response[0][2], response[0][3]);
-    data = getAffectedRevisions(response[0][0], response[0][2], response[0][3]);
+    console.log("in master sendTextToModel pageID:")
+    console.log(response[0][4]);
+    data = getAffectedRevisions(response[0][0], response[0][2], response[0][3], response[0][4]);
     //document.dispatchEvent(evt);
     getPageWindow();
   }
 }
 
 // Collects data recieved by the model ****** Should be moved somewhere that makes more sense ******
-function getAffectedRevisions(highlightedText, landmarkBefore, landmarkAfter){
+function getAffectedRevisions(highlightedText, landmarkBefore, landmarkAfter, pageStartID){
   //console.log("about to call getWikiRevsInfo");
-  var affectedRevs = WikiAPI.getWikiRevsInfo(highlightedText, landmarkBefore, landmarkAfter, 10);
+    console.log("The Highlighted Text in Master: ",highlightedText);
+    console.log("The Landmark Before in Master: ",landmarkBefore);
+    console.log("The Landmark After in Master: ",landmarkAfter);
+    console.log("The pageStartID in Master: ",pageStartID);
+  var affectedRevs = WikiAPI.getWikiRevsInfo(highlightedText, landmarkBefore, landmarkAfter, pageStartID, 10);
   console.log("done calling getWikiRevsInfo");
   var revisionDetails = null;
 

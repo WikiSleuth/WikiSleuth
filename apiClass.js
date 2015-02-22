@@ -15,6 +15,10 @@ var APICaller = function(url){
 		var action = '';
 
 		if(startID != 0){
+			try{
+				this.pageName = this.pageName.split('title=')[1].split('&')[0];
+			} catch (err){
+			}
 			action = 'format=json&action=query&titles=' + this.pageName + '&prop=revisions&rvstartid='+ startID +'&rvprop=ids&rvlimit=500&continue='
 		}
 		else{

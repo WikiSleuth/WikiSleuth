@@ -21,6 +21,10 @@ for(i=0;i<myNodelist.length;i++){
             }
         }
 }
+
+var myListList = document.getElementsByTagName("li");
+    
+
 var url = document.URL;
 console.log(bigSentList);
 console.log(url);

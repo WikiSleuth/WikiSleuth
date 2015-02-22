@@ -9,6 +9,7 @@ var WikiRevFinder = function(url) {
 	this.oldestItemDiffObject = null;
 	this.halfpoint = 0;
 	this.cachedContent = {};
+	this.contentToMove = [];
 
 	this.init = function() {
 		this.WikiAPI = new APICaller(url);
@@ -185,8 +186,27 @@ var WikiRevFinder = function(url) {
 
 		//sort the list of recent revisions, from earliest id to latest
 
+
+		//The following if else statement is to check if we are at "creation": the revision where the page was created.
+		//shit gets funky in this case, so we create a fake revision to return.
+		if (affectedRevisionList.length == 0){
+			console.log("empty affectedRevisionList. we think this means we're at creation of page")
+			var fakeFrag = {"type": "+", "text": stringToCheck};
+
+			var fakeRev = [this.revIDList[0], "", [fakeFrag]];
+
+			affectedRevisionList.push(fakeRev);
+			console.log("after pushing fakeRev, affectedRevisionList:")
+			console.log(affectedRevisionList);
+
+
+		} else {
+			console.log("we are not at creation, and affectedRevisionList is:")
+			console.log(affectedRevisionList)
+		}
 		var sortedList = affectedRevisionList.sort(function(rev1, rev2){return rev2[0]['revid']-rev1[0]['revid']});
 		//console.log(this.getStringPriorToEdit(stringToCheck, sortedList[0])); #throws an error if sortedList is empty
+		
 		return sortedList[0]
 
 		//return affectedRevisionList.slice(0,10).reverse();
@@ -196,7 +216,9 @@ var WikiRevFinder = function(url) {
 
 	this.lastNrevisions = function(stringToCheck, landmarkBefore, landmarkAfter, n, originalRevIdList) {
 		var affectingRevs = [];
+		var stringPriorToEditList = [];
 		var currentString = stringToCheck;
+		var formattedStringToShow = "<span class = 'unchangedRev'>" + stringToCheck + "</span>";
 		var currLandmarkBefore = landmarkBefore;
 		var currLandmarkAfter = landmarkAfter;
 		var tempIDList = this.revIDList
@@ -213,71 +235,84 @@ var WikiRevFinder = function(url) {
 			console.log(nextRev[0]["revid"]);
 			//affectingRevs.push(nextRev);
 
-			//need to update current, rebuilt rev to be "most current" revision, so that other revisions are checked against this one
-			this.mostCurrentRevisionContent = this.getMostRecentRevisionContent(nextRev[0]["parentid"]);
-			var sanitizedMostCurrentRevisionContent = this.sanitizeInput(this.mostCurrentRevisionContent);
-			if(sanitizedMostCurrentRevisionContent.length != 0 && this.mostCurrentRevisionContent != 0){
-				this.mostCurrentRevisionContent = sanitizedMostCurrentRevisionContent;
-				// we DON'T want to do this if the sanitized input is empty, because this will result in the diff messing up and being disregarded (nothing in any of the diff dicts)
-			}
-
-			//now we need to get the revision immediately after that one, take the diff of that and the first affecting revision,
-			//to get the right rebuilt string
-			// var revIdToDiffTo = 0;
-
-			// for(var i = 0; i < originalRevIdList.length; i++){
-			// 	if(originalRevIdList[i]['revid'] == nextRevid){
-			// 		revIdToDiffTo = originalRevIdList[i-1]['revid'];
-			// 		break;
-			// 	}
-			// }
-
-			var contentToDiffTo = this.getMostRecentRevisionContent(nextRevid);
-
-			this.WikEdDiff = new WikEdDiff();
-
-			var diffObjectToRebuildWith = this.WikEdDiff.diff(this.mostCurrentRevisionContent, contentToDiffTo);
-			var diffFragments = diffObjectToRebuildWith[2];
-
-			nextRev[2] = diffFragments;
-			// console.log(diffFragments);
-			
-
-			//TODO: what to do if revidtodiffto stays at 0.
-			// console.log("list: "+this.revIDList);
-
-			// Pat here, I think this will do it? Let me know if it should be different!
-			nextRev[3] = currentString;
-
-			currentString = this.getStringPriorToEdit(currentString, nextRev);
-			//alter nextRev so that it contains currentString after getting rebuilt
-			
-			affectingRevs.push(nextRev);
-			currLandmarkBefore = this.getStringPriorToEdit(currLandmarkBefore, nextRev);
-			currLandmarkAfter = this.getStringPriorToEdit(currLandmarkAfter, nextRev);
-
-
-			console.log("bult up string: ")
-			console.log(currentString)
-
-			if (currentString == ""){
+			//This is if we are at "Creation": the revision where the page was created.
+			if (nextRev[0]["parentid"] == 0) {
+				nextRev[3] = "<span class='delRev'><span class='added-rem-tag'>[Added: </span>"+currentString+"<span class='delRev'><span class='added-rem-tag'>]</span>";
+				affectingRevs.push(nextRev)
 				break;
+
+			} else {
+				//need to update current, rebuilt rev to be "most current" revision, so that other revisions are checked against this one
+				this.mostCurrentRevisionContent = this.getMostRecentRevisionContent(nextRev[0]["parentid"]);
+				var sanitizedMostCurrentRevisionContent = this.sanitizeInput(this.mostCurrentRevisionContent);
+				if(sanitizedMostCurrentRevisionContent.length != 0 && this.mostCurrentRevisionContent != 0){
+					this.mostCurrentRevisionContent = sanitizedMostCurrentRevisionContent;
+					// we DON'T want to do this if the sanitized input is empty, because this will result in the diff messing up and being disregarded (nothing in any of the diff dicts)
+				}
+
+				//now we need to get the revision immediately after that one, take the diff of that and the first affecting revision,
+				//to get the right rebuilt string
+				// var revIdToDiffTo = 0;
+
+				// for(var i = 0; i < originalRevIdList.length; i++){
+				// 	if(originalRevIdList[i]['revid'] == nextRevid){
+				// 		revIdToDiffTo = originalRevIdList[i-1]['revid'];
+				// 		break;
+				// 	}
+				// }
+
+				var contentToDiffTo = this.getMostRecentRevisionContent(nextRevid);
+
+				this.WikEdDiff = new WikEdDiff();
+
+				var diffObjectToRebuildWith = this.WikEdDiff.diff(this.mostCurrentRevisionContent, contentToDiffTo);
+				var diffFragments = diffObjectToRebuildWith[2];
+
+				nextRev[2] = diffFragments;
+				// console.log(diffFragments);
+				
+
+				//TODO: what to do if revidtodiffto stays at 0.
+				// console.log("list: "+this.revIDList);
+
+				// getStringPriorToEdit returns a string to display in UI and the stringPrior to edit.
+				// we care about the stringPriorToEdit to find next revision to that string.
+				stringPriorToEditList = this.getStringPriorToEdit(currentString, nextRev);
+				currentString = stringPriorToEditList[0];
+				formattedStringToShow = stringPriorToEditList[1];
+				
+				//alter nextRev so that it contains currentString after getting rebuilt
+				// Pat here, I think this will do it? Let me know if it should be different!
+				nextRev[3] = formattedStringToShow;
+
+				affectingRevs.push(nextRev);
+				currLandmarkBefore = this.getStringPriorToEdit(currLandmarkBefore, nextRev)[0];
+				currLandmarkAfter = this.getStringPriorToEdit(currLandmarkAfter, nextRev)[0];
+
+
+
+				console.log("bult up string: ")
+				console.log(currentString)
+
+				if (currentString == ""){
+					break;
+				}
+
+				this.revIDList = this.WikiAPI.findFirst500RevisionIDList(nextRevid);
+				this.referenceRevIDList = this.revIDList;
+				this.checkOldestRevision(currentString, landmarkBefore, landmarkAfter, n);
+				if(this.revIDList.length == 0){
+					this.revIDList = revIDList;
+				}
+
+				//revid is nextRev[0][5] i think
+
+				
+
+				//currentString = getStringPriorToEdit(currentString, )//second param is "affectedRevision"
+				console.log("got here");
+				curIndex++;
 			}
-
-			this.revIDList = this.WikiAPI.findFirst500RevisionIDList(nextRevid);
-			this.referenceRevIDList = this.revIDList;
-			this.checkOldestRevision(currentString, landmarkBefore, landmarkAfter, n);
-			if(this.revIDList.length == 0){
-				this.revIDList = revIDList;
-			}
-
-			//revid is nextRev[0][5] i think
-
-			
-
-			//currentString = getStringPriorToEdit(currentString, )//second param is "affectedRevision"
-			console.log("got here");
-			curIndex++;
 
 		}
 		console.log("AT THE END OF lastNrevisions!!! affectingRevs looks like: ");
@@ -397,11 +432,12 @@ var WikiRevFinder = function(url) {
 			// console.log("oldest diff: "+oldestItemDiffDictionary['=']);
 
 			if(this.revIDList.length == 1){
+				console.log("this.revIDList only has one item, chill.")
 				return;
 			}
 
 			//go farther back in revision history
-			this.getWikiRevsInfo(stringToCheck, landmarkBefore, landmarkAfter, this.oldestRevID, numRevisions);
+			this.getWikiRevsInfo(stringToCheck, landmarkBefore, landmarkAfter, this.oldestRevID, null, numRevisions);
 		}
 		else{
 			console.log("oldest revision DOES affect string: "+this.oldestRevID);
@@ -414,7 +450,7 @@ var WikiRevFinder = function(url) {
 		//also newlines
 		// console.log("OLD STRING TO CHECK: "+stringToCheck);
 		stringToCheck = stringToCheck.replace(/\[.*?\]/g, "");
-		stringToCheck = stringToCheck.replace(/\n/g, " ");
+		stringToCheck = stringToCheck.replace(/\n+/g, " ");
 		stringToCheck = stringToCheck.replace(/\{\{.*?\}\}/g, "");
 		// console.log("UPDATED STRING TO CHECK: "+stringToCheck);
 		return stringToCheck;
@@ -422,7 +458,12 @@ var WikiRevFinder = function(url) {
 
 
 	//This is the function that gets called by master, sends back all the revisions to be displayed
-	this.getWikiRevsInfo = function(stringToCheck, landmarkBefore, landmarkAfter, numRevisions, revisionOffset) {
+	this.getWikiRevsInfo = function(stringToCheck, landmarkBefore, landmarkAfter, pageStartID, numRevisions, revisionOffset) {
+		// console.log("start of getWikiRevsInfo page id:")
+		// console.log(pageStartID)
+		// if (pageStartID == null){
+		// 	console.log("page start id equal null")
+		// }
 		//need to clear the cache each time, because we're taking diffs against a different revision, so the content will be different
 		//and therefore old entries will no longer be cache-able
 		this.cachedContent = []
@@ -442,19 +483,25 @@ var WikiRevFinder = function(url) {
 		var revIDList = [];
 
 		//search the first 500 revisions in this case
-		if(revisionOffset == 0){
+		if(revisionOffset == 0 && pageStartID == null){
+			console.log("446")
 			revIDList = this.WikiAPI.findFirst500RevisionIDList();
 		}
 
 		//otherwise, we've already searched the first 500 (and possibly more), so search the next batch of 500
 		else{
-			revIDList = this.WikiAPI.findFirst500RevisionIDList(this.oldestRevID)
+			if (pageStartID == null){
+				console.log("453")
+				revIDList = this.WikiAPI.findFirst500RevisionIDList(this.oldestRevID);
+			} else {
+				console.log("456")
+				revIDList = this.WikiAPI.findFirst500RevisionIDList(pageStartID);
+			}
 		}
-
 		this.revIDList = revIDList;
-		this.referenceRevIDList = this.revIDList
+		this.referenceRevIDList = this.revIDList;
 
-		console.log("first item" + this.revIDList[0]);
+		//console.log("first item" + this.revIDList[0]);
 
 		this.mostCurrentRevisionContent = this.getMostRecentRevisionContent();
 		var sanitizedMostCurrentRevisionContent = this.sanitizeInput(this.mostCurrentRevisionContent);
@@ -483,16 +530,27 @@ var WikiRevFinder = function(url) {
 	this.getStringPriorToEdit = function(stringToCheck, affectedRevision) {
 		var fragments = affectedRevision[2];
 		var stringPriorToEdit = '';
+		var formattedStringToBeDisplayed = '';
 		var tempHighlightedString = stringToCheck;
 		var indexOfFragMatch = 0;
 		var hasBegun = false;
 		var fragmentTextArray = [];
 		var i = 0;
+		var leftGroupNumber = 0;
+		var rightGroupNumber = 0;
 		console.log("str to check" + stringToCheck);
 		console.log("********************************\n\n");
 		while (tempHighlightedString.length > 0 && i < fragments.length){
 			fragments[i]['text'] = fragments[i]['text'].replace(/\n+/g, " ");
 			switch(fragments[i]['type']){
+				case '(<':
+				case '(>':
+					//TODO: maybe make a case for other group things too. (> means put next into list
+					leftGroupNumber++;
+					break;
+				case ')':
+					rightGroupNumber++;
+					break;
 				case '=':
 				case '>':
 					console.log("Fragments: " + fragments[i]['text']);
@@ -512,7 +570,16 @@ var WikiRevFinder = function(url) {
 						if(indexOfFragMatch == 0) {
 							hasBegun = true;
 							tempHighlightedString = tempHighlightedString.replace(fragmentTextArray[j], "");
-							stringPriorToEdit += fragmentTextArray[j];
+
+							//we do not add to stringPriorToEdit if the previous fragment signals the beginning of a group
+							//e.g. the fragment was removed from one revision and then inserted into the current one, but NOT in the current paragraph.
+							if(fragments[i-1]['type'] != '(<' && fragments[i-1]['type'] != '(>' && fragments[i]['type'] != '>'){
+								stringPriorToEdit += fragmentTextArray[j];
+								formattedStringToBeDisplayed += fragmentTextArray[j];
+							}
+							else{
+								console.log("UNEVEN GROUP NUMBERS: "+ leftGroupNumber + " "+rightGroupNumber);
+							}
 						}else if (indexOfFragMatch === -1 && hasBegun == false && fragmentTextArray[j].lastIndexOf(tempHighlightedString.trim().split(" ")[0]) >= 0){
 							//corner case where only partial first word is highlighted
 							hasBegun = true
@@ -523,25 +590,31 @@ var WikiRevFinder = function(url) {
 							var tempFragmentText = fragmentTextArray[j].slice(indexOfWordStart, fragmentTextArray[j].length);
 							stringPriorToEdit += fragmentTextArray[j];
 							tempHighlightedString = tempHighlightedString.replace(tempFragmentText, "");
+							formattedStringToBeDisplayed += fragmentTextArray[j];
 						} else if (indexOfFragMatch === -1 && tempHighlightedString.split(" ").length === 1 && fragmentTextArray[j].indexOf(tempHighlightedString.trim()) === 0) {
-							// Case: tempHighlightedString = 'especially', fragmentTextArray[j] = 'especially '
+							// Case: tempHighlightedString = 'especially', fragmentTextArray[j] = 'especially ' or fragmentTextArray[j] = 'especially.'
 							tempHighlightedString = '';
 							stringPriorToEdit += fragmentTextArray[j];
+							formattedStringToBeDisplayed += fragmentTextArray[j];
 						} else {
 							// Does not contain, reset!
 							tempHighlightedString = stringToCheck;
 							hasBegun = false;
 							stringPriorToEdit = '';
+							formattedStringToBeDisplayed = '';
 						}
 					}
 					console.log("Rebuilt String EQ "+i+": "+stringPriorToEdit);
 					console.log("Highlighted String: " + tempHighlightedString);
 					break;
 				case '-':
+				case '<':
+					// we handle '<' here, because it means it was moved down from some point earlier in the diff, so we want to insert it here.
 					console.log("Fragments: " + fragments[i]['text']);
 					// We need to add to stringPriorToEdit because it is taken away from the parent with regards to current
 					if(hasBegun){
 						stringPriorToEdit += fragments[i]['text'];
+						formattedStringToBeDisplayed += "<span class='addedRev'><span class='added-rem-tag'>[Deleted: </span>" + fragments[i]['text'] + "<span class='added-rem-tag'>]</span></span>";
 					}
 					console.log("Rebuilt String - "+i+": "+stringPriorToEdit);
 					console.log("Highlighted String: " + tempHighlightedString);
@@ -552,7 +625,11 @@ var WikiRevFinder = function(url) {
 					// if(hasBegun){
 					// 	tempHighlightedString = tempHighlightedString.replace(fragments[i]['text'], "");
 					// } else {
-						
+					
+					// textDeletedFromHighlightedString is used for the rebuilt string to be displayed in UI Pane. Since we
+					// build this string word by word, we just want to connect all the words so we can have a string of removals
+					// rather than individual words
+					var textDeletedFromHighlightedString = '';
 					fragmentTextArray = fragments[i]['text'].split(/(\S+\s+)/).filter(function(n) {return n});
 					// Check every word in fragments to the next word in tempHighlightedString. indexOf should return 0 if there is a match for the next word
 					for(var j=0; j<fragmentTextArray.length; j++){
@@ -566,19 +643,36 @@ var WikiRevFinder = function(url) {
 						indexOfFragMatch = tempHighlightedString.indexOf(fragmentTextArray[j]);
 						
 						// Does Contain!
-						if(indexOfFragMatch == 0){
+						if(indexOfFragMatch == 0) {
 							hasBegun = true;
 							tempHighlightedString = tempHighlightedString.replace(fragmentTextArray[j], "");
-						} else if (indexOfFragMatch === -1 && tempHighlightedString.split(" ").length === 1 && tempHighlightedString.indexOf(fragmentTextArray[j].trim().split(" ")) === 0) {
-							// Case: tempHighlightedString = 'especially', fragmentTextArray[j] = 'especially '
+							//formattedStringToBeDisplayed += "<span class='delRev'> {Parent Rev Added: " + fragmentTextArray[j] + "} </span>";
+							textDeletedFromHighlightedString += fragmentTextArray[j];
+						}else if (indexOfFragMatch === -1 && hasBegun == false && fragmentTextArray[j].lastIndexOf(tempHighlightedString.trim().split(" ")[0]) >= 0){
+							//corner case where only partial first word is highlighted
+							hasBegun = true
+							// tempHighlightedString = tempHighlightedString.replace(tempHighlightedString.trim().split(" ")[0], "");
+							var indexOfWordStart = fragmentTextArray[j].lastIndexOf(tempHighlightedString.trim().split(" ")[0]);
+							//we're keeping this as a temp variable so that we add the whole word to stringPriorToEdit,
+							//but still only remove the partial word from tempHighlightedString. <---- design choice
+							var tempFragmentText = fragmentTextArray[j].slice(indexOfWordStart, fragmentTextArray[j].length);
+							tempHighlightedString = tempHighlightedString.replace(tempFragmentText, "");
+							//formattedStringToBeDisplayed += "<span class='delRev'> {Parent Rev Added: " + fragmentTextArray[j] + "} </span>";
+							textDeletedFromHighlightedString += fragmentTextArray[j];
+						} else if (indexOfFragMatch === -1 && tempHighlightedString.split(" ").length === 1 && fragmentTextArray[j].indexOf(tempHighlightedString.trim()) === 0) {
+							// Case: tempHighlightedString = 'especially', fragmentTextArray[j] = 'especially ' or fragmentTextArray[j] = 'especially.'
 							tempHighlightedString = '';
+							//formattedStringToBeDisplayed += "<span class='delRev'> {Parent Rev Added: " + fragmentTextArray[j] + "} </span>";
+							textDeletedFromHighlightedString += fragmentTextArray[j];
 						} else {
 							// Does not contain, reset!
 							tempHighlightedString = stringToCheck;
 							hasBegun = false;
 							stringPriorToEdit = '';
+							formattedStringToBeDisplayed = '';
 						}
 					}
+					formattedStringToBeDisplayed += "<span class='delRev'><span class='added-rem-tag'>[Added: </span>" + textDeletedFromHighlightedString + "<span class='added-rem-tag'>]</span></span>";
 					// } 
 					console.log("Rebuilt String + "+i+": "+stringPriorToEdit);
 					console.log("Highlighted String: " + tempHighlightedString);
@@ -587,8 +681,8 @@ var WikiRevFinder = function(url) {
 			i += 1;
 		}
 		stringPriorToEdit = stringPriorToEdit.trim();
-
-		return stringPriorToEdit;
+		formattedStringToBeDisplayed = formattedStringToBeDisplayed.trim();
+		return [stringPriorToEdit, formattedStringToBeDisplayed];
 	};
 
 	this.init();
