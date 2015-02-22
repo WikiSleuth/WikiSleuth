@@ -237,7 +237,7 @@ var WikiRevFinder = function(url) {
 
 			//This is if we are at "Creation": the revision where the page was created.
 			if (nextRev[0]["parentid"] == 0) {
-				nextRev[3] = currentString;
+				nextRev[3] = "<span class='delRev'><span class='added-rem-tag'>[Added: </span>"+currentString+"<span class='delRev'><span class='added-rem-tag'>]</span>";
 				affectingRevs.push(nextRev)
 				break;
 
