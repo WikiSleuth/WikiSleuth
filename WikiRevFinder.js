@@ -517,7 +517,6 @@ var WikiRevFinder = function(url) {
 					break;
 				case '=':
 				case '>':
-				case '<':
 					console.log("Fragments: " + fragments[i]['text']);
 					fragmentTextArray = fragments[i]['text'].split(/(\S+\s+)/).filter(function(n) {return n});
 					for(var j=0; j<fragmentTextArray.length; j++){
@@ -535,9 +534,9 @@ var WikiRevFinder = function(url) {
 						if(indexOfFragMatch == 0) {
 							hasBegun = true;
 							tempHighlightedString = tempHighlightedString.replace(fragmentTextArray[j], "");
-							//TODO: this is a hotfix for the "Governors" page, we do not add to stringPriorToEdit if the previous fragment signals the beginning of a group
+							//we do not add to stringPriorToEdit if the previous fragment signals the beginning of a group
 							//e.g. the fragment was removed from one revision and then inserted into the current one, but NOT in the current paragraph.
-							if(fragments[i-1]['type'] != '(<' && fragments[i-1]['type'] != '(>'){
+							if(fragments[i-1]['type'] != '(<' && fragments[i-1]['type'] != '(>' && fragments[i]['type'] != '>'){
 								stringPriorToEdit += fragmentTextArray[j];
 							}
 							else{
@@ -568,6 +567,8 @@ var WikiRevFinder = function(url) {
 					console.log("Highlighted String: " + tempHighlightedString);
 					break;
 				case '-':
+				case '<':
+					// we handle '<' here, because it means it was moved down from some point earlier in the diff, so we want to insert it here.
 					console.log("Fragments: " + fragments[i]['text']);
 					// We need to add to stringPriorToEdit because it is taken away from the parent with regards to current
 					if(hasBegun){
