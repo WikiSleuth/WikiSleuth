@@ -3,20 +3,31 @@ console.log("inside of colorpage script", text_date_list);
 function changeTextBackGroundColor(){
     var myNodelist = document.getElementsByTagName("p");
     var newPara = "";
+    var numDaysSinceNums = 0;
     for(i=0;i<myNodelist.length;i++){
+        console.log("THE NUMBER OF THE PARAGRAPH WE ARE ON IS: ", i);
         var smallSentList = myNodelist[i].outerText.split(".");
         for(j=0;j<smallSentList.length;j++){
+            numDaysSinceNums++;
+            console.log("THIS IS J: ", j);
+            console.log("THIS IS THE LENGTH OF THE TEXTDATELIST", text_date_list.length);
+            console.log("THIS IS THE LENGTH OF THE SMALLSENTLIST", smallSentList.length);
             if(smallSentList[j] != ""){
-                console.log("INSIDE OF COLORPAGE", text_date_list[j]);
-                var daysElapsed = text_date_list[j][1];
-                console.log("INSIDE OF COLORPAGE", daysElapsed);
-                var color = chooseColor(daysElapsed);
-                smallSentList[j] = '<span style="background-color:' + color + '">' + smallSentList[j] + '</span>';
-                if(j!=smallSentList.length-1){
-                    newPara = newPara + smallSentList[j]+".";
-                }   
+                    console.log("INSIDE OF COLORPAGE", text_date_list[j]);
+                    var daysElapsed = text_date_list[j][1];
+                    console.log("INSIDE OF COLORPAGE", daysElapsed);
+                    var color = chooseColor(daysElapsed);
+                    if(numDaysSinceNums<text_date_list.length){
+                        smallSentList[j] = '<span style="background-color:' + color + '">' + smallSentList[j] + '</span>';
+                    }
+                    else{
+                        smallSentList[j] = '<span style="background-color:' + 'white' + '">' + smallSentList[j] + '</span>';
+                    }
+                    if(j!=smallSentList.length-1){
+                        newPara = newPara + smallSentList[j]+".";
+                    }   
+                }
             }
-        }
         newPara = "<p>" + newPara + "</p>";
         myNodelist[i].outerHTML = newPara;
         newPara = "";
@@ -68,7 +79,7 @@ function chooseColor(daysElapsed){
                 color = "rgba(0,0,255,0.7)";
                 break;
             case (3900 <= daysElapsed &&  daysElapsed < 4500):
-                color = "rgba(0,0,255,0.9)";
+                color = "rgba(0,150,200,0.9)";
                 break;
             default:
                 color = "rgba(0,255,0,0.9)";
