@@ -23,16 +23,22 @@ function callBackgroundPage(){
 	bgPage.queryForData();
 }
 
+function callAuthorScore(){
+    bgPage.initAuthorScore();
+}
+
 function turnHMOn(){
     bgPage.preProcessTrue();
 }
 
 function turnHMOff(){
     bgPage.preProcessFalse();
+
 }
 
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('rev').addEventListener('click', callBackgroundPage);
+    document.getElementById('author').addEventListener('click', callAuthorScore);
     document.getElementById('para').addEventListener('click', callHeatMap);
     document.getElementById('stop').addEventListener('click', callStopHeatMap);
     document.getElementById('reset').addEventListener('click', callResetColors);

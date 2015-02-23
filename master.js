@@ -1,9 +1,9 @@
 var data = "";
 var WikiAPI = null;
+var authorFinder = null;
 var isPaneDisplayed = false;
 var heatMapObject = null;
 var text_date_list = [];
-var preProcess = true;
 var theURL = '';
 var heatmap_worker = null;
 var heatmap_worker2 = null;
@@ -13,6 +13,10 @@ var text_date_list1 = [];
 var text_date_list2 = [];
 var text_date_list3 = [];
 var text_date_list4 = [];
+var authorRevAndFreqList = null;
+var message = '';
+var htmltoAddToAuthorPane = '';
+var preProcess = false;
 
 
 // ****************** start heatmap stuff
@@ -44,6 +48,7 @@ function initHeatmap(){
         chrome.tabs.query({active: true, currentWindow: true}, startTheHeatMap); 
     }   
 }
+
 
 function startTheHeatMap(tabs){
     chrome.tabs.executeScript(tabs[0].id, {file: 'getPageText.js'}, sendPageToModel);
@@ -149,6 +154,56 @@ function finalResetCall(tabs){
 
 // ************************* end heatmap stuff
 
+// ************************* Begin Author Statistics 
+
+// Ensure that user is on wikipage
+function initAuthorScore(){
+  console.log("Initializing AuthorScore");
+    if(isOnWiki){
+      chrome.tabs.query({active: true, currentWindow: true}, startTheAuthorScore);
+    }
+}
+
+// Prompt User for Author Name
+function startTheAuthorScore(tabs){
+  chrome.tabs.executeScript(tabs[0].id, {file: 'promptUser.js'}, sendNameToModel);
+}
+
+// Generate Author Revisions list based on user input
+function sendNameToModel(response){
+  console.log(response[0][0]);
+  authorFinder = new AuthorStatisticsFinder(response[0][0]);
+  authorRevAndFreqList = authorFinder.setFrequencyandRecentRevisionList();
+  //authorRevList is defined at this point 
+  document.dispatchEvent(authorEvent);
+
+}
+
+// Reactivate the page
+function getAuthorPageWindow() {
+  chrome.tabs.query({active: true, currentWindow: true}, addAuthorInfo);
+}
+
+// Build HTML
+function addAuthorInfo(tabs) {
+  //authorRevList is undefined at this point
+  var htmltoAddToAuthorPane = buildAuthorHTMLToAdd(tabs, authorRevAndFreqList, buildAuthorPane);
+}
+
+
+function buildAuthorPane(tabs, html) {
+  chrome.tabs.insertCSS(tabs[0].id, {file: 'panelForAuthor.css'})
+  chrome.tabs.executeScript(tabs[0].id, { code: 'var authorPanelHTML = ' + JSON.stringify(html) },
+   function() {
+    chrome.tabs.executeScript(tabs[0].id, {file: 'createPanelForAuthor.js'});
+  });
+  isPaneDisplayed = true;
+  
+}
+
+// **** End Author Statistics 
+
+
 // Query chrome to get an array of all tabs in current window that are focused and active
 function queryForData() {
   if (isOnWiki) {
@@ -169,7 +224,7 @@ function getHighlightedText(tabs) {
 
 // Response of our executed script will have the highlighted text. Set our text var to equal that string and then trigger the next event
 function sendTextToModel(response) {
-  if ((response[0][1].indexOf('wikipedia.org/wiki/')>-1) && (isOnWiki == true)) {
+  if ((response[0][1].indexOf('wikipedia.org/wiki/')>-1) && (isOnWiki == true) && (response[0][0] != "")) {
     WikiAPI = new WikiRevFinder(response[0][1]);
     console.log("&&&&&&&&&&&&&", response[0][0], response[0][2], response[0][3]);
     console.log("in master sendTextToModel pageID:")
@@ -233,6 +288,18 @@ function handleCommand(command) {
   }
 }
 
-var evt = new CustomEvent("getInformation");
-document.addEventListener("getInformation", getPageWindow);
+function handleAuthorCommand(command){
+  if(command === 'AuthorScore'){
+    initAuthorScore();
+  }
+}
+
+// var evt = new CustomEvent("getInformation");
+// document.addEventListener("getInformation", getPageWindow);
+//authorEvent is for Author Statistics
+var authorEvent = new CustomEvent("getInformation");
+document.addEventListener("getInformation", getAuthorPageWindow);
+//var authorEventTwo = new CustomEvent("getInformation");
+//document.addEventListener("getInformation", addSubmitInfo);
 chrome.commands.onCommand.addListener(handleCommand);
+chrome.commands.onCommand.addListener(handleAuthorCommand);
