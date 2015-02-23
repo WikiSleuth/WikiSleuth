@@ -35,13 +35,13 @@ var WikiRevFinder = function(url) {
 
 			var midpointRevisionContent = "";
 			// if(this.cachedContent[this.halfpoint] == undefined){
-			// midpointRevisionContent = this.getMidpointRevisionContent();
+			midpointRevisionContent = this.getMidpointRevisionContent();
 				//store the content in the cache for faster retrieval
 				// this.cachedContent[this.halfpoint] = midpointRevisionContent;
 			// }
 			// else{
 				//get the content from the cache instead of recalculating it using the API
-			midpointRevisionContent = this.cachedContent[this.halfpoint];
+			// midpointRevisionContent = this.cachedContent[this.halfpoint];
 			// }
 			var sanitizedMidpointRevisionContent = this.sanitizeInput(midpointRevisionContent);
 			if(sanitizedMidpointRevisionContent.length != 0 && midpointRevisionContent != 0){
