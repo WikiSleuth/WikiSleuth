@@ -104,7 +104,7 @@ This is where Thor started his changes to the api class to incorporate user stat
 
 	this.getRecentRevisionsByAuthor = function(authorName){
 		//real query is action=query&list=usercontribs&format=json&uclimit=10&ucuser=BabbaQ&ucprop=ids%7Ctitle%7Cparsedcomment&continue=
-		var action = 'action=query&list=usercontribs&format=json&uclimit=10&ucuser=' + authorName + '&ucprop=ids%7Ctitle%7Ccomment%7Ctimestamp&continue='
+		var action = 'action=query&list=usercontribs&format=json&uclimit=50&ucuser=' + authorName + '&ucprop=ids%7Ctitle%7Cparsedcomment%7Ctimestamp%7Ctags&continue='
 		var apiRequestURL = this.endpoint + action;
 		var jsonObject = this.makeRequest(apiRequestURL);
 		console.log(jsonObject['query']['usercontribs']);
