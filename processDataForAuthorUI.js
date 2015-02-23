@@ -39,9 +39,9 @@ function buildAuthorHTMLToAdd(tabs, data, callback) {
 								date = timeAry[0] + ":" + timeAry[1] + ", " + dateAry[1] + " " + dateAry[2] + " " + dateAry[3];
 								//html += "<span id='text_affected' class='header_left'>Recent Revision List</span>"
 								html += "<div id='border'><span id='text_textaffected'>";
-								html += "<a href='http://en.wikipedia.org/w/index.php?title="+data[0][j]['title']+"&oldid="+data[0][j]['revid']+"' title="+data[0][j]['title']+" target='_blank' class='timestamp'>" + date + "</a>";
-								html += "<span class='editor'>"+"<a href='https://en.wikipedia.org/wiki/" + data[0][j]['title'] + "' target='_blank'>"+data[0][j]['title']+"</a> (<a href='http://en.wikipedia.org/w/index.php?diff=" + data[0][j]['revid'] + "oldid=" + data[0][j]['parentid'] + "'target='_blank' class='talk'>diff</a> ";
-								html += "| " +"<a href='http://en.wikipedia.org/w/index.php?title="+ data[0][j]['title'] + "&action=history'" +" target='_blank' class='contribs'>history</a>)</span>"+"<span class='comment'>("+data[0][j]['parsedcomment']+")</span></span><br><br></div>";
+								html += "<span class='contribsTimestamp'> <a href='http://en.wikipedia.org/w/index.php?title="+data[0][j]['title']+"&oldid="+data[0][j]['revid']+"' title="+data[0][j]['title']+" target='_blank' class='timestamp'>" + date + "</a> (<a href='http://en.wikipedia.org/w/index.php?diff=" + data[0][j]['revid'] + "oldid=" + data[0][j]['parentid'] + "'target='_blank' class='talk'>diff</a> | " +"<a href='http://en.wikipedia.org/w/index.php?title="+ data[0][j]['title'] + "&action=history'" +" target='_blank' class='contribs'>history</a>) </span>";
+								html += "<span class='editor'>"+"<a href='https://en.wikipedia.org/wiki/" + data[0][j]['title'] + "' target='_blank'>"+data[0][j]['title'] + "</a>";
+								html += "</span>"+"<span class='comment'>("+data[0][j]['parsedcomment']+")</span></span><br><br></div>";
 						      	//<a href='http://en.wikipedia.org/w/index.php?diff="+data[0][i]['revid']+"&oldid="+data[0][i]['parentid']+"'target='_blank' class='talk'>Diff "
 						    } 
 					    }
