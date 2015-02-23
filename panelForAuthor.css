@@ -155,6 +155,13 @@
 	text-overflow: ellipsis;
 }
 
+#wikiText {
+    line-height: 1.6;
+    font-size: 0.875em;
+    color: rgb(37, 37, 37);
+    font-family: sans-serif;
+}
+
 .comment {
 	font-size: 0.875em;
 	color: rgb(37, 37, 37);

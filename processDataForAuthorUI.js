@@ -61,7 +61,7 @@ function buildAuthorHTMLToAdd(tabs, data, callback) {
 	} else {
 		html = "<div id='panel'> <h2 id='title'>WikiAuthorScore: Author Does Not Exist" +
 					"<span id='close_button' onclick=closePane();> x </span>" +
-				"</h2> </span>" + "<span class='comment'>Author Does Not Exist. Try again. </span>";
+				"</h2> </span>" + "<span id='wikiText'>Author Does Not Exist. Try again. </span>";
 	}
 	callback(tabs, html);
 }
