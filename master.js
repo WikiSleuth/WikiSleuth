@@ -107,6 +107,7 @@ function injectedColorScript(tabs){
         console.log("inside of master calling colorpage script ", text_date_list);
         chrome.tabs.executeScript(tabs[0].id, {file: 'colorPage.js'});
     });
+    //text_date_list = undefined; 
 }
 
 
