@@ -16,7 +16,7 @@ var text_date_list4 = [];
 var authorRevAndFreqList = null;
 var message = '';
 var htmltoAddToAuthorPane = '';
-var preProcess = false;
+var preProcess = true;
 
 
 // ****************** start heatmap stuff

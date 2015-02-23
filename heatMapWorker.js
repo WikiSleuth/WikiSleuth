@@ -1,4 +1,4 @@
-importScripts('apiClass.js','diff.js','txtwiki.js','WikiRevFinder.js','heatTest.js');
+importScripts('TimeCalculatorClass.js','apiClass.js','diff.js','txtwiki.js','WikiRevFinder.js','heatTest.js');
 var heatMapObject = null;
 var data_array = [];
 var text_date_list = [];
