@@ -135,7 +135,7 @@
 	text-decoration: none;
 	color: rgb(6, 69, 173);
 	background: none;
-	width: 15%;
+	width: 50%;
 	padding-left: 1%;
 	overflow: hidden;
 	white-space: nowrap;
@@ -148,7 +148,7 @@
 	font-family: sans-serif;
 	font-weight: normal;
 	float: left;
-	width: 30%;
+	width: 15%;
 	margin-right: 3%; 
 	overflow: hidden;
 	white-space: nowrap;
@@ -201,6 +201,12 @@
 	word-wrap: break-word;
 	white-space: normal;
 	height: auto;
+}
+
+.contribsTimestamp {
+    float: left;
+    width: 30%;
+
 }
 
 .contribs {

@@ -3,7 +3,7 @@ function buildAuthorHTMLToAdd(tabs, data, callback) {
 	var listsToAdd = ["Total Edits:", "Recent Revision List:"];
 	var extURL = document.location.href.match(/(chrome-extension:\/\/[^\/]*\/)/g);
 	if (data[0].length > 0) {
-		html = "<div id='panel'> <span> <h2 id='title'>WikiAuthorScore: " + data[0][0]['user'] + "<span style= font-size:18px>(<a href='https://en.wikipedia.org/wiki/User_talk:" + data[0][0]['user'] + "'target=_blank class=talk>talk </a> | <a href='https://en.wikipedia.org/wiki/Special:Contributions/" + data[0][0]['user'] + "'target = _blank class=talk>contribs</a>)</span>"+
+		html = "<div id='panel'> <span> <h2 id='title'>WikiAuthorScore: " + data[0][0]['user'] + "<span style= font-size:18px> (<a href='https://en.wikipedia.org/wiki/User_talk:" + data[0][0]['user'] + "'target=_blank class=talk>talk </a> | <a href='https://en.wikipedia.org/wiki/Special:Contributions/" + data[0][0]['user'] + "'target = _blank class=talk>contribs</a>)</span>"+
 					"<span id='close_button' onclick=closePane();> x </span>" +
 				"</h2> </span>" + 
 
@@ -32,6 +32,9 @@ function buildAuthorHTMLToAdd(tabs, data, callback) {
 						      	if (data[0][j]['parsedcomment'] == "") {
 									data[0][j]['parsedcomment'] = "No Comment.";
 								}
+								if (data[0][j]['tags'].length == 0){
+									data[0][j]['tags'][0] = "No Tags Listed.";
+								}
 
 								date = new Date(data[0][j]['timestamp']);
 								timeAry = date.toTimeString().split(":");
@@ -39,7 +42,7 @@ function buildAuthorHTMLToAdd(tabs, data, callback) {
 								date = timeAry[0] + ":" + timeAry[1] + ", " + dateAry[1] + " " + dateAry[2] + " " + dateAry[3];
 								//html += "<span id='text_affected' class='header_left'>Recent Revision List</span>"
 								html += "<div id='border'><span id='text_textaffected'>";
-								html += "<span class='contribsTimestamp'> <a href='http://en.wikipedia.org/w/index.php?title="+data[0][j]['title']+"&oldid="+data[0][j]['revid']+"' title="+data[0][j]['title']+" target='_blank' class='timestamp'>" + date + "</a> (<a href='http://en.wikipedia.org/w/index.php?diff=" + data[0][j]['revid'] + "oldid=" + data[0][j]['parentid'] + "'target='_blank' class='talk'>diff</a> | " +"<a href='http://en.wikipedia.org/w/index.php?title="+ data[0][j]['title'] + "&action=history'" +" target='_blank' class='contribs'>history</a>) </span>";
+								html += "<span class='button'></span><span class='contribsTimestamp'> <a href='http://en.wikipedia.org/w/index.php?title="+data[0][j]['title']+"&oldid="+data[0][j]['revid']+"' title="+data[0][j]['title']+" target='_blank' class='timestamp'>" + date + "</a> (<a href='http://en.wikipedia.org/w/index.php?diff=" + data[0][j]['revid'] + "oldid=" + data[0][j]['parentid'] + "'target='_blank' class='talk'>diff</a> | " +"<a href='http://en.wikipedia.org/w/index.php?title="+ data[0][j]['title'] + "&action=history'" +" target='_blank' class='contribs'>history</a>) </span>";
 								html += "<span class='editor'>"+"<a href='https://en.wikipedia.org/wiki/" + data[0][j]['title'] + "' target='_blank'>"+data[0][j]['title'] + "</a>";
 								html += "</span>"+"<span class='comment'>("+data[0][j]['parsedcomment']+")</span></span><br><br></div>";
 						      	//<a href='http://en.wikipedia.org/w/index.php?diff="+data[0][i]['revid']+"&oldid="+data[0][i]['parentid']+"'target='_blank' class='talk'>Diff "
