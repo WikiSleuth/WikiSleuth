@@ -105,7 +105,7 @@ var WikiRevFinder = function(url) {
 					break;
 			}
 
-			else if((diffDictionary['='].indexOf(stringToCheck) > -1 || this.mostCurrentRevisionContent.indexOf(stringToCheck) == -1 || (diffDictionary['='].length == 0 && diffDictionary['-'].length == 0 && diffDictionary['+'].length == 0))){
+			else if(((diffDictionary['='].indexOf(stringToCheck) > -1 && diffDictionary['-'].indexOf(stringToCheck) == -1) || this.mostCurrentRevisionContent.indexOf(stringToCheck) == -1 || (diffDictionary['='].length == 0 && diffDictionary['-'].length == 0 && diffDictionary['+'].length == 0))){
 
 				// if((diffDictionary['='].indexOf(landmarkBefore) > -1 && diffDictionary['='].indexOf(landmarkBefore) > -1)){
 				// 	console.log("between?? "+ (diffDictionary['='].indexOf(landmarkBefore) < diffDictionary['='].indexOf(stringToCheck)) &&(diffDictionary['='].indexOf(landmarkAfter) > diffDictionary['='].indexOf(stringToCheck)));
@@ -301,7 +301,21 @@ var WikiRevFinder = function(url) {
 
 				this.revIDList = this.WikiAPI.findFirst500RevisionIDList(nextRevid);
 				this.referenceRevIDList = this.revIDList;
-				this.checkOldestRevision(currentString, landmarkBefore, landmarkAfter, n);
+				var onlyAscii = /^[ -~]+$/;
+
+				if ((!onlyAscii.test(landmarkBefore)) || (!onlyAscii.test(landmarkAfter))) {
+				  // string has non-ascii characters
+				  this.checkOldestRevision(currentString, currLandmarkBefore, currLandmarkAfter, n);
+				}
+				else{
+					this.checkOldestRevision(currentString, landmarkBefore, landmarkAfter, n);
+				}
+				// try{
+				// 	this.checkOldestRevision(currentString, landmarkBefore, landmarkAfter, n);
+				// }
+				// catch(err){
+				// 	this.checkOldestRevision(currentString, currLandmarkBefore, currLandmarkAfter, n);
+				// }
 				if(this.revIDList.length == 0){
 					this.revIDList = revIDList;
 				}
@@ -348,7 +362,7 @@ var WikiRevFinder = function(url) {
 		var secondItemDiffObject = this.WikEdDiff.diff(this.mostCurrentRevisionContent, secondItemContent);
 		var secondItemDiffDictionary = secondItemDiffObject[0];
 
-		if(secondItemDiffDictionary['='].indexOf(stringToCheck) == -1 && this.mostCurrentRevisionContent.indexOf(stringToCheck) > -1 && (secondItemDiffDictionary['='].length != 0)){
+		if(secondItemDiffDictionary['='].indexOf(stringToCheck) != -1 && this.mostCurrentRevisionContent.indexOf(stringToCheck) > -1 && (secondItemDiffDictionary['='].length != 0)){
 			this.revIDList = [];
 			this.revIDList[0] = revIdList[revIdList.length-1], secondItemDiffObject[1];
 			return;
@@ -366,7 +380,7 @@ var WikiRevFinder = function(url) {
 		var firstItemDiffObject = this.WikEdDiff.diff(this.mostCurrentRevisionContent, firstItemContent);
 		var firstItemDiffDictionary = secondItemDiffObject[0];
 
-		if(firstItemDiffDictionary['='].indexOf(stringToCheck) == -1 && this.mostCurrentRevisionContent.indexOf(stringToCheck) > -1 && (firstItemDiffDictionary['='].length != 0)){
+		if(firstItemDiffDictionary['='].indexOf(stringToCheck) != -1 && this.mostCurrentRevisionContent.indexOf(stringToCheck) > -1 && (firstItemDiffDictionary['='].length != 0)){
 			this.revIDList = [];
 			this.revIDList[0] = revIdList[0], firstItemDiffObject[1];
 			return;
