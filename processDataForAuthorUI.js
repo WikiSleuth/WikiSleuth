@@ -1,61 +1,61 @@
+//var backgroundColor = ['white_background', 'grey_background']; 
 function buildAuthorHTMLToAdd(tabs, data, callback) {
-		if (data[0].length > 0) {
+	var listsToAdd = ["Total Edits:", "Recent Revision List:"];
+	var extURL = document.location.href.match(/(chrome-extension:\/\/[^\/]*\/)/g);
+	if (data[0].length > 0) {
+		html = "<div id='panel'> <span> <h2 id='title'>WikiSleuth: Affected Revisions for " + data[0][0]['user'] +
+					"<span id='close_button' onclick=closePane();> x </span>" +
+				"</h2> </span>" +
+
+				//"<span id=legend>" +
+				//	"<span class = 'key> Text Added: <div id = addedText> </div> </span> <br>" +
+				//	"<span class = 'key> Text Removed: <div id = removedText> </div> </span>" +
+				//"</span>" +
+				"<ul id='expanding_list' class='no-style'>";
+		var date = null;
+
+		for (i=0; i<listsToAdd.length; i++) {
 			
-		
-			html = "<div id='panel'> <span> <h2 id='title'>WikiSleuth Author Score " +  data[0][0]['user'] +
-	                                "<span id='close_button' onclick=closePane();> x </span>" +
-	                        "</h2> </span>" +
+			html += "<li class='rev-list'>" +
+				//<span class='timestamp'>"+date+"</span>
+					    "<label class='selectable_item' for='item" + i + "'> <span class='button'></span> <a href='http://en.wikipedia.org/w/index.php?title="+data[0][i]['title']+"&oldid="+data[0][i]['revid']+"' title="+data[0][i]['title']+" target='_blank' class='timestamp'>" + listsToAdd[i] + "</a>  <span class='editor'>"+listsToAdd[i]+" (<a href='http://en.wikipedia.org/wiki/User_talk:"+data[i][0][1]+"' title="+data[i][0][1]+" target='_blank' class='talk'>talk</a> | "+"<a href='http://en.wikipedia.org/wiki/Special:Contributions/"+data[0][i]['user']+"' title="+data[0][i]['title']+" target='_blank' class='contribs'>contribs</a>) </span>"+
+					    "<span class='comment'>"+listsToAdd[i]+"</span></label>" +
+					    "<input type='checkbox' id='item" + i + "' />" +
+					    "<ul class='item_list'>" +
+					  	 "<li class='sub_list'>";
+					      //"<span id='author' class='header_left'>Author:</span><span id='author' class='header_right'>"+data[i][0][3]+"</span> <br>" +
+					      //"<span id='date' class='header_left'>Date:</span><span id='date' class='header_right'>"+ new Date(data[i][0][4]).toDateString() +"</span> <br>" +
+					      //"<span id='revision' class='header_left'>RevisionID:</span><span id='revision' class='header_right'>"+data[i][0][5]+"</span> <br>" +
+					      //"<span id='parent_rev' class='header_left'>ParentID:</span><span id='parent_rev' class='header_right'>"+data[i][0][6]+"</span> <br>" +
+						if (listsToAdd[i] == "Recent Revision List:") {
+						    for (j=0; j<data[0].length; j++) {
+						      	if (data[0][j]['comment'] == "") {
+									data[0][j]['comment'] = "No Comment.";
+								}
 
-	                        //"<span id=legend>" +
-	                        //        "<span class = 'key> Text Added: <div id = addedText> </div> </span> <br>" +
-	                        //        "<span class = 'key> Text Removed: <div id = removedText> </div> </span>" +
-	                        //"</span>" +
-	                        "<ul id='expanding_list' class='no-style'>";
-	        var date = null;
-
-	        html += "<li class ='frequency-list'>" +
-	        							"<label class='selectable_item' for='item" + 0 + "'>"+
-	        							"<span id='tempMe'>Edit Frequency</span></label>" +
-	        							"<input type='checkbox' id='item" + 0 + "' />"+
-	        							"<ul class='item_list'>";
-
-	        							"<li id='tempMe'> Number of Edits the last 24 hours:" + data[1][0] + "</li>"
-	        							+ "</ul></li></li>";
-
-
-	        html += "<li class='rev-list'>" +
-	                        //<span class='timestamp'>"+date+"</span>
-	                                    "<label class='selectable_item' for='item" + 1 + "'>"+
-	                                    "<span id='tempME'>Revs List</span></label>" +
-	                                    "<input type='checkbox' id='item" + 1 + "' />"+
-	                                    "<ul class='item_list'>";
-
-	        for (i=0; i<data[0].length; i++) {
-	                if (data[0][i]['comment'] == "") {
-	                        data[0][i]['comment'] = "No Comment.";
-	                }
-	                title = data[0][i]['title'].replace(/ /g, '_');
-	                date = new Date(data[0][i]['timestamp'])
-	                timeAry = date.toTimeString().split(":");
-	                dateAry = date.toDateString().split(" ");
-	                date = timeAry[0] + ":" + timeAry[1] + ", " + dateAry[1] + " " + dateAry[2] + " " + dateAry[3];
-	                
-	                                    
-	                                            //begin li
-	                                           html +=  "<li id='tempME'>" + "<a href='http://en.wikipedia.org/w/index.php?title="+title+"&oldid="+data[0][i]['parentid']+"' title="+title+" target='_blank' class='timestamp'>" + date + "</a>  <span class='editor'>"+"<a href = 'http://en.wikipedia.org/wiki/" + title + "' target=_blank>" + data[0][i]['title'] + "</a>" +" (<a href='http://en.wikipedia.org/w/index.php?diff="+data[0][i]['revid']+"&oldid="+data[0][i]['parentid']+"'target='_blank' class='talk'>Diff " + "</a> | "+"<a href='http://en.wikipedia.org/w/index.php?title="+ title + "&action=history'" +" target='_blank' class='contribs'>history</a>) </span>"+
-					    "<span class='comment'>"+data[0][i]['comment'] + "</li>";
-	                                     //end li
-
-	                                   
-	        }
-	        html += "</ul>" + "</li></ul>" +
-	        //"<ul class='legend'>" +
-	        //                        "<li><span id='added'></span> Text Added</li>" +
-	        //                        "<li><span id='removed'></span> Text Removed</li>" +
-	        //                "</ul>" +
-	        "</div>";
-		} else {
-			html = "<div id='panel'> <h2>WikiSleuth Author Revision History<span class= 'shortcut'>Press CMD+Shift+F to search for new author</span></h2><span class= 'normal'><p> User either does not exist, or has made no edits.</span></p></div>"
+								date = new Date(data[0][j]['timestamp'])
+								timeAry = date.toTimeString().split(":");
+								dateAry = date.toDateString().split(" ");
+								date = timeAry[0] + ":" + timeAry[1] + ", " + dateAry[1] + " " + dateAry[2] + " " + dateAry[3];
+								//html += "<span id='text_affected' class='header_left'>Revision Context:</span><span class='text_added'>"+date+"</span>";
+								html += "<a href='http://en.wikipedia.org/w/index.php?title="+data[0][j]['title']+"&oldid="+data[0][j]['revid']+"' title="+data[0][j]['title']+" target='_blank' class='timestamp'>" + date + "</a>";
+								html += "<span class='editor'>"+data[0][j]['title']+" (<a href='http://en.wikipedia.org/wiki/User_talk:"+data[0][j]['title']+"' title="+data[0][j]['title']+" target='_blank' class='talk'>talk</a>";
+								html += "| "+"<a href='http://en.wikipedia.org/wiki/Special:Contributions/"+data[0][j]['user']+"' title="+data[0][j]['title']+" target='_blank' class='contribs'>contribs</a>) </span>"+"<span class='comment'>"+data[0][j]['comment']+"</span>";
+						      	
+						    } 
+					    }
+					    html += "</li>" +
+					    "</ul>" +
+					"</li>";
 		}
-		callback(tabs, html);
+		html += "</ul>" +
+		//"<ul class='legend'>" +
+		//			"<li><span id='added'></span> Text Added</li>" +
+		//			"<li><span id='removed'></span> Text Removed</li>" +
+		//		"</ul>" +
+		"</div>";
+	} else {
+		html = "<div id='panel'> <h2>WikiSleuth</h2> <p> No revisions affected highlighted text! </div>"
+	}
+	callback(tabs, html);
 }
