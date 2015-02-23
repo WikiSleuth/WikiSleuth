@@ -7,7 +7,11 @@ function changeTextBackGroundColor(){
     var numDaysSinceNums = 0;
     for(i=0;i<myNodelist.length;i++){
         console.log("THE NUMBER OF THE PARAGRAPH WE ARE ON IS: ", i);
-        var smallSentList = myNodelist[i].outerText.split(".");
+        //var smallSentList = myNodelist[i].outerText.split(".");
+        var textTagContent = myNodelist[i].textContent;
+        textTagContent = textTagContent.replace(/(?!\.[a-zA-Z])\.(?![a-zA-Z]\.)/g,'|');
+        //create an array of sentences
+        var smallSentList = textTagContent.split('|');
         for(j=0;j<smallSentList.length;j++){
             console.log("THIS IS J: ", j);
             console.log("THIS IS THE LENGTH OF THE TEXTDATELIST", text_date_list.length);

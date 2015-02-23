@@ -5,7 +5,7 @@ function makeWorkersTextDateList(sentList, URL, pageID){
     var worker_wordList2 = [];
     var worker_wordList3 = [];
     var worker_wordList4 = [];
-    for(var i = 0; i<sentList.length;i++){
+    /*for(var i = 0; i<sentList.length;i++){
         switch(i%4){
             case 0:
                 worker_wordList1.push(sentList[i]);
@@ -27,7 +27,7 @@ function makeWorkersTextDateList(sentList, URL, pageID){
     console.log("this is the worker list 2: ", worker_wordList2);
     console.log("this is the worker list 3: ", worker_wordList3);
     console.log("this is the worker list 4: ", worker_wordList4);
-                    /*
+                    */
     var quarter_length = Math.ceil(sentList.length/4);
     worker_wordList1 = sentList;
     worker_wordList1 = worker_wordList1.splice(0,quarter_length);
@@ -40,7 +40,7 @@ function makeWorkersTextDateList(sentList, URL, pageID){
     console.log("this is the worker list 3: ", worker_wordList3);
     worker_wordList4 = sentList;
     worker_wordList4 = worker_wordList4.splice(0,quarter_length);
-    console.log("this is the worker list 4: ", worker_wordList4);*/
+    console.log("this is the worker list 4: ", worker_wordList4);
 
     //Make first workers
     heatmap_worker = new Worker("heatMapWorker.js");
@@ -83,7 +83,7 @@ function makeWorkersTextDateList(sentList, URL, pageID){
         console.log('The length of the data array', event.data.length);
         data_length = event.data.length;
         if(event.data[data_length-1] == 'cancel_me'){
-            text_date_list2 = event.data.pop();
+            text_date_list2 = event.data;
             console.log("This is in the cancel event. Here is the textdatelist: ", text_date_list2);
             //endTheHeatMap();
             //heatmap_worker2.terminate();
@@ -108,7 +108,7 @@ function makeWorkersTextDateList(sentList, URL, pageID){
         console.log('The length of the data array', event.data.length);
         data_length = event.data.length;
         if(event.data[data_length-1] == 'cancel_me'){
-            text_date_list3 = event.data.pop();
+            text_date_list3 = event.data;
             console.log("This is in the cancel event. Here is the textdatelist: ", text_date_list3);
             //endTheHeatMap();
             //heatmap_worker3.terminate();
@@ -133,7 +133,7 @@ function makeWorkersTextDateList(sentList, URL, pageID){
         console.log('The length of the data array', event.data.length);
         data_length = event.data.length;
         if(event.data[data_length-1] == 'cancel_me'){
-            text_date_list4 = event.data.pop();
+            text_date_list4 = event.data;
             console.log("This is in the cancel event. Here is the textdatelist: ", text_date_list4);
             //endTheHeatMap();
             //heatmap_worker4.terminate();

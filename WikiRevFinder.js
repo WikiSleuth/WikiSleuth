@@ -518,6 +518,7 @@ var WikiRevFinder = function(url) {
 
 		//console.log("first item" + this.revIDList[0]);
 
+        this.mostCurrentRevisionContent = this.getMostRecentRevisionContent();
 		var sanitizedMostCurrentRevisionContent = this.sanitizeInput(this.mostCurrentRevisionContent);
 		if(sanitizedMostCurrentRevisionContent.length != 0 && this.mostCurrentRevisionContent != 0){
 			this.mostCurrentRevisionContent = sanitizedMostCurrentRevisionContent;

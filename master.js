@@ -91,9 +91,16 @@ function callTheColor(){
 }
 
 function injectedColorScript(tabs){
-    text_date_list_first_half = text_date_list1.concat(text_date_list2);
+    /*text_date_list_first_half = text_date_list1.concat(text_date_list2);
     text_date_list_second_half = text_date_list3.concat(text_date_list4);
-    text_date_list = text_date_list_first_half.concat(text_date_list_second_half);
+    text_date_length = (text_date_list_first_half.concat(text_date_list_second_half)).length;*/
+    for(var i=0;i<text_date_list1.length;i++){
+        text_date_list.push(text_date_list1[i]);
+        text_date_list.push(text_date_list2[i]);
+        text_date_list.push(text_date_list3[i]);
+        text_date_list.push(text_date_list4[i]);
+    }
+    
     chrome.tabs.executeScript(tabs[0].id, {
         code: 'var text_date_list = ' + JSON.stringify(text_date_list)
     }, function() {
