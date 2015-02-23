@@ -2,8 +2,8 @@ var myNodelist = document.getElementsByTagName("p");
 var bigSentList = [];
 for(i=0;i<myNodelist.length;i++){
         var textTagContent = myNodelist[i].textContent;
-        //textTagContent = textTagContent.replace(/\.(?!\d)|([^\d])\.(?=\d)/g,'$1.|');
-        textTagContent = textTagContent.replace(/(?!\.[a-zA-Z])\.(?![a-zA-Z]\.)/g,'.');
+        textTagContent = textTagContent.replace(/\.(?!\d)|([^\d])\.(?=\d)/g,'$1.|');
+        //textTagContent = textTagContent.replace(/(?!\.[a-zA-Z])\.(?![a-zA-Z]\.)/g,'|');
         //create an array of sentences
         var sentences = textTagContent.split('|');
         var firstSentenceLandmark = sentences[0];

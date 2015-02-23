@@ -6,7 +6,6 @@ function makeWorkersTextDateList(sentList, URL, pageID){
     var worker_wordList3 = [];
     var worker_wordList4 = [];
     for(var i = 0; i<sentList.length;i++){
-        console.log("MATH: ",i%4);
         switch(i%4){
             case 0:
                 worker_wordList1.push(sentList[i]);
