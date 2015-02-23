@@ -59,9 +59,9 @@ function buildAuthorHTMLToAdd(tabs, data, callback) {
 		//		"</ul>" +
 		"</div>";
 	} else {
-		html = "<div id='panel'> <span> <h2 id='title'>WikiAuthorScore: " + data[0][0]['user'] + "<span style= font-size:18px> (<a href='https://en.wikipedia.org/wiki/User_talk:" + data[0][0]['user'] + "'target=_blank class=talk>talk </a> | <a href='https://en.wikipedia.org/wiki/Special:Contributions/" + data[0][0]['user'] + "'target = _blank class=talk>contribs</a>)</span>"+
+		html = "<div id='panel'> <h2 id='title'>WikiAuthorScore: Author Does Not Exist" +
 					"<span id='close_button' onclick=closePane();> x </span>" +
-				"</h2> </span>" + "<span id= 'comment'>Author Does not Exist. Try Again. </span>";
+				"</h2> </span>" + "<span class='comment'>Author Does Not Exist. Try again. </span>";
 	}
 	callback(tabs, html);
 }
