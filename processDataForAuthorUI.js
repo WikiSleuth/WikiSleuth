@@ -32,6 +32,9 @@ function buildAuthorHTMLToAdd(tabs, data, callback) {
 						      	if (data[0][j]['parsedcomment'] == "") {
 									data[0][j]['parsedcomment'] = "No Comment.";
 								}
+								if (data[0][j]['tags'].length == 0){
+									data[0][j]['tags'][0] = "No Tags Listed.";
+								}
 
 								date = new Date(data[0][j]['timestamp']);
 								timeAry = date.toTimeString().split(":");
@@ -41,7 +44,7 @@ function buildAuthorHTMLToAdd(tabs, data, callback) {
 								html += "<div id='border'><span id='text_textaffected'>";
 								html += "<a href='http://en.wikipedia.org/w/index.php?title="+data[0][j]['title']+"&oldid="+data[0][j]['revid']+"' title="+data[0][j]['title']+" target='_blank' class='timestamp'>" + date + "</a>";
 								html += "<span class='editor'>"+"<a href='https://en.wikipedia.org/wiki/" + data[0][j]['title'] + "' target='_blank'>"+data[0][j]['title']+"</a> (<a href='http://en.wikipedia.org/w/index.php?diff=" + data[0][j]['revid'] + "oldid=" + data[0][j]['parentid'] + "'target='_blank' class='talk'>diff</a> ";
-								html += "| " +"<a href='http://en.wikipedia.org/w/index.php?title="+ data[0][j]['title'] + "&action=history'" +" target='_blank' class='contribs'>history</a>)</span>"+"<span class='comment'>("+data[0][j]['parsedcomment']+")</span></span><br><br></div>";
+								html += "| " +"<a href='http://en.wikipedia.org/w/index.php?title="+ data[0][j]['title'] + "&action=history'" +" target='_blank' class='contribs'>history</a>)</span>"+"<span class='comment'>("+data[0][j]['parsedcomment']+")(<span class=contribs><a href='en.wikipedia.org/wiki/Special:Tags' target=_blank>Tags</a>: " + data[0][j]['tags'][0]+"</span>)</span></span><br><br></div>";
 						      	//<a href='http://en.wikipedia.org/w/index.php?diff="+data[0][i]['revid']+"&oldid="+data[0][i]['parentid']+"'target='_blank' class='talk'>Diff "
 						    } 
 					    }
