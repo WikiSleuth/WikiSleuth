@@ -1,3 +1,10 @@
+var elem = document.getElementById("panel");
+if (elem) {
+	elem.parentNode.removeChild(elem);
+	var wikiPageFooter = document.querySelector("div#footer");
+	wikiPageFooter.className = wikiPageFooter.className.replace(' addPaddingForPage', '');
+}
+
 var panelElement = document.createElement('div');
 panelElement.innerHTML = panelHTML;
 document.getElementsByTagName('body')[0].appendChild(panelElement);

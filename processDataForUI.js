@@ -48,7 +48,9 @@ function buildHTMLToAdd(tabs, data, callback) {
 		//		"</ul>" +
 		"</div>";
 	} else {
-		html = "<div id='panel'> <h2>WikiSleuth</h2> <p> No revisions affected highlighted text! </div>"
+		html = "<div id='panel'> <span> <h2 id='title'>WikiSleuth: Affected Revisions for " + data[0][0][8] +
+					"<span id='close_button' onclick=closePane();> x </span>" +
+				"</h2> </span> <p> No revisions affected highlighted text! </div>";
 	}
 	callback(tabs, html);
 }

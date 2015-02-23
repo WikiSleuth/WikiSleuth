@@ -196,8 +196,8 @@ function handleAuthorCommand(command){
   }
 }
 
-var evt = new CustomEvent("getInformation");
-document.addEventListener("getInformation", getPageWindow);
+// var evt = new CustomEvent("getInformation");
+// document.addEventListener("getInformation", getPageWindow);
 //authorEvent is for Author Statistics
 var authorEvent = new CustomEvent("getInformation");
 document.addEventListener("getInformation", getAuthorPageWindow);
