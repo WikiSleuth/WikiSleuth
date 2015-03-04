@@ -16,17 +16,20 @@ var text_date_list4 = [];
 var authorRevAndFreqList = null;
 var message = '';
 var htmltoAddToAuthorPane = '';
-var preProcess = true;
+var preProcess = false;
 
 
 // ****************** start heatmap stuff
 
 function preProcessTrue(){
     preProcess = true;  
+    console.log("Preprocess set to: ", preProcess);
 }
 
 function preProcessFalse(){
     preProcess = false;  
+    console.log("Preprocess set to: ", preProcess);
+
 }
 
 chrome.webNavigation.onCompleted.addListener(function(details){
@@ -36,7 +39,7 @@ chrome.webNavigation.onCompleted.addListener(function(details){
             code: initHeatmap()
         }, function() {
             if (chrome.runtime.lastError) {
-                console.log("preprocessing!");
+                //console.log("preprocessing!");
             }}); 
     }
 });
@@ -44,7 +47,7 @@ chrome.webNavigation.onCompleted.addListener(function(details){
 
 function initHeatmap(){
     if (isOnWiki){
-        console.log("Initializing heatmap");
+        //console.log("Initializing heatmap");
         chrome.tabs.query({active: true, currentWindow: true}, startTheHeatMap); 
     }   
 }
@@ -60,36 +63,14 @@ function sendPageToModel(response) {
 }
 
 function stopTheHeatMap(){
-    console.log("GOT INTO STOPTHEHEATMAP");
-    /*var worker_message = 'cancel_request';
-    heatmap_worker.postMessage(worker_message);
-    heatmap_worker2.postMessage(worker_message);
-    heatmap_worker3.postMessage(worker_message);
-    heatmap_worker4.postMessage(worker_message);*/
     heatmap_worker.terminate();
     heatmap_worker2.terminate();
     heatmap_worker3.terminate();
     heatmap_worker4.terminate();
-    console.log("about to see if text_date_lists exists");
-    console.log("at the end of worker cancel requests!", text_date_list1);
-    console.log("at the end of worker cancel requests!", text_date_list2);
-    console.log("at the end of worker cancel requests!", text_date_list3);
-    console.log("at the end of worker cancel requests!", text_date_list4);
-    console.log("workers have been terminated! \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+    //console.log("workers have been terminated! \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 }
 
-function endTheHeatMap(){
-    heatmap_worker.terminate();
-    heatmap_worker2.terminate();
-    heatmap_worker3.terminate();
-    heatmap_worker4.terminate();
-    console.log("about to see if text_date_lists exists");
-    console.log("at the end of worker cancel requests!", text_date_list1);
-    console.log("at the end of worker cancel requests!", text_date_list2);
-    console.log("at the end of worker cancel requests!", text_date_list3);
-    console.log("at the end of worker cancel requests!", text_date_list4);
-    console.log("workers have been terminated! \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
-}
+
 
 function callTheColor(){
     chrome.tabs.query({active: true, currentWindow: true}, injectedColorScript); 
@@ -109,7 +90,7 @@ function injectedColorScript(tabs){
     chrome.tabs.executeScript(tabs[0].id, {
         code: 'var text_date_list = ' + JSON.stringify(text_date_list)
     }, function() {
-        console.log("inside of master calling colorpage script ", text_date_list);
+        //console.log("inside of master calling colorpage script ", text_date_list);
         chrome.tabs.executeScript(tabs[0].id, {file: 'colorPage.js'});
     });
     //text_date_list = undefined; 
@@ -122,7 +103,7 @@ chrome.webNavigation.onCompleted.addListener(function(details){
             code: initColorReset()
         }, function() {
             if (chrome.runtime.lastError) {
-                console.log();
+                //console.log();
             }});
      }
 });
@@ -159,7 +140,7 @@ function finalResetCall(tabs){
 
 // Ensure that user is on wikipage
 function initAuthorScore(){
-  console.log("Initializing AuthorScore");
+  //console.log("Initializing AuthorScore");
     if(isOnWiki){
       chrome.tabs.query({active: true, currentWindow: true}, startTheAuthorScore);
     }
@@ -172,7 +153,7 @@ function startTheAuthorScore(tabs){
 
 // Generate Author Revisions list based on user input
 function sendNameToModel(response){
-  console.log(response[0][0]);
+  //console.log(response[0][0]);
   authorFinder = new AuthorStatisticsFinder(response[0][0]);
   authorRevAndFreqList = authorFinder.setFrequencyandRecentRevisionList();
   //authorRevList is defined at this point 
@@ -227,9 +208,11 @@ function getHighlightedText(tabs) {
 function sendTextToModel(response) {
   if ((response[0][1].indexOf('wikipedia.org/wiki/')>-1) && (isOnWiki == true) && (response[0][0] != "")) {
     WikiAPI = new WikiRevFinder(response[0][1]);
-    console.log("&&&&&&&&&&&&&", response[0][0], response[0][2], response[0][3]);
-    console.log("in master sendTextToModel pageID:")
-    console.log(response[0][4]);
+    //console.log("&&&&&&&&&&&&&", response[0][0], response[0][2], response[0][3]);
+    //console.log("in master sendTextToModel pageID:")
+    //console.log(response[0][4]);
+      console.log("PASSING THIS INTO THE WIKIREVFINDER");
+      console.log(response[0][0],"\n", response[0][2],"\n", response[0][3],"\n", response[0][4]);
     data = getAffectedRevisions(response[0][0], response[0][2], response[0][3], response[0][4]);
     //document.dispatchEvent(evt);
     getPageWindow();
@@ -238,16 +221,18 @@ function sendTextToModel(response) {
 
 // Collects data recieved by the model ****** Should be moved somewhere that makes more sense ******
 function getAffectedRevisions(highlightedText, landmarkBefore, landmarkAfter, pageStartID){
-  //console.log("about to call getWikiRevsInfo");
-    console.log("The Highlighted Text in Master: ",highlightedText);
-    console.log("The Landmark Before in Master: ",landmarkBefore);
-    console.log("The Landmark After in Master: ",landmarkAfter);
-    console.log("The pageStartID in Master: ",pageStartID);
+  ////console.log("about to call getWikiRevsInfo");
+    //console.log("The Highlighted Text in Master: ",highlightedText);
+    //console.log("The Landmark Before in Master: ",landmarkBefore);
+    //console.log("The Landmark After in Master: ",landmarkAfter);
+    //console.log("The pageStartID in Master: ",pageStartID);
   var affectedRevs = WikiAPI.getWikiRevsInfo(highlightedText, landmarkBefore, landmarkAfter, pageStartID, 10);
-  console.log("done calling getWikiRevsInfo");
+  //console.log("done calling getWikiRevsInfo");
   var revisionDetails = null;
 
   for (i = 0; i < affectedRevs.length; i++) {
+      console.log("HERE LOOK AT ME PLZ");
+      console.log(affectedRevs);
     revisionDetails = WikiAPI.WikiAPI.getRevisionStatistics(affectedRevs[i][0]['revid']);
     //diffText = API.getDiffText(affectedRevs[i][0]);
     affectedRevs[i][0] = [revisionDetails['timestamp'], revisionDetails['user'], revisionDetails['parsedcomment'], revisionDetails['user'], revisionDetails['timestamp'], affectedRevs[i][0]['revid'], affectedRevs[i][0]['parentid'], affectedRevs[i][3], revisionDetails['title']];
@@ -279,7 +264,7 @@ function buildPane(tabs, html) {
 
 // Log the response we get returned from the message we sent to the UI. For debugging purposes.
 function respond(response) {
-  console.log(response);
+  //console.log(response);
 }
 
 // If the WikiSleuth shortcut is pressed, start our dataflow

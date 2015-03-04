@@ -33,7 +33,6 @@ function turnHMOn(){
 
 function turnHMOff(){
     bgPage.preProcessFalse();
-
 }
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -42,8 +41,8 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('para').addEventListener('click', callHeatMap);
     document.getElementById('stop').addEventListener('click', callStopHeatMap);
     document.getElementById('reset').addEventListener('click', callResetColors);
-    document.getElementById('art').addEventListener('click', callBackgroundColor);
-    document.getElementById('on').onclick = turnHMOn;
     document.getElementById('off').onclick = turnHMOff;
+    document.getElementById('on').onclick = turnHMOn;
+
 });
 
