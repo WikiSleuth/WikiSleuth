@@ -23,6 +23,7 @@ var preProcess = false;
 
 function preProcessTrue(){
     preProcess = true;  
+    initHeatmap();
     console.log("Preprocess set to: ", preProcess);
 }
 
@@ -34,12 +35,13 @@ function preProcessFalse(){
 
 chrome.webNavigation.onCompleted.addListener(function(details){
     theURL = details.url; 
+    text_date_list = [];
     if((details.url.indexOf('wikipedia.org/wiki/')>-1) && (preProcess==true)){
             chrome.tabs.executeScript(details.tabId, {
             code: initHeatmap()
         }, function() {
             if (chrome.runtime.lastError) {
-                //console.log("preprocessing!");
+                console.log("Not preprocessing!");
             }}); 
     }
 });

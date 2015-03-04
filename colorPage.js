@@ -93,7 +93,7 @@ function chooseColor(daysElapsed){
                 color = "rgba(0,150,200,0.9)";
                 break;
             default:
-                color = "rgba(0,255,0,0.9)";
+                color = "rgba(0,150,200,0.9)";
         }
     }
     return color;
