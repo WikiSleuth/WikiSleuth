@@ -1195,7 +1195,7 @@ var WikEdDiff = function () {
 		if ( this.config.timer === true ) {
 			this.timeEnd( 'total' );
 		}
-		console.log("FRAGMENTS: "+this.fragments[0].type);
+		//console.log("FRAGMENTS: "+this.fragments[0].type);
 		return [this.diffDictionary, this.html, this.fragments];
 	};
 
@@ -1625,7 +1625,7 @@ var WikEdDiff = function () {
 		var bordersUp;
 		if ( recursionLevel === 0 && repeating === false ) {
 			symbols = this.symbols;
-            // console.log("GOT INTO FIRST if clause: ", this.symbols);
+            // //console.log("GOT INTO FIRST if clause: ", this.symbols);
 
 			bordersDown = this.bordersDown;
 			bordersUp = this.bordersUp;
@@ -2167,7 +2167,7 @@ var WikEdDiff = function () {
 
 		// Debug log
 		if ( this.config.timer === true || this.config.debug === true ) {
-			console.log( 'Unlink count: ', unlinkCount );
+			//console.log( 'Unlink count: ', unlinkCount );
 		}
 		if ( this.config.debug === true ) {
 			this.debugGroups( 'Groups' );
@@ -4022,15 +4022,15 @@ var WikEdDiff = function () {
 		var diff = this.html.replace( /<[^>]*>/g, '');
 		var text = this.htmlEscape( this.newText.text );
 		if ( diff !== text ) {
-			console.log(
+			/*console.log(
 				'Error: wikEdDiff unit test failure: diff not consistent with new text version!'
-			);
+			);*/
 			this.error = true;
-			console.log( 'new text:\n', text );
-			console.log( 'new diff:\n', diff );
+			//console.log( 'new text:\n', text );
+			//console.log( 'new diff:\n', diff );
 		}
 		else {
-			console.log( 'OK: wikEdDiff unit test passed: diff consistent with new text.' );
+			//console.log( 'OK: wikEdDiff unit test passed: diff consistent with new text.' );
 		}
 
 		// Check if output is consistent with old text
@@ -4038,15 +4038,15 @@ var WikEdDiff = function () {
 		var diff = this.html.replace( /<[^>]*>/g, '');
 		var text = this.htmlEscape( this.oldText.text );
 		if ( diff !== text ) {
-			console.log(
+			/*console.log(
 				'Error: wikEdDiff unit test failure: diff not consistent with old text version!'
-			);
+			);*/
 			this.error = true;
-			console.log( 'old text:\n', text );
-			console.log( 'old diff:\n', diff );
+			//console.log( 'old text:\n', text );
+			//console.log( 'old diff:\n', diff );
 		}
 		else {
-			console.log( 'OK: wikEdDiff unit test passed: diff consistent with old text.' );
+			//console.log( 'OK: wikEdDiff unit test passed: diff consistent with old text.' );
 		}
 
 		return;
@@ -4077,7 +4077,7 @@ var WikEdDiff = function () {
 				blocks[i].group + ' \t' + blocks[i].fixed + ' \t' + blocks[i].moved + ' \t' +
 				this.debugShortenText( blocks[i].text ) + '\n';
 		}
-		console.log( name + ':\n' + dump );
+		//console.log( name + ':\n' + dump );
 	};
 
 
@@ -4103,7 +4103,7 @@ var WikEdDiff = function () {
 				groups[i].words + ' \t' + groups[i].chars + ' \t' + groups[i].fixed + ' \t' +
 				groups[i].oldNumber + ' \t' + groups[i].movedFrom + ' \t' + groups[i].color + '\n';
 		}
-		console.log( name + ':\n' + dump );
+		//console.log( name + ':\n' + dump );
 	};
 
 
@@ -4123,7 +4123,7 @@ var WikEdDiff = function () {
 				i + ' \t"' + fragments[i].type + '" \t' + fragments[i].color + ' \t' +
 				this.debugShortenText( fragments[i].text, 120, 40 ) + '\n';
 		}
-		console.log( name + ':\n' + dump );
+		//console.log( name + ':\n' + dump );
 	};
 
 
@@ -4140,7 +4140,7 @@ var WikEdDiff = function () {
 		for ( var i = 0; i < bordersLength; i ++ ) {
 			dump += i + ' \t[ ' + borders[i][0] + ' \t' + borders[i][1] + ' ]\n';
 		}
-		console.log( name, dump );
+		//console.log( name, dump );
 	};
 
 
@@ -4204,7 +4204,7 @@ var WikEdDiff = function () {
 			diff = stop - start;
 			this.timer[label] = undefined;
 			if ( noLog !== true ) {
-				console.log( label + ': ' + diff.toFixed( 2 ) + ' ms' );
+				//console.log( label + ': ' + diff.toFixed( 2 ) + ' ms' );
 			}
 		}
 		return diff;
@@ -4231,7 +4231,7 @@ var WikEdDiff = function () {
 			// Log recursion times
 			var timerLength = this.recursionTimer.length;
 			for ( var i = 0; i < timerLength; i ++ ) {
-				console.log( text + ' recursion ' + i + ': ' + this.recursionTimer[i].toFixed( 2 ) + ' ms' );
+				//console.log( text + ' recursion ' + i + ': ' + this.recursionTimer[i].toFixed( 2 ) + ' ms' );
 			}
 		}
 		this.recursionTimer = [];
@@ -4249,10 +4249,10 @@ var WikEdDiff = function () {
 	this.debug = function ( name, object ) {
 
 		if ( object === undefined ) {
-			console.log( name );
+			//console.log( name );
 		}
 		else {
-			console.log( name + ': ' + object );
+			//console.log( name + ': ' + object );
 		}
 		return;
 	};
@@ -4575,7 +4575,7 @@ WikEdDiff.WikEdDiffText = function ( text, parent ) {
 				parent.debugShortenText( tokens[i].token ) + '\n';
 			i = tokens[i].next;
 		}
-		console.log( name + ':\n' + dump );
+		//console.log( name + ':\n' + dump );
 		return;
 	};
 

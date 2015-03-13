@@ -23,8 +23,9 @@ function startTheHeatMap() {
                     var num_revs = date_and_numRevs[1];
                     text_date.push(e.data[0][i])
                     text_date.push(daysElapsed);
-                    text_date.push(num_revs);
+                    text_date.push(num_revs,date_and_numRevs[2]);
                     text_date_list.push(text_date);
+                    //dispatchEvent(messageEvent);
                 }
                 console.log("The text date list with the number of revs", text_date_list);
                 postMessage(text_date_list); 
@@ -44,4 +45,11 @@ function startTheHeatMap() {
     }, false);
 }
 
+function sendDate(){
+    console.log("SENDING THIS MESSAGE TO MAIN THREAD: ", text_date);
+    postMessage(text_date);
+}
+//var messageEvent = '';
+//messageEvent = new CustomEvent("sendMessage");
+//document.addEventListener("sendMessage", sendDate);
 startTheHeatMap();

@@ -20,7 +20,7 @@ var WikiRevFinder = function(url) {
 
 
 	this.iterativeBinarySearch = function(stringToCheck, landmarkBefore, landmarkAfter) {
-		console.log("STRING TO CHECK: "+stringToCheck);
+		//console.log("STRING TO CHECK: "+stringToCheck);
 
 		landmarkBefore = landmarkBefore || null;
 		landmarkAfter = landmarkAfter || null;
@@ -31,7 +31,7 @@ var WikiRevFinder = function(url) {
 			this.WikEdDiff = new WikEdDiff();
 
 			this.halfpoint = Math.floor(this.revIDList.length/2);
-			console.log("halfpoint number we think: " + this.revIDList[this.halfpoint]['revid']);
+			//console.log("halfpoint number we think: " + this.revIDList[this.halfpoint]['revid']);
 
 			var midpointRevisionContent = "";
 			// if(this.cachedContent[this.halfpoint] == undefined){
@@ -50,8 +50,8 @@ var WikiRevFinder = function(url) {
 			}
 
 			
-            //console.log("WIKIREVFINDER calling DIFF.JS  MOST CURRENT",this.mostCurrentRevisionContent);
-            //console.log("WIKIREVFINDER calling DIFF.js MIDPOINT: ", midpointRevisionContent);
+            ////console.log("WIKIREVFINDER calling DIFF.JS  MOST CURRENT",this.mostCurrentRevisionContent);
+            ////console.log("WIKIREVFINDER calling DIFF.js MIDPOINT: ", midpointRevisionContent);
 			var diffObject = this.WikEdDiff.diff(this.mostCurrentRevisionContent, midpointRevisionContent);
 			var diffDictionary = diffObject[0];
 
@@ -61,17 +61,17 @@ var WikiRevFinder = function(url) {
 			diffDictionary['+'] = diffDictionary['+'].replace(/\n+/g, " ");
 			diffDictionary['-'] = diffDictionary['-'].replace(/\n+/g, " ");
 
-			// console.log("CHECKING: "+diffDictionary['=']+ " MINUS " +diffDictionary['-'] +" PLUS "+diffDictionary['+']);
-			// console.log("\nLANDMARKS: "+landmarkAfter+"\n");
+			// //console.log("CHECKING: "+diffDictionary['=']+ " MINUS " +diffDictionary['-'] +" PLUS "+diffDictionary['+']);
+			// //console.log("\nLANDMARKS: "+landmarkAfter+"\n");
 			//only look at the text between landmarks
 			var lowerLandmarkIndex = diffDictionary['='].indexOf(landmarkBefore)
 			var upperLandmarkIndex = diffDictionary['='].indexOf(landmarkAfter)
 
 
 			if((lowerLandmarkIndex > -1) && (upperLandmarkIndex > -1)){
-				// console.log("BEFORE CHANGES: "+diffDictionary['=']);
+				// //console.log("BEFORE CHANGES: "+diffDictionary['=']);
 				diffDictionary['='] = diffDictionary['='].slice(lowerLandmarkIndex, upperLandmarkIndex + landmarkAfter.length);
-				// console.log("AFTER CHANGES: "+diffDictionary['=']);
+				// //console.log("AFTER CHANGES: "+diffDictionary['=']);
 			}
 
 			//we also need to deal with the case where lower landmark isn't there
@@ -95,7 +95,7 @@ var WikiRevFinder = function(url) {
 					//check later of two things in the list
 					this.findFirstRevisionLinearSearch(this.revIDList, stringToCheck);
 					if (this.revIDList.length > 0 && alreadyInList == false){
-						console.log("this revision DID affect the string");
+						//console.log("this revision DID affect the string");
 
 
 						//CORNER CASE TO CONSIDER LATER: what if revIDList[0] is also referenceRevIDList[0]? need to get first of next 500.
@@ -108,10 +108,10 @@ var WikiRevFinder = function(url) {
 			else if(((diffDictionary['='].indexOf(stringToCheck) > -1 && diffDictionary['-'].indexOf(stringToCheck) == -1) || this.mostCurrentRevisionContent.indexOf(stringToCheck) == -1 || (diffDictionary['='].length == 0 && diffDictionary['-'].length == 0 && diffDictionary['+'].length == 0))){
 
 				// if((diffDictionary['='].indexOf(landmarkBefore) > -1 && diffDictionary['='].indexOf(landmarkBefore) > -1)){
-				// 	console.log("between?? "+ (diffDictionary['='].indexOf(landmarkBefore) < diffDictionary['='].indexOf(stringToCheck)) &&(diffDictionary['='].indexOf(landmarkAfter) > diffDictionary['='].indexOf(stringToCheck)));
+				// 	//console.log("between?? "+ (diffDictionary['='].indexOf(landmarkBefore) < diffDictionary['='].indexOf(stringToCheck)) &&(diffDictionary['='].indexOf(landmarkAfter) > diffDictionary['='].indexOf(stringToCheck)));
 				// }
 				// else{
-				// 	console.log("FALSE");
+				// 	//console.log("FALSE");
 				// }
 
 				//run binary search on older/right half of list of current revisions
@@ -120,11 +120,11 @@ var WikiRevFinder = function(url) {
 				//start here, change it so that we don't subtract 1, deal with resulting bug
 				this.revIDList = this.revIDList.slice(this.revIDList.length/2, this.revIDList.length);
 				// midpointRevisionContent = this.getMidpointRevisionContent();
-				// console.log("calling diff Dictionary");
+				// //console.log("calling diff Dictionary");
 				// diffDictionary = this.WikEdDiff.diff(this.mostCurrentRevisionContent, midpointRevisionContent);
-				// console.log("ending calling diff Dictionary");
+				// //console.log("ending calling diff Dictionary");
 
-				//console.log('this revision did not affect the string');
+				////console.log('this revision did not affect the string');
 			}
 
 			else{
@@ -138,7 +138,7 @@ var WikiRevFinder = function(url) {
 				}
 				if(alreadyInList == false){
 
-					console.log("this revision DID affect the string");
+					//console.log("this revision DID affect the string");
 	
 					affectedRevisionList.push([this.revIDList[this.halfpoint-1], diffObject[1], diffObject[2]]);
 
@@ -157,7 +157,7 @@ var WikiRevFinder = function(url) {
 				// 	}
 				// 	if (this.revIDList.length > 0 && alreadyInList == false){
 				// 		// rev id of 0 TODO ******************************************
-				// 		console.log("this revision DID affect the string");
+				// 		//console.log("this revision DID affect the string");
 				// 		affectedRevisionList.push([this.revIDList[0], this.revIDList[1]])
 				// 	}
 				// 	break;
@@ -165,23 +165,23 @@ var WikiRevFinder = function(url) {
 				// else{
 				this.revIDList = this.revIDList.slice(0, (this.revIDList.length/2) + 1);
 				// }
-				// console.log("after slice:" + this.revIDList)
+				// //console.log("after slice:" + this.revIDList)
 				// midpointRevisionContent = this.getMidpointRevisionContent();
-				// console.log("starting calling diff Dictionary");
+				// //console.log("starting calling diff Dictionary");
 				// diffDictionary = this.WikEdDiff.diff(this.mostCurrentRevisionContent, midpointRevisionContent);
-				// console.log("ending calling diff Dictionary");
+				// //console.log("ending calling diff Dictionary");
 
 
-				// console.log("DIFF DICTIONARY FOR THIS ONE: "+diffDictionary['='].length);
+				// //console.log("DIFF DICTIONARY FOR THIS ONE: "+diffDictionary['='].length);
 			}
 		}
 		//otherwise, run on newer/left half of current revisions
 
 		// if(diffDictionary['-'].indexOf(stringToCheck) > -1){
-		// 	console.log('this revision deleted: ' + stringToCheck);
+		// 	//console.log('this revision deleted: ' + stringToCheck);
 		// }
 		// if(diffDictionary['+'].indexOf(stringToCheck) > -1){
-		// 	console.log('this revision added: ' + stringToCheck);
+		// 	//console.log('this revision added: ' + stringToCheck);
 		// }
 
 		//sort the list of recent revisions, from earliest id to latest
@@ -190,22 +190,22 @@ var WikiRevFinder = function(url) {
 		//The following if else statement is to check if we are at "creation": the revision where the page was created.
 		//shit gets funky in this case, so we create a fake revision to return.
 		if (affectedRevisionList.length == 0){
-			console.log("empty affectedRevisionList. we think this means we're at creation of page")
+			//console.log("empty affectedRevisionList. we think this means we're at creation of page")
 			var fakeFrag = {"type": "+", "text": stringToCheck};
 
 			var fakeRev = [this.revIDList[0], "", [fakeFrag]];
 
 			affectedRevisionList.push(fakeRev);
-			console.log("after pushing fakeRev, affectedRevisionList:")
-			console.log(affectedRevisionList);
+			//console.log("after pushing fakeRev, affectedRevisionList:")
+			//console.log(affectedRevisionList);
 
 
 		} else {
-			console.log("we are not at creation, and affectedRevisionList is:")
-			console.log(affectedRevisionList)
+			//console.log("we are not at creation, and affectedRevisionList is:")
+			//console.log(affectedRevisionList)
 		}
 		var sortedList = affectedRevisionList.sort(function(rev1, rev2){return rev2[0]['revid']-rev1[0]['revid']});
-		//console.log(this.getStringPriorToEdit(stringToCheck, sortedList[0])); #throws an error if sortedList is empty
+		////console.log(this.getStringPriorToEdit(stringToCheck, sortedList[0])); #throws an error if sortedList is empty
 		
 		return sortedList[0]
 
@@ -230,10 +230,10 @@ var WikiRevFinder = function(url) {
 			var nextRev = this.iterativeBinarySearch(currentString, currLandmarkBefore, currLandmarkAfter)
 			//  break out of loop if iterativebinarysearch returns nothing
 			nextRevid = nextRev[0]["revid"]
-			console.log("affecting rev:")
-			console.log(nextRev)
-			console.log("the id is:")
-			console.log(nextRev[0]["revid"]);
+			//console.log("affecting rev:")
+			//console.log(nextRev)
+			//console.log("the id is:")
+			//console.log(nextRev[0]["revid"]);
 			//affectingRevs.push(nextRev);
 
 			//This is if we are at "Creation": the revision where the page was created.
@@ -270,11 +270,11 @@ var WikiRevFinder = function(url) {
 				var diffFragments = diffObjectToRebuildWith[2];
 
 				nextRev[2] = diffFragments;
-				// console.log(diffFragments);
+				// //console.log(diffFragments);
 				
 
 				//TODO: what to do if revidtodiffto stays at 0.
-				// console.log("list: "+this.revIDList);
+				// //console.log("list: "+this.revIDList);
 
 				// getStringPriorToEdit returns a string to display in UI and the stringPrior to edit.
 				// we care about the stringPriorToEdit to find next revision to that string.
@@ -292,8 +292,8 @@ var WikiRevFinder = function(url) {
 
 
 
-				console.log("bult up string: ")
-				console.log(currentString)
+				//console.log("bult up string: ")
+				//console.log(currentString)
 
 				if (currentString == ""){
 					break;
@@ -325,22 +325,22 @@ var WikiRevFinder = function(url) {
 				
 
 				//currentString = getStringPriorToEdit(currentString, )//second param is "affectedRevision"
-				console.log("got here");
+				//console.log("got here");
 				curIndex++;
 			}
 
 		}
-		console.log("AT THE END OF lastNrevisions!!! affectingRevs looks like: ");
-		console.log(affectingRevs);
+		//console.log("AT THE END OF lastNrevisions!!! affectingRevs looks like: ");
+		//console.log(affectingRevs);
 		return affectingRevs;
 
 	}
 
 
 	this.getMidpointRevisionContent = function() {
-		//console.log("length:" + this.revIDList.length)
-		//console.log("half length:" + this.revIDList.length/2)
-		//console.log("text: " + txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(this.revIDList[halfpoint]['revid'])))
+		////console.log("length:" + this.revIDList.length)
+		////console.log("half length:" + this.revIDList.length/2)
+		////console.log("text: " + txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(this.revIDList[halfpoint]['revid'])))
 		//return txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(this.revIDList[this.halfpoint]['revid']));
 		var revContent = this.WikiAPI.getRevisionContent(this.revIDList[this.halfpoint]['revid']);
 		if (revContent != undefined) {
@@ -386,11 +386,11 @@ var WikiRevFinder = function(url) {
 			return;
 		}
 		else{
-			console.log("NO AFFECTING STRINGS FROM LINEAR SEARCH");
+			//console.log("NO AFFECTING STRINGS FROM LINEAR SEARCH");
 			this.revIDList = [];
 			return;
 		}
-		// console.log('TO RETURN: '+toReturn);
+		// //console.log('TO RETURN: '+toReturn);
 		// return toReturn;
 	};
 
@@ -426,9 +426,9 @@ var WikiRevFinder = function(url) {
 
 
 		if((lowerLandmarkIndex > -1) && (upperLandmarkIndex > -1) && (landmarkBefore.indexOf(stringToCheck) == -1)){
-			// console.log("BEFORE CHANGES: "+diffDictionary['=']);
+			// //console.log("BEFORE CHANGES: "+diffDictionary['=']);
 			oldestItemDiffDictionary['='] = oldestItemDiffDictionary['='].slice(lowerLandmarkIndex, upperLandmarkIndex + landmarkAfter.length);
-			// console.log("AFTER CHANGES: "+diffDictionary['=']);
+			// //console.log("AFTER CHANGES: "+diffDictionary['=']);
 		}
 
 		//we also need to deal with the case where lower landmark isn't there
@@ -441,13 +441,13 @@ var WikiRevFinder = function(url) {
 			oldestItemDiffDictionary['='] = oldestItemDiffDictionary['='].slice(0, upperLandmarkIndex + landmarkAfter.length);
 		}
 
-		// console.log("OLDEST ITEM DIFF DICT: "+this.mostCurrentRevisionContent.indexOf(stringToCheck));
+		// //console.log("OLDEST ITEM DIFF DICT: "+this.mostCurrentRevisionContent.indexOf(stringToCheck));
 		if((oldestItemDiffDictionary['='].indexOf(stringToCheck) > -1 || this.mostCurrentRevisionContent.indexOf(stringToCheck) == -1 || (oldestItemDiffDictionary['='].length == 0 && oldestItemDiffDictionary['-'].length == 0 && oldestItemDiffDictionary['+'].length == 0))){
-			console.log("oldest revision does not affect string.");
-			// console.log("oldest diff: "+oldestItemDiffDictionary['=']);
+			//console.log("oldest revision does not affect string.");
+			// //console.log("oldest diff: "+oldestItemDiffDictionary['=']);
 
 			if(this.revIDList.length == 1){
-				console.log("this.revIDList only has one item, chill.")
+				//console.log("this.revIDList only has one item, chill.")
 				return;
 			}
 
@@ -455,29 +455,29 @@ var WikiRevFinder = function(url) {
 			this.getWikiRevsInfo(stringToCheck, landmarkBefore, landmarkAfter, this.oldestRevID, null, numRevisions);
 		}
 		else{
-			console.log("oldest revision DOES affect string: "+this.oldestRevID);
+			//console.log("oldest revision DOES affect string: "+this.oldestRevID);
 		}
 	};
 
 	this.sanitizeInput = function(stringToCheck) {
-		// console.log("STRING: "+stringToCheck);
+		// //console.log("STRING: "+stringToCheck);
 		//take out links in stringToCheck, so we just have the string itself
 		//also newlines
-		// console.log("OLD STRING TO CHECK: "+stringToCheck);
+		// //console.log("OLD STRING TO CHECK: "+stringToCheck);
 		stringToCheck = stringToCheck.replace(/\[.*?\]/g, "");
 		stringToCheck = stringToCheck.replace(/\n+/g, " ");
 		stringToCheck = stringToCheck.replace(/\{\{.*?\}\}/g, "");
-		// console.log("UPDATED STRING TO CHECK: "+stringToCheck);
+		// //console.log("UPDATED STRING TO CHECK: "+stringToCheck);
 		return stringToCheck;
 	};
 
 
 	//This is the function that gets called by master, sends back all the revisions to be displayed
 	this.getWikiRevsInfo = function(stringToCheck, landmarkBefore, landmarkAfter, pageStartID, numRevisions, revisionOffset) {
-		// console.log("start of getWikiRevsInfo page id:")
-		// console.log(pageStartID)
+		// //console.log("start of getWikiRevsInfo page id:")
+		// //console.log(pageStartID)
 		// if (pageStartID == null){
-		// 	console.log("page start id equal null")
+		// 	//console.log("page start id equal null")
 		// }
 		//need to clear the cache each time, because we're taking diffs against a different revision, so the content will be different
 		//and therefore old entries will no longer be cache-able
@@ -485,13 +485,13 @@ var WikiRevFinder = function(url) {
 		
         this.WikEdDiff = new WikEdDiff();
 		//sanitize string input
-		console.log("before stringToCheck");
+		//console.log("before stringToCheck");
 		stringToCheck = this.sanitizeInput(stringToCheck);
-		console.log("before lower checkpoint: "+landmarkBefore);
+		//console.log("before lower checkpoint: "+landmarkBefore);
 		landmarkBefore = this.sanitizeInput(landmarkBefore);
-		console.log("before higher checkpoint");
+		//console.log("before higher checkpoint");
 		landmarkAfter = this.sanitizeInput(landmarkAfter);
-		console.log("after checkpoints");
+		//console.log("after checkpoints");
 
 		//make this an optional parameter, set to 0 if not passed in
 		revisionOffset = revisionOffset || 0;
@@ -499,24 +499,24 @@ var WikiRevFinder = function(url) {
 
 		//search the first 500 revisions in this case
 		if(revisionOffset == 0 && pageStartID == null){
-			console.log("446")
+			//console.log("446")
 			revIDList = this.WikiAPI.findFirst500RevisionIDList();
 		}
 
 		//otherwise, we've already searched the first 500 (and possibly more), so search the next batch of 500
 		else{
 			if (pageStartID == null){
-				console.log("453")
+				//console.log("453")
 				revIDList = this.WikiAPI.findFirst500RevisionIDList(this.oldestRevID);
 			} else {
-				console.log("456", pageStartID, "<-----");
+				//console.log("456", pageStartID, "<-----");
 				revIDList = this.WikiAPI.findFirst500RevisionIDList(pageStartID);
 			}
 		}
 		this.revIDList = revIDList;
 		this.referenceRevIDList = this.revIDList;
 
-		//console.log("first item" + this.revIDList[0]);
+		////console.log("first item" + this.revIDList[0]);
 
         this.mostCurrentRevisionContent = this.getMostRecentRevisionContent();
 		var sanitizedMostCurrentRevisionContent = this.sanitizeInput(this.mostCurrentRevisionContent);
@@ -553,8 +553,8 @@ var WikiRevFinder = function(url) {
 		var i = 0;
 		var leftGroupNumber = 0;
 		var rightGroupNumber = 0;
-		console.log("str to check" + stringToCheck);
-		console.log("********************************\n\n");
+		//console.log("str to check" + stringToCheck);
+		//console.log("********************************\n\n");
 		while (tempHighlightedString.length > 0 && i < fragments.length){
 			fragments[i]['text'] = fragments[i]['text'].replace(/\n+/g, " ");
 			switch(fragments[i]['type']){
@@ -568,7 +568,7 @@ var WikiRevFinder = function(url) {
 					break;
 				case '=':
 				case '>':
-					console.log("Fragments: " + fragments[i]['text']);
+					//console.log("Fragments: " + fragments[i]['text']);
 					fragmentTextArray = fragments[i]['text'].split(/(\S+\s+)/).filter(function(n) {return n});
 					for(var j=0; j<fragmentTextArray.length; j++){
 						
@@ -593,7 +593,7 @@ var WikiRevFinder = function(url) {
 								formattedStringToBeDisplayed += fragmentTextArray[j];
 							}
 							else{
-								console.log("UNEVEN GROUP NUMBERS: "+ leftGroupNumber + " "+rightGroupNumber);
+								//console.log("UNEVEN GROUP NUMBERS: "+ leftGroupNumber + " "+rightGroupNumber);
 							}
 						}else if (indexOfFragMatch === -1 && hasBegun == false && fragmentTextArray[j].lastIndexOf(tempHighlightedString.trim().split(" ")[0]) >= 0){
 							//corner case where only partial first word is highlighted
@@ -619,25 +619,25 @@ var WikiRevFinder = function(url) {
 							formattedStringToBeDisplayed = '';
 						}
 					}
-					console.log("Rebuilt String EQ "+i+": "+stringPriorToEdit);
-					console.log("Highlighted String: " + tempHighlightedString);
+					//console.log("Rebuilt String EQ "+i+": "+stringPriorToEdit);
+					//console.log("Highlighted String: " + tempHighlightedString);
 					break;
 				case '-':
 				case '<':
 					// we handle '<' here, because it means it was moved down from some point earlier in the diff, so we want to insert it here.
-					console.log("Fragments: " + fragments[i]['text']);
+					//console.log("Fragments: " + fragments[i]['text']);
 					// We need to add to stringPriorToEdit because it is taken away from the parent with regards to current
 					if(hasBegun){
 						stringPriorToEdit += fragments[i]['text'];
 						formattedStringToBeDisplayed += "<span class='addedRev'><span class='added-rem-tag'>[Deleted: </span>" + fragments[i]['text'] + "<span class='added-rem-tag'>]</span></span>";
 					}
-					console.log("Rebuilt String - "+i+": "+stringPriorToEdit);
-					console.log("Highlighted String: " + tempHighlightedString);
+					//console.log("Rebuilt String - "+i+": "+stringPriorToEdit);
+					//console.log("Highlighted String: " + tempHighlightedString);
 					break;
 				case '+':
 					var tempBegun = hasBegun;
 
-					console.log("Fragments: " + fragments[i]['text']);
+					//console.log("Fragments: " + fragments[i]['text']);
 					// We need to remove the text in fragments from tempHighlightedString because it did not exist in parent.
 					// if(hasBegun){
 					// 	tempHighlightedString = tempHighlightedString.replace(fragments[i]['text'], "");
@@ -704,8 +704,8 @@ var WikiRevFinder = function(url) {
 					}
 
 					// } 
-					console.log("Rebuilt String + "+i+": "+stringPriorToEdit);
-					console.log("Highlighted String: " + tempHighlightedString);
+					//console.log("Rebuilt String + "+i+": "+stringPriorToEdit);
+					//console.log("Highlighted String: " + tempHighlightedString);
 					break;
 			}
 			i += 1;

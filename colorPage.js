@@ -13,9 +13,6 @@ function changeTextBackGroundColor(){
         //create an array of sentences
         var smallSentList = textTagContent.split('|');
         for(j=0;j<smallSentList.length;j++){
-            console.log("THIS IS J: ", j);
-            console.log("THIS IS THE LENGTH OF THE TEXTDATELIST", text_date_list.length);
-            console.log("THIS IS THE LENGTH OF THE SMALLSENTLIST", smallSentList.length);
             if(smallSentList[j] != ""){
                     console.log("THIS IS THE NUNUMTHING: ", numDaysSinceNums);
                     if(numDaysSinceNums<text_date_list.length-1){

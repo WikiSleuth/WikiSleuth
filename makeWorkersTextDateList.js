@@ -5,7 +5,7 @@ function makeWorkersTextDateList(sentList, URL, pageID){
     var worker_wordList2 = [];
     var worker_wordList3 = [];
     var worker_wordList4 = [];
-    /*for(var i = 0; i<sentList.length;i++){
+    for(var i = 0; i<sentList.length;i++){
         switch(i%4){
             case 0:
                 worker_wordList1.push(sentList[i]);
@@ -27,8 +27,8 @@ function makeWorkersTextDateList(sentList, URL, pageID){
     console.log("this is the worker list 2: ", worker_wordList2);
     console.log("this is the worker list 3: ", worker_wordList3);
     console.log("this is the worker list 4: ", worker_wordList4);
-                    */
-    var quarter_length = Math.ceil(sentList.length/4);
+                    
+   /* var quarter_length = Math.ceil(sentList.length/4);
     worker_wordList1 = sentList;
     worker_wordList1 = worker_wordList1.splice(0,quarter_length);
     console.log("this is the worker list 1: ", worker_wordList1);
@@ -40,7 +40,7 @@ function makeWorkersTextDateList(sentList, URL, pageID){
     console.log("this is the worker list 3: ", worker_wordList3);
     worker_wordList4 = sentList;
     worker_wordList4 = worker_wordList4.splice(0,quarter_length);
-    console.log("this is the worker list 4: ", worker_wordList4);
+    console.log("this is the worker list 4: ", worker_wordList4);*/
 
     //Make first workers
     heatmap_worker = new Worker("heatMapWorker.js");
@@ -65,7 +65,12 @@ function makeWorkersTextDateList(sentList, URL, pageID){
             //heatmap_worker = undefined;
         }
         else{
-            text_date_list1 = event.data;
+            text_date_list.push({
+                key:   "WW1",
+                value: event.data
+            });
+            console.log("FROM WW1: ", text_date_list);
+            callDynamicColor();
         }
    }; 
 
@@ -76,7 +81,7 @@ function makeWorkersTextDateList(sentList, URL, pageID){
     new_message2.push(worker_wordList2);
     new_message2.push(URL);
     new_message2.push(pageID);
-    heatmap_worker2.postMessage(new_message);
+    heatmap_worker2.postMessage(new_message2);
     //listen for second worker response
     heatmap_worker2.onmessage = function (event) {
         console.log("WE ARE LISTENING TO WORKER");
@@ -91,7 +96,12 @@ function makeWorkersTextDateList(sentList, URL, pageID){
 
         }
         else{
-            text_date_list2 = event.data;
+            text_date_list.push({
+                key:   "WW2",
+                value: event.data
+            });
+            console.log("FROM WW1: ", text_date_list);
+            callDynamicColor();
         }
    };
     
@@ -101,7 +111,7 @@ function makeWorkersTextDateList(sentList, URL, pageID){
     new_message3.push(worker_wordList3);
     new_message3.push(URL);
     new_message3.push(pageID);
-    heatmap_worker3.postMessage(new_message);
+    heatmap_worker3.postMessage(new_message3);
     //listen for second worker response
     heatmap_worker3.onmessage = function (event) {
         console.log("WE ARE LISTENING TO WORKER");
@@ -116,7 +126,12 @@ function makeWorkersTextDateList(sentList, URL, pageID){
 
         }
         else{
-            text_date_list3 = event.data;
+            text_date_list.push({
+                key:   "WW3",
+                value: event.data
+            });
+            console.log("FROM WW1: ", text_date_list);
+            callDynamicColor();
         }
    };
     
@@ -126,7 +141,7 @@ function makeWorkersTextDateList(sentList, URL, pageID){
     new_message4.push(worker_wordList4);
     new_message4.push(URL);
     new_message4.push(pageID);
-    heatmap_worker4.postMessage(new_message);
+    heatmap_worker4.postMessage(new_message4);
     //listen for second worker response
     heatmap_worker4.onmessage = function (event) {
         console.log("WE ARE LISTENING TO WORKER");
@@ -141,7 +156,12 @@ function makeWorkersTextDateList(sentList, URL, pageID){
 
         }
         else{
-            text_date_list4 = event.data;
+            text_date_list.push({
+                key:   "WW4",
+                value: event.data
+            });
+            console.log("FROM WW1: ", text_date_list);
+            callDynamicColor();
         }
    };
     
