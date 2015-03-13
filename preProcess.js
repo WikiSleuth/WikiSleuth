@@ -30,7 +30,7 @@ function verifyPage(curPage){
 
 //chrome.tabs.onActivated.addListener(checkURL);
 //chrome.tabs.onUpdated.addListener(checkUpdatedURL);
-//chrome.windows.onFocusChanged.addListener(getCurPage);
+chrome.windows.onFocusChanged.addListener(getCurPage);
 
 //chrome.windows.onCreated.addListener(getCurPage);
 //chrome.windows.onFocusChanged.addListener(getCurPage);

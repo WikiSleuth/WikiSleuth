@@ -6,12 +6,13 @@ function callHeatMap(){
     bgPage.callTheColor();
 }
 
-function callHeatMap2(){
-    chrome.tabs.executeScript(null,{file: "heatMapScripts/changeTextFontColor.js"});
+function callStopHeatMap(){
+    bgPage.stopTheHeatMap();
 }
 
 function callResetColors(){
-    chrome.tabs.executeScript(null,{file: "heatMapScripts/resetColors.js"});
+    //chrome.tabs.executeScript(null,{file: "heatMapScripts/resetColors.js"});
+    bgPage.callResetFromButton();
 }
 
 function callBackgroundColor(){
@@ -22,18 +23,24 @@ function callBackgroundPage(){
 	bgPage.queryForData();
 }
 
+function callAuthorScore(){
+    bgPage.initAuthorScore();
+}
+
 function turnHMOn(){
     bgPage.preProcessTrue();
 }
 
 function turnHMOff(){
     bgPage.preProcessFalse();
+
 }
 
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('rev').addEventListener('click', callBackgroundPage);
+    document.getElementById('author').addEventListener('click', callAuthorScore);
     document.getElementById('para').addEventListener('click', callHeatMap);
-    document.getElementById('sent').addEventListener('click', callHeatMap2);
+    document.getElementById('stop').addEventListener('click', callStopHeatMap);
     document.getElementById('reset').addEventListener('click', callResetColors);
     document.getElementById('art').addEventListener('click', callBackgroundColor);
     document.getElementById('on').onclick = turnHMOn;

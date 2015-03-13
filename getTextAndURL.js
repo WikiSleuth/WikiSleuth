@@ -18,7 +18,13 @@ textTagContent = textTagContent.replace(/\.(?!\d)|([^\d])\.(?=\d)/g,'$1.|');
 var sentences = textTagContent.split('|');
 //grab first and last sentence of paragraph
 var firstSentenceLandmark = sentences[0];
-var endSentenceLandmark = sentences[sentences.length-2];
+if(sentences.length > 1){
+    var endSentenceLandmark = sentences[sentences.length-2];
+}
+else{
+    var endSentenceLandmark = sentences[sentences.length-1];
+}
+
 
 var url = document.URL;
 var splitURL = url.split("=")

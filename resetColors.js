@@ -1,7 +1,11 @@
 // resetColors.js
-
 function reset() {
     var myNodelist = document.getElementsByTagName("p");
+    for(i=0;i<myNodelist.length;i++){
+        myNodelist[i].outerHTML = paragraphs_html[i];
+    }
+ 
+    /*var myNodelist = document.getElementsByTagName("p");
     // reset article background to white
     document.getElementById("content").style.backgroundColor ="white";
     // reset text background
@@ -22,7 +26,7 @@ function reset() {
         myNodelist[i].outerHTML = newPara;
         newPara = "";
     
-    }    
+    }   */
 }
 
 reset();
