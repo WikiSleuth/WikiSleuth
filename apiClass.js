@@ -11,11 +11,16 @@ var APICaller = function(url){
 		return;
 	};
 
+	/**
+	* Get a list of the first 500 rev ids. Or, if a starting rev id is provided,
+	* get the next 500 revisions after (and including) that id.
+	*/
 	this.findFirst500RevisionIDList = function(startID){
 		//make startID optional. such that if it's not supplied, we start with the most recent revision
 		startID = startID || 0;
 		var action = '';
 
+		//construct the proper url for the API call
 		if(startID != 0){
 			try{
 				this.pageName = this.pageName.split('title=')[1].split('&')[0];
@@ -27,6 +32,8 @@ var APICaller = function(url){
 			action = 'format=json&action=query&titles=' + this.pageName + '&prop=revisions&rvprop=ids&rvlimit=500&continue='
 		}
 		var apiRequestURL = this.endpoint + action;
+
+		//data is returned as a JSON object, and we want to return a specific subset of that object.
 		var jsonObject = this.makeRequest(apiRequestURL);
 		return jsonObject['query']['pages'][Object.keys(jsonObject['query']['pages'])[0]]['revisions'];
 

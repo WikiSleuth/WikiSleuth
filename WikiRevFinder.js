@@ -616,10 +616,6 @@ var WikiRevFinder = function(url) {
 					var tempBegun = hasBegun;
 
 					console.log("Fragments: " + fragments[i]['text']);
-					// We need to remove the text in fragments from tempHighlightedString because it did not exist in parent.
-					// if(hasBegun){
-					// 	tempHighlightedString = tempHighlightedString.replace(fragments[i]['text'], "");
-					// } else {
 					
 					// textDeletedFromHighlightedString is used for the rebuilt string to be displayed in UI Pane. Since we
 					// build this string word by word, we just want to connect all the words so we can have a string of removals
@@ -681,7 +677,6 @@ var WikiRevFinder = function(url) {
 						formattedStringToBeDisplayed += "<span class='delRev'><span class='added-rem-tag'>[Added: </span>" + textDeletedFromHighlightedString + "<span class='added-rem-tag'>]</span></span>";
 					}
 
-					// } 
 					console.log("Rebuilt String + "+i+": "+stringPriorToEdit);
 					console.log("Highlighted String: " + tempHighlightedString);
 					break;
