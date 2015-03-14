@@ -18,6 +18,8 @@ var message = '';
 var htmltoAddToAuthorPane = '';
 var preProcess = true;
 
+var tabID = 0;
+
 
 // ****************** start heatmap stuff
 
@@ -214,25 +216,22 @@ function queryForData() {
 
 // The first element of tabs will be the page the user is currently looking at. Execute code to get highlighted text.
 function getHighlightedText(tabs) {
-  // if (isPaneDisplayed) {
-  //   chrome.tabs.executeScript(tabs[0].id, {file: 'hidePane.js'});
-  //   isPaneDisplayed = false;
-  // } else {
-    
-  // }
+  tabID = tabs[0].id;
+  chrome.tabs.insertCSS(tabs[0].id, {file: 'panel.css'});
   chrome.tabs.executeScript(tabs[0].id, {file: 'getTextAndURL.js'}, sendTextToModel); // ***** URL ALREADY GOTTEN? ******
 }
 
 // Response of our executed script will have the highlighted text. Set our text var to equal that string and then trigger the next event
 function sendTextToModel(response) {
   if ((response[0][1].indexOf('wikipedia.org/wiki/')>-1) && (isOnWiki == true) && (response[0][0] != "")) {
-    WikiAPI = new WikiRevFinder(response[0][1]);
-    console.log("&&&&&&&&&&&&&", response[0][0], response[0][2], response[0][3]);
-    console.log("in master sendTextToModel pageID:")
-    console.log(response[0][4]);
-    data = getAffectedRevisions(response[0][0], response[0][2], response[0][3], response[0][4]);
+    WikiAPI = new WikiRevFinder(response[0][1], true, tabID);
+    //console.log("&&&&&&&&&&&&&", response[0][0], response[0][2], response[0][3]);
+    //console.log("in master sendTextToModel pageID:")
+    //console.log(response[0][4]);
+    var affectedRevs = WikiAPI.getWikiRevsInfo(response[0][0], response[0][2], response[0][3], response[0][4], 10);
+    //data = getAffectedRevisions(response[0][0], response[0][2], response[0][3], response[0][4]);
     //document.dispatchEvent(evt);
-    getPageWindow();
+    //getPageWindow();
   }
 }
 
@@ -260,6 +259,7 @@ function getAffectedRevisions(highlightedText, landmarkBefore, landmarkAfter, pa
   return affectedRevs;
 }
 
+/**
 // Get the active window again. *** Can be combined with query for data? ***
 function getPageWindow() {
   chrome.tabs.query({active: true, currentWindow: true}, addInfo);
@@ -286,6 +286,7 @@ function buildPane(tabs, html) {
 function respond(response) {
   console.log(response);
 }
+**/
 
 // If the WikiSleuth shortcut is pressed, start our dataflow
 function handleCommand(command) {

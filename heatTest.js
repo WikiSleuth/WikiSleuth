@@ -8,7 +8,7 @@ var heatTest = function(url,pageID) {
 
 	this.init = function() {
 		this.WikiAPI = new APICaller(url);
-        this.WikiRevFinder = new WikiRevFinder(url);
+        this.WikiRevFinder = new WikiRevFinder(url, false, 0);
         this.date = new Date();
         this.text_date_list = [];
         this.stop_request = false;
