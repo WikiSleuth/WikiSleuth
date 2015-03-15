@@ -16,8 +16,8 @@ var text_date_list4 = [];
 var authorRevAndFreqList = null;
 var message = '';
 var htmltoAddToAuthorPane = '';
-var preProcess = true;
-var bigSentList = [];
+var preProcess = false;
+//var bigSentList = [];
 
 
 // ****************** start heatmap stuff
@@ -59,8 +59,9 @@ function startTheHeatMap(tabs){
 }
 
 function sendPageToModel(response) {
-    console.log("HERE IS THE NEW LIST WITH INDEX: ", response[0][0]);
-    makeWorkersTextDateList(response[0][0],response[0][1],response[0][2]);
+    console.log("THIS IS OUR NEW WIKIPAGE OBJECT: ", response);
+    console.log("HERE IS THE NEW LIST WITH INDEX: ", response[0].textInfo);
+    makeWorkersTextDateList(response[0].textInfo,response[0].url,response[0].pageID);
     
 }
 
@@ -105,7 +106,8 @@ function callDynamicColor(){
 }
 function dynamicColor(tabs){
     chrome.tabs.executeScript(tabs[0].id, {
-        code: 'var text_date_list = ' + JSON.stringify(text_date_list) + '\n var bigSentList = ' + JSON.stringify(bigSentList)
+        //code: 'var text_date_list = ' + JSON.stringify(text_date_list) 
+        code: 'var text_info = ' + JSON.stringify(text_date)
     }, function() {
         console.log("HERE IN DYNAMIC COLORING");
         chrome.tabs.executeScript(tabs[0].id, {file: 'dynamicColoring.js'});
@@ -309,8 +311,8 @@ chrome.commands.onCommand.addListener(handleCommand);
 chrome.commands.onCommand.addListener(handleAuthorCommand);
 
 
-chrome.runtime.onMessage.addListener(
-  function(request, sender) {
-    console.log("GOT THIS IN MASTER: ", request);
-    bigSentList = request;
-  });
+//chrome.runtime.onMessage.addListener(
+//  function(request, sender) {
+//    console.log("GOT THIS IN MASTER: ", request);
+//    bigSentList = request;
+//  });

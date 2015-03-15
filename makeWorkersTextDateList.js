@@ -27,20 +27,6 @@ function makeWorkersTextDateList(sentList, URL, pageID){
     console.log("this is the worker list 2: ", worker_wordList2);
     console.log("this is the worker list 3: ", worker_wordList3);
     console.log("this is the worker list 4: ", worker_wordList4);
-                    
-   /* var quarter_length = Math.ceil(sentList.length/4);
-    worker_wordList1 = sentList;
-    worker_wordList1 = worker_wordList1.splice(0,quarter_length);
-    console.log("this is the worker list 1: ", worker_wordList1);
-    worker_wordList2 = sentList;
-    worker_wordList2 = worker_wordList2.splice(0,quarter_length); 
-    console.log("this is the worker list 2: ", worker_wordList2);
-    worker_wordList3 = sentList;
-    worker_wordList3 = worker_wordList3.splice(0,quarter_length); 
-    console.log("this is the worker list 3: ", worker_wordList3);
-    worker_wordList4 = sentList;
-    worker_wordList4 = worker_wordList4.splice(0,quarter_length);
-    console.log("this is the worker list 4: ", worker_wordList4);*/
 
     //Make first workers
     heatmap_worker = new Worker("heatMapWorker.js");
@@ -70,6 +56,7 @@ function makeWorkersTextDateList(sentList, URL, pageID){
                 value: event.data
             });
             console.log("FROM WW1: ", text_date_list);
+            text_date = event.data;
             callDynamicColor();
         }
    }; 
@@ -101,6 +88,7 @@ function makeWorkersTextDateList(sentList, URL, pageID){
                 value: event.data
             });
             console.log("FROM WW1: ", text_date_list);
+            text_date = event.data;
             callDynamicColor();
         }
    };
@@ -131,6 +119,7 @@ function makeWorkersTextDateList(sentList, URL, pageID){
                 value: event.data
             });
             console.log("FROM WW1: ", text_date_list);
+            text_date = event.data;
             callDynamicColor();
         }
    };
@@ -161,6 +150,7 @@ function makeWorkersTextDateList(sentList, URL, pageID){
                 value: event.data
             });
             console.log("FROM WW1: ", text_date_list);
+            text_date = event.data;
             callDynamicColor();
         }
    };
