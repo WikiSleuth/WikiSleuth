@@ -3,7 +3,7 @@
 
 function callHeatMap(){
     //chrome.tabs.executeScript(null,{file: "heatMapScripts/heattest.js"});
-    bgPage.callTheColor();
+    bgPage.initHeatmap();
 }
 
 function callStopHeatMap(){

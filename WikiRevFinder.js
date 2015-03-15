@@ -20,7 +20,7 @@ var WikiRevFinder = function(url) {
 
 
 	this.iterativeBinarySearch = function(stringToCheck, landmarkBefore, landmarkAfter) {
-		console.log("STRING TO CHECK: "+stringToCheck);
+		//console.log("STRING TO CHECK: "+stringToCheck);
 
 		landmarkBefore = landmarkBefore || null;
 		landmarkAfter = landmarkAfter || null;
@@ -207,8 +207,10 @@ var WikiRevFinder = function(url) {
         console.log("Here is the affectedrevision list in iterative binary search: ", affectedRevisionList);
 		var sortedList = affectedRevisionList.sort(function(rev1, rev2){return rev2[0]['revid']-rev1[0]['revid']});
 		////console.log(this.getStringPriorToEdit(stringToCheck, sortedList[0])); #throws an error if sortedList is empty
+
 		console.log("Here is the sorted list in the iterative binary search: ", sortedList);
 		return sortedList[0];
+
 
 		//return affectedRevisionList.slice(0,10).reverse();
 	};
@@ -230,9 +232,11 @@ var WikiRevFinder = function(url) {
 			this.cachedContent = [];
 			var nextRev = this.iterativeBinarySearch(currentString, currLandmarkBefore, currLandmarkAfter)
 			//  break out of loop if iterativebinarysearch returns nothing
+
             console.log("here is the N in lastNrevisions ", n);
             console.log("Here's the next rev in lastNrevisions ", nextRev);
 			nextRevid = nextRev[0]["revid"];
+
 			//console.log("affecting rev:")
 			//console.log(nextRev)
 			//console.log("the id is:")

@@ -1,4 +1,4 @@
-var heatTest = function(url,pageID) {
+var heatMapGenerator = function(url,pageID) {
 
 	this.WikiAPI = null;
     this.WikiRevFinder = null;
@@ -18,12 +18,11 @@ var heatTest = function(url,pageID) {
     this.getMostRecentRev = function(text_to_color) {
         console.log("Sentence that we're calling the algorithm on: ", text_to_color);
         var affectedRevs = [];
-        var date_and_numRevs = [];
-        affectedRevs = this.WikiRevFinder.getWikiRevsInfo(text_to_color[0],text_to_color[1],text_to_color[2],pageID,1,0);
+        affectedRevs = this.WikiRevFinder.getWikiRevsInfo(text_to_color.sentence,text_to_color.firstLM,text_to_color.endLM,pageID,1,0);
         console.log("HERE IS THE AFFECTED REV FROM HEATMAP CLASS ", affectedRevs);
         var revisionDetails = null;
         var revisionDate = null;
-        console.log(text_to_color);
+        console.log("In heatmap generator, this is the text_info object: ", text_to_color);
         console.log(affectedRevs);
         if (affectedRevs.length > 0){
             var firstRevId = affectedRevs[0][0]['revid'];
@@ -32,29 +31,9 @@ var heatTest = function(url,pageID) {
             console.log("The revision date from heatTest", revisionDate);
             console.log("The affected revs returned by the algorithm: ", affectedRevs);
         }
-        date_and_numRevs.push(this.getDaysBetweenRevisions(revisionDate));
-        date_and_numRevs.push(affectedRevs.length);
-        return date_and_numRevs;
+        return this.getDaysBetweenRevisions(revisionDate);
 
     };
-    
-    /*this.makeTextDateList = function(text_list){
-        for(i=0;i<text_list.length;i++){
-             if(!this.stop_request){
-                text_date = [];
-                var date_and_numRevs = this.getMostRecentRev(text_list[i]);
-                var daysElapsed = date_and_numRevs[0];
-                var num_revs = date_and_numRevs[1];
-                text_date.push(text_list[i])
-                text_date.push(daysElapsed);
-                text_date.push(num_revs);
-                this.text_date_list.push(text_date);
-                console.log("The text date list with the number of revs", this.text_date_list);
-            }
-        }
-        //return this.text_date_list;
-        
-    };*/
     
     this.getDaysBetweenRevisions = function(timestamp){
         var currentEpochTime = Date.parse(this.date);

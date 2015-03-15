@@ -17,6 +17,7 @@ var authorRevAndFreqList = null;
 var message = '';
 var htmltoAddToAuthorPane = '';
 var preProcess = false;
+//var bigSentList = [];
 
 
 // ****************** start heatmap stuff
@@ -32,7 +33,7 @@ function preProcessFalse(){
     console.log("Preprocess set to: ", preProcess);
 
 }
-
+ // PREPROCESS STUFF
 chrome.webNavigation.onCompleted.addListener(function(details){
     theURL = details.url; 
     text_date_list = [];
@@ -60,10 +61,13 @@ function startTheHeatMap(tabs){
 }
 
 function sendPageToModel(response) {
-    makeWorkersTextDateList(response[0][0],response[0][1],response[0][2]);
+    console.log("THIS IS OUR NEW WIKIPAGE OBJECT: ", response);
+    console.log("HERE IS THE NEW LIST WITH INDEX: ", response[0].textInfo);
+    makeWorkersTextDateList(response[0].textInfo,response[0].url,response[0].pageID);
     
 }
 
+// TERMINATE THE HEATMAP
 function stopTheHeatMap(){
     heatmap_worker.terminate();
     heatmap_worker2.terminate();
@@ -73,7 +77,7 @@ function stopTheHeatMap(){
 }
 
 
-
+// HEATMAP COLOR STUFF
 function callTheColor(){
     chrome.tabs.query({active: true, currentWindow: true}, injectedColorScript); 
 }
@@ -95,10 +99,25 @@ function injectedColorScript(tabs){
         //console.log("inside of master calling colorpage script ", text_date_list);
         chrome.tabs.executeScript(tabs[0].id, {file: 'colorPage.js'});
     });
-    //text_date_list = undefined; 
+    text_date_list = []; 
+}
+
+// NEW HEATMAP COLORING SCHEME
+function callDynamicColor(){
+    chrome.tabs.query({active: true, currentWindow: true}, dynamicColor); 
+}
+function dynamicColor(tabs){
+    chrome.tabs.executeScript(tabs[0].id, {
+        //code: 'var text_date_list = ' + JSON.stringify(text_date_list) 
+        code: 'var text_info = ' + JSON.stringify(text_date)
+    }, function() {
+        console.log("HERE IN DYNAMIC COLORING");
+        chrome.tabs.executeScript(tabs[0].id, {file: 'dynamicColoring.js'});
+    });
 }
 
 
+// HEATMAP RESET **********************
 chrome.webNavigation.onCompleted.addListener(function(details){
      if(details.url.indexOf('wikipedia.org/wiki/')>-1){
             chrome.tabs.executeScript(details.tabId, {
@@ -109,6 +128,7 @@ chrome.webNavigation.onCompleted.addListener(function(details){
             }});
      }
 });
+
 
 function initColorReset() {
     chrome.tabs.query({active: true, currentWindow: true}, resetHTML);
@@ -291,3 +311,10 @@ document.addEventListener("getInformation", getAuthorPageWindow);
 //document.addEventListener("getInformation", addSubmitInfo);
 chrome.commands.onCommand.addListener(handleCommand);
 chrome.commands.onCommand.addListener(handleAuthorCommand);
+
+
+//chrome.runtime.onMessage.addListener(
+//  function(request, sender) {
+//    console.log("GOT THIS IN MASTER: ", request);
+//    bigSentList = request;
+//  });
