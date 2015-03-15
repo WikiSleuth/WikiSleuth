@@ -19,7 +19,7 @@ var WikiRevFinder = function(url, asyncAdd, tabID) {
 		this.tabID = tabID;
 		this.WikiAPI = new APICaller(url);
 		this.WikEdDiff = new WikEdDiff();
-		this.HTMLConstructor = new HTMLConstructor(tabID, this.WikiAPI);
+		this.HTMLConstructor = new HTMLConstructor(tabID, this.WikiAPI, url);
 		this.round = 0;
 		return;
 	};
@@ -344,6 +344,7 @@ var WikiRevFinder = function(url, asyncAdd, tabID) {
 		}
 		console.log("AT THE END OF lastNrevisions!!! affectingRevs looks like: ");
 		console.log(affectingRevs);
+		this.HTMLConstructor.alterPaneHeader(null);
 		return affectingRevs;
 
 	}

@@ -1,4 +1,4 @@
-var HTMLConstructor = function(tabID, WikiAPI) {
+var HTMLConstructor = function(tabID, WikiAPI, url) {
 
 	this.tabID = 0;
 	this.item = 0;
@@ -6,6 +6,8 @@ var HTMLConstructor = function(tabID, WikiAPI) {
 	this.init = function() {
 		this.tabID = tabID;
 		this.WikiAPI = WikiAPI;
+		var urlArray = url.split('/');
+		this.articleName = urlArray[urlArray.length - 1].replace(/_/g, " ");
 		return;
 	};
 
@@ -30,9 +32,11 @@ var HTMLConstructor = function(tabID, WikiAPI) {
 					      //"<span id='revision' class='header_left'>RevisionID:</span><span id='revision' class='header_right'>"+data[i][0][5]+"</span> <br>" +
 					      //"<span id='parent_rev' class='header_left'>ParentID:</span><span id='parent_rev' class='header_right'>"+data[i][0][6]+"</span> <br>" +
 					      "<span id='text_affected' class='header_left'>Revision Context:</span><span class='text_added'>"+revInfo['context']+"</span>" +
-					      "<span class='header_right'>"+ "<input id='clickMe' type='button' value='Compare Affected to Parent Revision' onclick=getDiffText('DIV"+this.item+"'); />" +"</span>" +
-					      //"<span id='diff_button' class='header_left'>Diff:</span><span class='header_right'>"+ "<input id='clickMe' type='button' value='Click For Diff' onclick=getPageContent('DIV"+i+"'); />" +"</span>" +
-					      "<div id='DIV"+this.item+"' style='display:none'>"+"index.php?title="+revInfo['title']+"&diff="+"prev"+"&oldid="+revInfo['revid']+"</div>" +
+					      //"<span class='header_right'>"+ "index.php?title="+revInfo['title']+"&diff="+"prev"+"&oldid="+revInfo['revid']//"<input id='clickMe' type='button' value='Compare Affected to Parent Revision' onclick=getDiffText('DIV"+this.item+"'); />" +"</span>" +
+					      //"<span id='diff_button' class='header_left'>Diff:</span><span class='header_right'>"+ "<input id='clickMe' type='button' value='Click For Diff' onclick=onclick=window.open(encodeURIComponent('index.php?title="+revInfo['title']+"&diff=prev&oldid="+revInfo['revid']+"'), '_blank'); />" +"</span>" +
+					      "<span class='header_right'>"+ "<a href='http://en.wikipedia.org/w/index.php?title="+revInfo['title']+"&diff="+"prev"+"&oldid="+revInfo['revid']+"' title='Compare Affected to Parent Revision' target='_blank'> <button type='button'> Compare Affected to Parent Revision </button></a> | <a href='https://en.wikipedia.org/w/index.php?title=Binary_search_algorithm&action=edit&undoafter=" + revInfo['revid'] + "&undo=" + revInfo['parentid'] + "'Undo Edit' target='_blank'><button type='button'> Undo Edit </button></a> </span>" +
+					      //"<span class='header_right'>"+  </span>" +
+					      //"<a href='http://en.wikipedia.org/w/index.php?title="+revInfo['title']+"&diff="+"prev"+"&oldid="+revInfo['revid']+"' title='Compare Affected to Parent Revision' target='_blank' class='header_right'>" +
 					     "</li>" +
 					    "</ul>" +
 					"</li>";
@@ -57,6 +61,13 @@ var HTMLConstructor = function(tabID, WikiAPI) {
 	    this.addHTML(htmlToAdd);
 	    return;
 	};
+
+	this.alterPaneHeader = function(text) {
+		if (text == null) {
+			text = "WikiSleuth: Affected Revisions for "+ this.articleName + "<span id='close_button' onclick=closePane();> x </span>";
+		}
+		chrome.tabs.executeScript(this.tabID, { code: "var elem = document.getElementById('title'); elem.innerHTML =" + JSON.stringify(text) });
+	}
 
 	this.init();
 };
