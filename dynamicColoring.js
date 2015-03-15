@@ -95,22 +95,22 @@ function chooseColor(daysElapsed){
                 color = "#A501C3";
                 break;
             case (1825 <= daysElapsed &&  daysElapsed < 2190):
-                color = "#8801BE";
+                color = "#B61EA6";
                 break;
             case (2190 <= daysElapsed &&  daysElapsed < 2555):
-                color = "#7C22A6";
+                color = "#A919C4";
                 break;            
             case (2555 <= daysElapsed &&  daysElapsed < 2920):
-                color = "#581BD2";
+                color = "#A216D2";
                 break;            
             case (2920 <= daysElapsed &&  daysElapsed < 3285):
-                color = "#4C18E1";
+                color = "#9C14E1";
                 break;            
             case (3285 <= daysElapsed &&  daysElapsed < 3650):
-                color = "#3514FF";
+                color = "#8F0FFF";
                 break;            
             default:
-                color = "#0F00A2";
+                color = "#3514FF";
         }
     }
     return color;
