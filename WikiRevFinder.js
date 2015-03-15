@@ -10,6 +10,7 @@ var WikiRevFinder = function(url) {
 	this.halfpoint = 0;
 	this.cachedContent = {};
 	this.contentToMove = [];
+	this.startTime = new Date().getTime();
 
 	this.init = function() {
 		this.WikiAPI = new APICaller(url);
@@ -296,6 +297,9 @@ var WikiRevFinder = function(url) {
 		}
 		// console.log("AT THE END OF lastNrevisions!!! affectingRevs looks like: ");
 		// console.log(affectingRevs);
+		var curTime = (new Date().getTime()) -this.startTime;
+		console.log("ELAPSED TIME: "+curTime);
+		console.log(affectingRevs);
 		return affectingRevs;
 
 	}
@@ -462,9 +466,13 @@ var WikiRevFinder = function(url) {
 		console.log("before stringToCheck");
 		stringToCheck = this.sanitizeInput(stringToCheck);
 		console.log("before lower checkpoint: "+landmarkBefore);
-		landmarkBefore = this.sanitizeInput(landmarkBefore);
+		if(landmarkBefore != null){
+			landmarkBefore = this.sanitizeInput(landmarkBefore);
+		}
 		console.log("before higher checkpoint");
-		landmarkAfter = this.sanitizeInput(landmarkAfter);
+		if(landmarkAfter != null){
+			landmarkAfter = this.sanitizeInput(landmarkAfter);
+		}
 		console.log("after checkpoints");
 
 		//this is an optional parameter, so set to 0 if not passed in
