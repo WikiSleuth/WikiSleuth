@@ -1,7 +1,8 @@
 <h1>WikiSleuth</h1>
 <h3>A Tool For The Avid Wikipedia Editor</h3>
 <br>
-hello world!
+<h2>Installation: </h2>
+WikiSleuth is a Google Chrome browser extension. In order to install, navigate to your <a href='chrome://extensions'>Chrome Extensions</a> page.
 
 
 
@@ -12,7 +13,7 @@ hello world!
 <br>
 <br>
 <br>
-<h2> Simple Branch Tutorial:<h2>
+<h2> Simple Branch Tutorial:</h2>
 Please edit, this needs much work! 
 <br>
 This is a simple write up on how to use branching in Git to develop while maintaining a stable product in the Master branch.
