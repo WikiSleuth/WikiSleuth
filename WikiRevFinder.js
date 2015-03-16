@@ -26,21 +26,29 @@ var WikiRevFinder = function(url, asyncAdd, tabID) {
 		return;
 	};
 
-
+	/**
+	* Search a Wikipedia article's revision history to find the first revision that affects a highlighted string.
+	* landmarkBefore and landmarkAfter are the first and last sentence, respectively, in the paragraph where the highlighted text is.
+	* These are used to limit the search space, to limit the chances of reporting a change that didn't actually affect the highlghted string. 
+	*/
 	this.iterativeBinarySearch = function(stringToCheck, landmarkBefore, landmarkAfter) {
-		//console.log("STRING TO CHECK: "+stringToCheck);
 
+		// landmarks are optional parameters, set them to null if they aren't passed in
 		landmarkBefore = landmarkBefore || null;
 		landmarkAfter = landmarkAfter || null;
 
 		var affectedRevisionList = [];
+
+		//when the revIDList is size one, that means that *that* revision is the one that most
+		//recently affected our highlighted string
 		while(this.revIDList.length > 1){
 			//If we don't create a new WikEdDiff object everytime, diff.js will freak out
 			this.WikEdDiff = new WikEdDiff();
 
 			this.halfpoint = Math.floor(this.revIDList.length/2);
-			//console.log("halfpoint number we think: " + this.revIDList[this.halfpoint]['revid']);
+			// console.log("halfpoint number we think: " + this.revIDList[this.halfpoint]['revid']);
 
+			//call Wikipedia's API to get the content of the revision that's at the midpoint of our list of revisions
 			var midpointRevisionContent = "";
 			// if(this.cachedContent[this.halfpoint] == undefined){
 			midpointRevisionContent = this.getMidpointRevisionContent();
@@ -51,15 +59,20 @@ var WikiRevFinder = function(url, asyncAdd, tabID) {
 				//get the content from the cache instead of recalculating it using the API
 			// midpointRevisionContent = this.cachedContent[this.halfpoint];
 			// }
+
+			//eliminate Wikipedia-specific formatting changes, like enclosing links in double brackets. We just want
+			//the plain text.
 			var sanitizedMidpointRevisionContent = this.sanitizeInput(midpointRevisionContent);
 			if(sanitizedMidpointRevisionContent.length != 0 && midpointRevisionContent != 0){
 				midpointRevisionContent = sanitizedMidpointRevisionContent
 			// we DON'T want to do this if the sanitized input is empty, because this will result in the diff messing up and being disregarded (nothing in any of the diff dicts)
 			}
 
-			
-            ////console.log("WIKIREVFINDER calling DIFF.JS  MOST CURRENT",this.mostCurrentRevisionContent);
-            ////console.log("WIKIREVFINDER calling DIFF.js MIDPOINT: ", midpointRevisionContent);
+            //console.log("WIKIREVFINDER calling DIFF.JS  MOST CURRENT",this.mostCurrentRevisionContent);
+            //console.log("WIKIREVFINDER calling DIFF.js MIDPOINT: ", midpointRevisionContent);
+
+            // take the diff between the most recent revision and the current midpoint revision, broken up into fragments of
+            // what's stayed the same across revisions, what's been added, what's been removed, and what's been moved.
 			var diffObject = this.WikEdDiff.diff(this.mostCurrentRevisionContent, midpointRevisionContent);
 			var diffDictionary = diffObject[0];
 
@@ -69,8 +82,9 @@ var WikiRevFinder = function(url, asyncAdd, tabID) {
 			diffDictionary['+'] = diffDictionary['+'].replace(/\n+/g, " ");
 			diffDictionary['-'] = diffDictionary['-'].replace(/\n+/g, " ");
 
-			// //console.log("CHECKING: "+diffDictionary['=']+ " MINUS " +diffDictionary['-'] +" PLUS "+diffDictionary['+']);
-			// //console.log("\nLANDMARKS: "+landmarkAfter+"\n");
+			// console.log("CHECKING: "+diffDictionary['=']+ " MINUS " +diffDictionary['-'] +" PLUS "+diffDictionary['+']);
+			// console.log("\nLANDMARKS: "+landmarkAfter+"\n");
+
 			//only look at the text between landmarks
 			var lowerLandmarkIndex = diffDictionary['='].indexOf(landmarkBefore)
 			var upperLandmarkIndex = diffDictionary['='].indexOf(landmarkAfter)
@@ -92,6 +106,8 @@ var WikiRevFinder = function(url, asyncAdd, tabID) {
 				diffDictionary['='] = diffDictionary['='].slice(0, upperLandmarkIndex + landmarkAfter.length);
 			}
 
+			// if our rev id list is size 2, there's the potential for infinite looping
+			//so we perform linear search on it to get to size one.
 			if(this.revIDList.length == 2){
 					var alreadyInList = false
 					for(var i = 0; i < affectedRevisionList.length; i++){
@@ -113,6 +129,9 @@ var WikiRevFinder = function(url, asyncAdd, tabID) {
 					break;
 			}
 
+			//in order for a revision to NOT be affected, it must at some point contain the highlighted string in one of the '=' blocks and not contain the
+			// highlighted string in any of the '-' blocks. Alternatively, the revision doesn't affect the highlighted string if there aren't any fragments from the diff
+			// e.g. there was no difference
 			else if(((diffDictionary['='].indexOf(stringToCheck) > -1 && diffDictionary['-'].indexOf(stringToCheck) == -1) || this.mostCurrentRevisionContent.indexOf(stringToCheck) == -1 || (diffDictionary['='].length == 0 && diffDictionary['-'].length == 0 && diffDictionary['+'].length == 0))){
 
 				// if((diffDictionary['='].indexOf(landmarkBefore) > -1 && diffDictionary['='].indexOf(landmarkBefore) > -1)){
@@ -123,9 +142,8 @@ var WikiRevFinder = function(url, asyncAdd, tabID) {
 				// }
 
 				//run binary search on older/right half of list of current revisions
-				//first, change this.revIdList to be the right half of the list, then call the two functions above again
+				//first, change this.revIdList to be the right/older half of the list, then call the two functions above again
 
-				//start here, change it so that we don't subtract 1, deal with resulting bug
 				this.revIDList = this.revIDList.slice(this.revIDList.length/2, this.revIDList.length);
 				// midpointRevisionContent = this.getMidpointRevisionContent();
 				// //console.log("calling diff Dictionary");
@@ -151,52 +169,12 @@ var WikiRevFinder = function(url, asyncAdd, tabID) {
 					affectedRevisionList.push([this.revIDList[this.halfpoint-1], diffObject[1], diffObject[2]]);
 
 				}
-				//edge case: this has the potential to continue slicing infinitely, making a new list of the same size as before
-				//if list size is two, so we do this if list size is too
-				// if(this.revIDList.length == 2){
-				// 	//check later of two things in the list
-				// 	this.findFirstRevisionLinearSearch(this.revIDList, stringToCheck);
-				// 	var alreadyInList = false
-				// 	for(var i = 0; i < affectedRevisionList.length; i++){
-				// 		if(affectedRevisionList[i][0]['revid'] == this.revIDList[0]['revid']){
-				// 			alreadyInList = true;
-				// 			break;
-				// 		}
-				// 	}
-				// 	if (this.revIDList.length > 0 && alreadyInList == false){
-				// 		// rev id of 0 TODO ******************************************
-				// 		//console.log("this revision DID affect the string");
-				// 		affectedRevisionList.push([this.revIDList[0], this.revIDList[1]])
-				// 	}
-				// 	break;
-				// }
-				// else{
+				//for the next iteration, we want the left/newer side of the rev id list.
 				this.revIDList = this.revIDList.slice(0, (this.revIDList.length/2) + 1);
-				// }
-				// //console.log("after slice:" + this.revIDList)
-				// midpointRevisionContent = this.getMidpointRevisionContent();
-				// //console.log("starting calling diff Dictionary");
-				// diffDictionary = this.WikEdDiff.diff(this.mostCurrentRevisionContent, midpointRevisionContent);
-				// //console.log("ending calling diff Dictionary");
-
-
-				// //console.log("DIFF DICTIONARY FOR THIS ONE: "+diffDictionary['='].length);
 			}
 		}
-		//otherwise, run on newer/left half of current revisions
-
-		// if(diffDictionary['-'].indexOf(stringToCheck) > -1){
-		// 	//console.log('this revision deleted: ' + stringToCheck);
-		// }
-		// if(diffDictionary['+'].indexOf(stringToCheck) > -1){
-		// 	//console.log('this revision added: ' + stringToCheck);
-		// }
-
-		//sort the list of recent revisions, from earliest id to latest
-
-
 		//The following if else statement is to check if we are at "creation": the revision where the page was created.
-		//shit gets funky in this case, so we create a fake revision to return.
+		//things gets funky in this case, so we create a fake revision to return.
 		if (affectedRevisionList.length == 0){
 			//console.log("empty affectedRevisionList. we think this means we're at creation of page")
 			var fakeFrag = {"type": "+", "text": stringToCheck};
@@ -212,19 +190,18 @@ var WikiRevFinder = function(url, asyncAdd, tabID) {
 			//console.log("we are not at creation, and affectedRevisionList is:")
 			//console.log(affectedRevisionList)
 		}
-        console.log("Here is the affectedrevision list in iterative binary search: ", affectedRevisionList);
+
+		//sort the list of recent revisions, from earliest id to latest, and the newest of these is the one we want to return
 		var sortedList = affectedRevisionList.sort(function(rev1, rev2){return rev2[0]['revid']-rev1[0]['revid']});
-		////console.log(this.getStringPriorToEdit(stringToCheck, sortedList[0])); #throws an error if sortedList is empty
-
-		console.log("Here is the sorted list in the iterative binary search: ", sortedList);
-		return sortedList[0];
-
-
-		//return affectedRevisionList.slice(0,10).reverse();
+		
+		return sortedList[0]
 	};
 
 
-
+	/**
+	* function to perform binary search n times (where n is a parameter); this includes rebuilding the highlighted string
+	* to its form before the affecting revision after each call of iterativeBinarySearch.
+	*/
 	this.lastNrevisions = function(stringToCheck, landmarkBefore, landmarkAfter, n, originalRevIdList) {
 		var affectingRevs = [];
 		var stringPriorToEditList = [];
@@ -234,22 +211,17 @@ var WikiRevFinder = function(url, asyncAdd, tabID) {
 		var currLandmarkAfter = landmarkAfter;
 		var tempIDList = this.revIDList
 		var curIndex = 0;
+
+		// keep going until we've performed the search n times
 		while(curIndex < n){
-			//revIDList = this.WikiAPI.findFirst500RevisionIDList();
-			//this.revIDList = tempIDList
 			this.cachedContent = [];
 			var nextRev = this.iterativeBinarySearch(currentString, currLandmarkBefore, currLandmarkAfter)
 			//  break out of loop if iterativebinarysearch returns nothing
-
-            console.log("here is the N in lastNrevisions ", n);
-            console.log("Here's the next rev in lastNrevisions ", nextRev);
-			nextRevid = nextRev[0]["revid"];
-
-			//console.log("affecting rev:")
-			//console.log(nextRev)
-			//console.log("the id is:")
-			//console.log(nextRev[0]["revid"]);
-			//affectingRevs.push(nextRev);
+			nextRevid = nextRev[0]["revid"]
+			console.log("affecting rev:")
+			console.log(nextRev)
+			console.log("the id is:")
+			console.log(nextRev[0]["revid"]);
 
 			//This is if we are at "Creation": the revision where the page was created.
 			if (nextRev[0]["parentid"] == 0) {
@@ -261,7 +233,8 @@ var WikiRevFinder = function(url, asyncAdd, tabID) {
 				break;
 
 			} else {
-				//need to update current, rebuilt rev to be "most current" revision, so that other revisions are checked against this one
+				//need to update current "most recent revision", so that if we go past 500,
+				// the "most current" revision is the newest revision in that block of 500, so that other revisions are checked against that one
 				this.mostCurrentRevisionContent = this.getMostRecentRevisionContent(nextRev[0]["parentid"]);
 				var sanitizedMostCurrentRevisionContent = this.sanitizeInput(this.mostCurrentRevisionContent);
 				if(sanitizedMostCurrentRevisionContent.length != 0 && this.mostCurrentRevisionContent != 0){
@@ -269,17 +242,8 @@ var WikiRevFinder = function(url, asyncAdd, tabID) {
 					// we DON'T want to do this if the sanitized input is empty, because this will result in the diff messing up and being disregarded (nothing in any of the diff dicts)
 				}
 
-				//now we need to get the revision immediately after that one, take the diff of that and the first affecting revision,
-				//to get the right rebuilt string
-				// var revIdToDiffTo = 0;
-
-				// for(var i = 0; i < originalRevIdList.length; i++){
-				// 	if(originalRevIdList[i]['revid'] == nextRevid){
-				// 		revIdToDiffTo = originalRevIdList[i-1]['revid'];
-				// 		break;
-				// 	}
-				// }
-
+				//now we need to get parent revision (the revision one older), take the diff of that and the first affecting revision,
+				//to get the right rebuilt string, as well as the diff we want to display for the user.
 				var contentToDiffTo = this.getMostRecentRevisionContent(nextRevid);
 
 				this.WikEdDiff = new WikEdDiff();
@@ -301,7 +265,6 @@ var WikiRevFinder = function(url, asyncAdd, tabID) {
 				formattedStringToShow = stringPriorToEditList[1];
 				
 				//alter nextRev so that it contains currentString after getting rebuilt
-				// Pat here, I think this will do it? Let me know if it should be different!
 				nextRev[3] = formattedStringToShow;
 
 				affectingRevs.push(nextRev);
@@ -310,11 +273,8 @@ var WikiRevFinder = function(url, asyncAdd, tabID) {
 				}
 				currLandmarkBefore = this.getStringPriorToEdit(currLandmarkBefore, nextRev)[0];
 				currLandmarkAfter = this.getStringPriorToEdit(currLandmarkAfter, nextRev)[0];
-
-
-
-				//console.log("bult up string: ")
-				//console.log(currentString)
+				// console.log("bult up string: ")
+				// console.log(currentString)
 
 				if (currentString == ""){
 					break;
@@ -324,6 +284,8 @@ var WikiRevFinder = function(url, asyncAdd, tabID) {
 				this.referenceRevIDList = this.revIDList;
 				var onlyAscii = /^[ -~]+$/;
 
+				//weird things happen if non-ascii characters are included in the landmarks,
+				//and we get better results in those cases by using different versions of the landmarks
 				if ((!onlyAscii.test(landmarkBefore)) || (!onlyAscii.test(landmarkAfter))) {
 				  // string has non-ascii characters
 				  this.checkOldestRevision(currentString, currLandmarkBefore, currLandmarkAfter, n);
@@ -331,29 +293,15 @@ var WikiRevFinder = function(url, asyncAdd, tabID) {
 				else{
 					this.checkOldestRevision(currentString, landmarkBefore, landmarkAfter, n);
 				}
-				// try{
-				// 	this.checkOldestRevision(currentString, landmarkBefore, landmarkAfter, n);
-				// }
-				// catch(err){
-				// 	this.checkOldestRevision(currentString, currLandmarkBefore, currLandmarkAfter, n);
-				// }
 				if(this.revIDList.length == 0){
 					this.revIDList = revIDList;
 				}
-
-				//revid is nextRev[0][5] i think
-
-				
-
-				//currentString = getStringPriorToEdit(currentString, )//second param is "affectedRevision"
-				//console.log("got here");
 				curIndex++;
 			}
 
 		}
-
-		console.log("AT THE END OF lastNrevisions!!! affectingRevs looks like: ");
-		console.log(affectingRevs);
+		// console.log("AT THE END OF lastNrevisions!!! affectingRevs looks like: ");
+		// console.log(affectingRevs);
 		if (this.asyncAdd === true) {
 			this.HTMLConstructor.alterPaneHeader(null);
 		}
@@ -362,12 +310,10 @@ var WikiRevFinder = function(url, asyncAdd, tabID) {
 
 	}
 
-
+	/**
+	* make a call to our API caller class to get the content of the midpoint revision (the id in the middle of our current list of revisions)
+	*/
 	this.getMidpointRevisionContent = function() {
-		////console.log("length:" + this.revIDList.length)
-		////console.log("half length:" + this.revIDList.length/2)
-		////console.log("text: " + txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(this.revIDList[halfpoint]['revid'])))
-		//return txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(this.revIDList[this.halfpoint]['revid']));
 		var revContent = this.WikiAPI.getRevisionContent(this.revIDList[this.halfpoint]['revid']);
 		if (revContent != undefined) {
 			revContent = txtwiki.parseWikitext(revContent);
@@ -377,8 +323,17 @@ var WikiRevFinder = function(url, asyncAdd, tabID) {
 		return revContent;
 	};
 
+	/**
+	* Edge case which we run in place of binary search, if we have a revision list of size two.
+	* This function uses a linear search instead of a binary search on the remainder of the rev id list
+	* to find the most recent revision that affects a highlighted string.
+	* Instead of returning something, this function simply updates the list of revids to only have 0 or 1 item, not 2.
+	*/
 	this.findFirstRevisionLinearSearch = function(revIdList, stringToCheck) {
 		this.WikEdDiff = new WikEdDiff();
+
+		//because of the ordering of our list, the second entry in the list is the more recent of the two revisions
+		//so we want to check that one first, and just return if it does affect the highlighted string
 		var secondItemContent = txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(revIdList[revIdList.length-1]['revid']));
 		var sanitizedSecondItemContent = this.sanitizeInput(secondItemContent);
 		if(sanitizedSecondItemContent.length != 0 && secondItemContent != 0){
@@ -393,6 +348,8 @@ var WikiRevFinder = function(url, asyncAdd, tabID) {
 			this.revIDList[0] = revIdList[revIdList.length-1], secondItemDiffObject[1];
 			return;
 		}
+
+		//if the above revision DOESN'T affect the highlighted string, then check the other revision in the list.
 
 		this.WikEdDiff = new WikEdDiff();
 		var firstItemContent = txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(revIdList[0]['revid']));
@@ -416,10 +373,13 @@ var WikiRevFinder = function(url, asyncAdd, tabID) {
 			this.revIDList = [];
 			return;
 		}
-		// //console.log('TO RETURN: '+toReturn);
-		// return toReturn;
 	};
 
+	/**
+	* Function to utilize our API caller class to get the content of the most recent revision to the article.
+	* Also takes in an optional parameter, which manually sets the "most recent revision" if the user
+	* doesn't want to use the actual most recent version of the article (for example, if they want to search starting at the 500th revision).
+	*/
 	this.getMostRecentRevisionContent = function(optionalRevId) {
 		optionalRevId = optionalRevId || 0;
 		if(optionalRevId == 0){
@@ -430,14 +390,19 @@ var WikiRevFinder = function(url, asyncAdd, tabID) {
 		}
 	};
 
+	/**
+	* similar to the above function, but only gets the oldest revision in the current block of 500 revisions.
+	*/
 	this.getOldestRevisionContent = function() {
 		return txtwiki.parseWikitext(this.WikiAPI.getRevisionContent(this.oldestRevID));
 	};
 
+	/**
+	* before searching the entire revision history, we just check the oldest item
+	* if there's nothing affecting the string in that revision, then nothing will have affected it
+	* in any more recent revisions, so we can just move on to the next set of revisions.
+	*/
 	this.checkOldestRevision = function(stringToCheck, landmarkBefore, landmarkAfter, numRevisions) {
-		//before searching the entire revision history, we just check the oldest item
-		//if there's nothing affecting the string in that revision, then nothing will have affected it
-		//in any more recent revisions, so we can just move on to the next set of revisions.
 		this.oldestRevID = this.revIDList[this.revIDList.length-1]['revid'];
 		var oldestRevisionContent = this.getOldestRevisionContent();
 		this.WikEdDiff = new WikEdDiff();
@@ -452,9 +417,7 @@ var WikiRevFinder = function(url, asyncAdd, tabID) {
 
 
 		if((lowerLandmarkIndex > -1) && (upperLandmarkIndex > -1) && (landmarkBefore.indexOf(stringToCheck) == -1)){
-			// //console.log("BEFORE CHANGES: "+diffDictionary['=']);
 			oldestItemDiffDictionary['='] = oldestItemDiffDictionary['='].slice(lowerLandmarkIndex, upperLandmarkIndex + landmarkAfter.length);
-			// //console.log("AFTER CHANGES: "+diffDictionary['=']);
 		}
 
 		//we also need to deal with the case where lower landmark isn't there
@@ -467,13 +430,11 @@ var WikiRevFinder = function(url, asyncAdd, tabID) {
 			oldestItemDiffDictionary['='] = oldestItemDiffDictionary['='].slice(0, upperLandmarkIndex + landmarkAfter.length);
 		}
 
-		// //console.log("OLDEST ITEM DIFF DICT: "+this.mostCurrentRevisionContent.indexOf(stringToCheck));
 		if((oldestItemDiffDictionary['='].indexOf(stringToCheck) > -1 || this.mostCurrentRevisionContent.indexOf(stringToCheck) == -1 || (oldestItemDiffDictionary['='].length == 0 && oldestItemDiffDictionary['-'].length == 0 && oldestItemDiffDictionary['+'].length == 0))){
-			//console.log("oldest revision does not affect string.");
-			// //console.log("oldest diff: "+oldestItemDiffDictionary['=']);
+			console.log("oldest revision does not affect string.");
 
 			if(this.revIDList.length == 1){
-				//console.log("this.revIDList only has one item, chill.")
+				// console.log("this.revIDList only has one item, chill.")
 				return;
 			}
 
@@ -485,26 +446,23 @@ var WikiRevFinder = function(url, asyncAdd, tabID) {
 		}
 	};
 
+	/**
+	* remove newlines and Wikipedia-specific information, like comments enclosed in double braces.
+	*/
 	this.sanitizeInput = function(stringToCheck) {
-		// //console.log("STRING: "+stringToCheck);
 		//take out links in stringToCheck, so we just have the string itself
 		//also newlines
-		// //console.log("OLD STRING TO CHECK: "+stringToCheck);
 		stringToCheck = stringToCheck.replace(/\[.*?\]/g, "");
 		stringToCheck = stringToCheck.replace(/\n+/g, " ");
 		stringToCheck = stringToCheck.replace(/\{\{.*?\}\}/g, "");
-		// //console.log("UPDATED STRING TO CHECK: "+stringToCheck);
 		return stringToCheck;
 	};
 
 
-	//This is the function that gets called by master, sends back all the revisions to be displayed
+	/**
+	* This is the function that gets called by master, sends back all the revisions to be displayed
+	*/
 	this.getWikiRevsInfo = function(stringToCheck, landmarkBefore, landmarkAfter, pageStartID, numRevisions, revisionOffset) {
-		// //console.log("start of getWikiRevsInfo page id:")
-		// //console.log(pageStartID)
-		// if (pageStartID == null){
-		// 	//console.log("page start id equal null")
-		// }
 		//need to clear the cache each time, because we're taking diffs against a different revision, so the content will be different
 		//and therefore old entries will no longer be cache-able
 		this.cachedContent = []
@@ -519,30 +477,28 @@ var WikiRevFinder = function(url, asyncAdd, tabID) {
 		landmarkAfter = this.sanitizeInput(landmarkAfter);
 		//console.log("after checkpoints");
 
-		//make this an optional parameter, set to 0 if not passed in
+		//this is an optional parameter, so set to 0 if not passed in
 		revisionOffset = revisionOffset || 0;
 		var revIDList = [];
 
 		//search the first 500 revisions in this case
 		if(revisionOffset == 0 && pageStartID == null){
-			//console.log("446")
+			// console.log("446")
 			revIDList = this.WikiAPI.findFirst500RevisionIDList();
 		}
 
 		//otherwise, we've already searched the first 500 (and possibly more), so search the next batch of 500
 		else{
 			if (pageStartID == null){
-				//console.log("453")
+				// console.log("453")
 				revIDList = this.WikiAPI.findFirst500RevisionIDList(this.oldestRevID);
 			} else {
-				//console.log("456", pageStartID, "<-----");
+				// console.log("456", pageStartID, "<-----");
 				revIDList = this.WikiAPI.findFirst500RevisionIDList(pageStartID);
 			}
 		}
 		this.revIDList = revIDList;
 		this.referenceRevIDList = this.revIDList;
-
-		////console.log("first item" + this.revIDList[0]);
 
         this.mostCurrentRevisionContent = this.getMostRecentRevisionContent();
 		var sanitizedMostCurrentRevisionContent = this.sanitizeInput(this.mostCurrentRevisionContent);
@@ -568,6 +524,11 @@ var WikiRevFinder = function(url, asyncAdd, tabID) {
 		return this.lastNrevisions(stringToCheck, landmarkBefore, landmarkAfter, numRevisions, revIDList);
 	};
 
+	/**
+	* We now have the first revision that affects a highlghted string.
+	* This function transforms that highlighted string back to the way it was before that affecting revision,
+	* so we can get an accurate idea of what the next revision is that affected that highlighted string.
+	*/
 	this.getStringPriorToEdit = function(stringToCheck, affectedRevision) {
 		var fragments = affectedRevision[2];
 		var stringPriorToEdit = '';
@@ -662,12 +623,7 @@ var WikiRevFinder = function(url, asyncAdd, tabID) {
 					break;
 				case '+':
 					var tempBegun = hasBegun;
-
-					//console.log("Fragments: " + fragments[i]['text']);
-					// We need to remove the text in fragments from tempHighlightedString because it did not exist in parent.
-					// if(hasBegun){
-					// 	tempHighlightedString = tempHighlightedString.replace(fragments[i]['text'], "");
-					// } else {
+					console.log("Fragments: " + fragments[i]['text']);
 					
 					// textDeletedFromHighlightedString is used for the rebuilt string to be displayed in UI Pane. Since we
 					// build this string word by word, we just want to connect all the words so we can have a string of removals
@@ -729,9 +685,9 @@ var WikiRevFinder = function(url, asyncAdd, tabID) {
 						formattedStringToBeDisplayed += "<span class='delRev'><span class='added-rem-tag'>[Added: </span>" + textDeletedFromHighlightedString + "<span class='added-rem-tag'>]</span></span>";
 					}
 
-					// } 
-					//console.log("Rebuilt String + "+i+": "+stringPriorToEdit);
-					//console.log("Highlighted String: " + tempHighlightedString);
+					console.log("Rebuilt String + "+i+": "+stringPriorToEdit);
+					console.log("Highlighted String: " + tempHighlightedString);
+
 					break;
 			}
 			i += 1;
