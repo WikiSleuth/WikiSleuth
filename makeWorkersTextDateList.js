@@ -1,6 +1,4 @@
 function makeWorkersTextDateList(sentList, URL, pageID){
-    console.log("CALLING THE MAKETEXTWORKERTHING");
-    console.log("this is the whole sentList: ", sentList);
     var worker_wordList1 = [];
     var worker_wordList2 = [];
     var worker_wordList3 = [];
@@ -23,10 +21,6 @@ function makeWorkersTextDateList(sentList, URL, pageID){
                 break;
         }
     }
-    console.log("this is the worker list 1: ", worker_wordList1);
-    console.log("this is the worker list 2: ", worker_wordList2);
-    console.log("this is the worker list 3: ", worker_wordList3);
-    console.log("this is the worker list 4: ", worker_wordList4);
 
     //Make first workers
     heatmap_worker = new Worker("heatMapWorker.js");
@@ -39,13 +33,9 @@ function makeWorkersTextDateList(sentList, URL, pageID){
     heatmap_worker.postMessage(new_message);
     // listen for second worker message
     heatmap_worker.onmessage = function (event) {
-        console.log("WE ARE LISTENING TO WORKER");
-        console.log('The content of the data array', event.data);
         data_length = event.data.length;
-        console.log("looking for cancel request: ",event.data[data_length-1] );
         if(event.data[data_length-1] == 'cancel_me'){
             text_date_list1 = event.data;
-            console.log("This is in the cancel event. Here is the textdatelist: ", text_date_list1);
             //endTheHeatMap();
             //heatmap_worker.terminate();
             //heatmap_worker = undefined;
@@ -71,15 +61,9 @@ function makeWorkersTextDateList(sentList, URL, pageID){
     heatmap_worker2.postMessage(new_message2);
     //listen for second worker response
     heatmap_worker2.onmessage = function (event) {
-        console.log("WE ARE LISTENING TO WORKER");
-        console.log('The length of the data array', event.data.length);
         data_length = event.data.length;
         if(event.data[data_length-1] == 'cancel_me'){
             text_date_list2 = event.data;
-            console.log("This is in the cancel event. Here is the textdatelist: ", text_date_list2);
-            //endTheHeatMap();
-            //heatmap_worker2.terminate();
-            //heatmap_worker2 = undefined;
 
         }
         else{
@@ -87,7 +71,6 @@ function makeWorkersTextDateList(sentList, URL, pageID){
                 key:   "WW2",
                 value: event.data
             });
-            console.log("FROM WW1: ", text_date_list);
             text_date = event.data;
             callDynamicColor();
         }
@@ -102,23 +85,15 @@ function makeWorkersTextDateList(sentList, URL, pageID){
     heatmap_worker3.postMessage(new_message3);
     //listen for second worker response
     heatmap_worker3.onmessage = function (event) {
-        console.log("WE ARE LISTENING TO WORKER");
-        console.log('The length of the data array', event.data.length);
         data_length = event.data.length;
         if(event.data[data_length-1] == 'cancel_me'){
             text_date_list3 = event.data;
-            console.log("This is in the cancel event. Here is the textdatelist: ", text_date_list3);
-            //endTheHeatMap();
-            //heatmap_worker3.terminate();
-            //heatmap_worker3 = undefined;
-
         }
         else{
             text_date_list.push({
                 key:   "WW3",
                 value: event.data
             });
-            console.log("FROM WW1: ", text_date_list);
             text_date = event.data;
             callDynamicColor();
         }
@@ -133,12 +108,9 @@ function makeWorkersTextDateList(sentList, URL, pageID){
     heatmap_worker4.postMessage(new_message4);
     //listen for second worker response
     heatmap_worker4.onmessage = function (event) {
-        console.log("WE ARE LISTENING TO WORKER");
-        console.log('The length of the data array', event.data.length);
         data_length = event.data.length;
         if(event.data[data_length-1] == 'cancel_me'){
             text_date_list4 = event.data;
-            console.log("This is in the cancel event. Here is the textdatelist: ", text_date_list4);
             //endTheHeatMap();
             //heatmap_worker4.terminate();
             //heatmap_worker4 = undefined;
@@ -155,11 +127,4 @@ function makeWorkersTextDateList(sentList, URL, pageID){
         }
    };
     
-    /*if(preProcess == false){
-        heatmap_worker1.terminate();
-        heatmap_worker2.terminate();
-        heatmap_worker3.terminate();
-        heatmap_worker4.terminate();
-    }*/
-
 }

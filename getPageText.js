@@ -1,5 +1,5 @@
 var myNodelist = document.getElementsByTagName("p");
-console.log(myNodelist);
+
 var wikiPage = {};
 var textInfo = [];
 for(i=0;i<myNodelist.length;i++){
@@ -10,7 +10,6 @@ for(i=0;i<myNodelist.length;i++){
         //(\.)([^[A-Z0-9])
         if (textTagContent != ""){
             textTagContent = textTagContent.replace(/(?!\.[a-zA-Z0-9,\)"\.])\.(?![A-Za-z0-9,\)"\.]\.)/g,'|');
-            console.log("CONTENT: ", textTagContent);
             //create an array of sentences
             var sentences = textTagContent.split('|');
             var firstSentenceLandmark = sentences[0];
@@ -49,8 +48,6 @@ if (splitURL.length == 1) {
 	pageID = splitURL[splitURL.length-1];
 }
 
-console.log(textInfo);
-console.log(url);
 wikiPage["textInfo"] = textInfo;
 wikiPage["url"] = url;
 wikiPage["pageID"] = pageID;
