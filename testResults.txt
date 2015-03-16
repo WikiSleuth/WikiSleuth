@@ -25,3 +25,24 @@ Results:
 10. Provo School District, "The District operates two traditional high schools, an alternative high school, two middle schools, thirteen elementary schools, and a web-based school that serves all grade levels.", 7058 ms, 4 revisions
 
 AVERAGE TIME PER REVISION: 44890 / 26 = 1726 ms = 1.7 seconds
+
+
+1. Jack the Ripper (2003_video_game), “The game is set in New York in 1901, where James Palmer, a reporter of the newspaper New York Today, is investigating a set of murders similar to those of "Jack the Ripper" in Whitechapel 13 years earlier; the murders turn out to be the work of the actual Ripper.” ELAPSED TIME: 3129, 2 revisions.
+
+2. 1914 FIFA Final Cup, “Neither club had reached the FA Cup Final before.” ELAPSED TIME: 4295, 3 revisions.
+
+3. 1978 French Open - Men’s Singles, “Björn Borg defeated Guillermo Vilas 6–1, 6–1, 6–3 in the final to win the Men's Singles tennis title at the 1978 French Open.” ELAPSED TIME: 29711, 2 Revisions.
+
+4. Doctor Who (series 1), “whom he plucks from obscurity on planet Earth”. ELAPSED TIME: 13128, 4 Revisions.
+
+5. Copenhagen Climate Council, “uired to make a new global treaty effective. The Council will seek to promote constructive dialogue between government and business, so that when the world's political”. Fail.
+
+6. Photographic emulsion, “aqueous solution to enter the colloid without dislodging the crystals. Other polymer macromolecules are often blended,[citation needed] but gelatin has not been entirely rep”. ELAPSED TIME: 5037, 3 Revisions.
+
+7. San Vittorino, “San Vittorino Ameterno is a village”. ELAPSED TIME: 6764, 6 revisions.
+
+8. Daughter of the Dragon, “lives next door to Dr. Fu Manchu, and is romantically involved with Ah Kee, a secret agent determined to thwart Fu”. ELAPSED TIME: 2931, 1 revision.
+
+9. Giant Metrewave Radio Telescope, “Giant Metrewave Radio Telescope (GMRT), located near Pune in India, is an array of radio telescopes at metre wavelengths. “ ELAPSED TIME: 2481, 1 Revision.
+
+10. Thermal desorption, “first appeared as an environmental treatment technology in 1985 when it was specified in the Record of Decision (ROD) for the McKin site in Maine. It is frequently”. ELAPSED TIME: 2854, 2 Revisions. 
