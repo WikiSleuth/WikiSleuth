@@ -1,4 +1,20 @@
-<h1>Git Branching!</h1>
+<h1>WikiSleuth</h1>
+<h3>A Tool For The Avid Wikipedia Editor</h3>
+<br>
+hello world!
+
+
+
+
+
+
+
+<br>
+<br>
+<br>
+<h2> Simple Branch Tutorial:<h2>
+Please edit, this needs much work! 
+<br>
 This is a simple write up on how to use branching in Git to develop while maintaining a stable product in the Master branch.
 <br>
 <h3>Summary:</h3>
