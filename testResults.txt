@@ -46,3 +46,5 @@ AVERAGE TIME PER REVISION: 44890 / 26 = 1726 ms = 1.7 seconds
 9. Giant Metrewave Radio Telescope, “Giant Metrewave Radio Telescope (GMRT), located near Pune in India, is an array of radio telescopes at metre wavelengths. “ ELAPSED TIME: 2481, 1 Revision.
 
 10. Thermal desorption, “first appeared as an environmental treatment technology in 1985 when it was specified in the Record of Decision (ROD) for the McKin site in Maine. It is frequently”. ELAPSED TIME: 2854, 2 Revisions. 
+
+AVERAGE TIME PER REVISION: 70,330ms/21revs = 3349ms/revs = 3.35ms/revs
