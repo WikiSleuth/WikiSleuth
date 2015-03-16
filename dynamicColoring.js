@@ -1,9 +1,6 @@
-console.log("INSIDE OF DYNAMIC COLORING\n\n\n\n\n\n", text_info);
-
 var totalSentList = [];
 function splitSentences(callback){
     var myNodeList = document.getElementsByTagName("p");
-    console.log("my node list is: ", myNodeList);
     for(i=0;i<myNodeList.length; i++){
         if(myNodelist[i].textContent != ""){
             var paraSentList = [];
@@ -13,7 +10,6 @@ function splitSentences(callback){
             textTagContent = textTagContent.replace(/(?!\.[a-zA-Z0-9,\)"\.])\.(?![A-Za-z0-9,\)"\.]\.)/g,'|');
             paraSentList = textTagContent.split('|');
             paraSentList.pop();
-            //console.log("this is the parasentList for ", i, " ", paraSentList);
             totalSentList.push(paraSentList);
         }
         else{
@@ -27,14 +23,10 @@ function assignColorsTosentences(callback){
     for(j=0;j<text_info.length;j++){
         paraIndex = text_info[j].textInfo.paraIndex;
         sentIndex = text_info[j].textInfo.sentIndex;
-        console.log("the paraindex: ", paraIndex, " the sentIndex: ", sentIndex);
-        console.log("the sentenceL ", text_info[j].textInfo.sentence);
         var daysElapsed = text_info[j].daysElapsed;
-        console.log("Days elapsed: ", text_info[j].daysElapsed);
         var color = chooseColor(daysElapsed);
         totalSentList[paraIndex][sentIndex] = '<span style="background-color:' + color + '">' + text_info[j].textInfo.sentence + '</span>';
     }
-    console.log("the sent list after adding color to the right sentence: ", totalSentList);
     callback();
 }
 
@@ -48,7 +40,6 @@ function addColorToPage(){
             }
             newPara = "<p>" + newPara + "</p>";
             myNodelist[i].outerHTML = newPara;
-            //console.log("This is the text HTML after screwing with it ************ \n", myNodeList[i].outerHTML);
         }
     }
 }
