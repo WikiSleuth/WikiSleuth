@@ -19,6 +19,8 @@ var htmltoAddToAuthorPane = '';
 var preProcess = false;
 //var bigSentList = [];
 
+var tabID = 0;
+
 
 // ****************** start heatmap stuff
 
@@ -217,27 +219,23 @@ function queryForData() {
 
 // The first element of tabs will be the page the user is currently looking at. Execute code to get highlighted text.
 function getHighlightedText(tabs) {
-  // if (isPaneDisplayed) {
-  //   chrome.tabs.executeScript(tabs[0].id, {file: 'hidePane.js'});
-  //   isPaneDisplayed = false;
-  // } else {
-    
-  // }
+  tabID = tabs[0].id;
+  chrome.tabs.insertCSS(tabs[0].id, {file: 'panel.css'});
   chrome.tabs.executeScript(tabs[0].id, {file: 'getTextAndURL.js'}, sendTextToModel); // ***** URL ALREADY GOTTEN? ******
 }
 
 // Response of our executed script will have the highlighted text. Set our text var to equal that string and then trigger the next event
 function sendTextToModel(response) {
   if ((response[0][1].indexOf('wikipedia.org/wiki/')>-1) && (isOnWiki == true) && (response[0][0] != "")) {
-    WikiAPI = new WikiRevFinder(response[0][1]);
+
+    WikiAPI = new WikiRevFinder(response[0][1], true, tabID);
     //console.log("&&&&&&&&&&&&&", response[0][0], response[0][2], response[0][3]);
     //console.log("in master sendTextToModel pageID:")
     //console.log(response[0][4]);
-      console.log("PASSING THIS INTO THE WIKIREVFINDER");
-      console.log(response[0][0],"\n", response[0][2],"\n", response[0][3],"\n", response[0][4]);
-    data = getAffectedRevisions(response[0][0], response[0][2], response[0][3], response[0][4]);
+    var affectedRevs = WikiAPI.getWikiRevsInfo(response[0][0], response[0][2], response[0][3], response[0][4], 10);
+    //data = getAffectedRevisions(response[0][0], response[0][2], response[0][3], response[0][4]);
     //document.dispatchEvent(evt);
-    getPageWindow();
+    //getPageWindow();
   }
 }
 
@@ -253,15 +251,21 @@ function getAffectedRevisions(highlightedText, landmarkBefore, landmarkAfter, pa
   var revisionDetails = null;
 
   for (i = 0; i < affectedRevs.length; i++) {
-      console.log("HERE LOOK AT ME PLZ");
-      console.log(affectedRevs);
-    revisionDetails = WikiAPI.WikiAPI.getRevisionStatistics(affectedRevs[i][0]['revid']);
+
+    if(affectedRevs[i][0]['revid'] != 0){
+      revisionDetails = WikiAPI.WikiAPI.getRevisionStatistics(affectedRevs[i][0]['revid']);
+    }
+    else{
+      revisionDetails = {"user":"page created", "timestamp":"0", "parsedcomment":"N/A", "title":"N/A"}
+    }
+
     //diffText = API.getDiffText(affectedRevs[i][0]);
     affectedRevs[i][0] = [revisionDetails['timestamp'], revisionDetails['user'], revisionDetails['parsedcomment'], revisionDetails['user'], revisionDetails['timestamp'], affectedRevs[i][0]['revid'], affectedRevs[i][0]['parentid'], affectedRevs[i][3], revisionDetails['title']];
   }
   return affectedRevs;
 }
 
+/**
 // Get the active window again. *** Can be combined with query for data? ***
 function getPageWindow() {
   chrome.tabs.query({active: true, currentWindow: true}, addInfo);
@@ -288,6 +292,7 @@ function buildPane(tabs, html) {
 function respond(response) {
   //console.log(response);
 }
+**/
 
 // If the WikiSleuth shortcut is pressed, start our dataflow
 function handleCommand(command) {

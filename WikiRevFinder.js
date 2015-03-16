@@ -1,7 +1,8 @@
-var WikiRevFinder = function(url) {
+var WikiRevFinder = function(url, asyncAdd, tabID) {
 
 	this.WikEdDiff = null;
 	this.WikiAPI = null;
+	this.HTMLConstructor = null;
 	this.revIDList = [];
 	this.referenceRevIDList = [];
 	this.mostCurrentRevisionContent = '';
@@ -10,10 +11,15 @@ var WikiRevFinder = function(url) {
 	this.halfpoint = 0;
 	this.cachedContent = {};
 	this.contentToMove = [];
+	this.asyncAdd = null;
+	this.tabID = 0;
 
 	this.init = function() {
+		this.asyncAdd = asyncAdd;
+		this.tabID = tabID;
 		this.WikiAPI = new APICaller(url);
 		this.WikEdDiff = new WikEdDiff();
+		this.HTMLConstructor = new HTMLConstructor(tabID, this.WikiAPI, url);
 		this.round = 0;
 		return;
 	};
@@ -246,7 +252,10 @@ var WikiRevFinder = function(url) {
 			//This is if we are at "Creation": the revision where the page was created.
 			if (nextRev[0]["parentid"] == 0) {
 				nextRev[3] = "<span class='delRev'><span class='added-rem-tag'>[Added: </span>"+currentString+"<span class='delRev'><span class='added-rem-tag'>]</span>";
-				affectingRevs.push(nextRev)
+				affectingRevs.push(nextRev);
+				if (this.asyncAdd) {
+					this.HTMLConstructor.addAffectedRevElement(nextRev);
+				}
 				break;
 
 			} else {
@@ -294,6 +303,9 @@ var WikiRevFinder = function(url) {
 				nextRev[3] = formattedStringToShow;
 
 				affectingRevs.push(nextRev);
+				if (this.asyncAdd) {
+					this.HTMLConstructor.addAffectedRevElement(nextRev);
+				}
 				currLandmarkBefore = this.getStringPriorToEdit(currLandmarkBefore, nextRev)[0];
 				currLandmarkAfter = this.getStringPriorToEdit(currLandmarkAfter, nextRev)[0];
 
@@ -337,8 +349,11 @@ var WikiRevFinder = function(url) {
 			}
 
 		}
-		//console.log("AT THE END OF lastNrevisions!!! affectingRevs looks like: ");
-		//console.log(affectingRevs);
+
+		console.log("AT THE END OF lastNrevisions!!! affectingRevs looks like: ");
+		console.log(affectingRevs);
+		this.HTMLConstructor.alterPaneHeader(null);
+
 		return affectingRevs;
 
 	}
