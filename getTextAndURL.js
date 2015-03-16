@@ -31,10 +31,12 @@ if (splitURL.length == 1) {
 	pageID = splitURL[splitURL.length-1];
 }
 
-
+// create WikiSleuth revision pane so we can asynchronously add affected revisions while our algorithm is running
 /////////////////////
+// Get article name
 var urlArray = url.split('/');
 var pageName = urlArray[urlArray.length - 1].replace(/_/g, " ");
+// Remove pane if a pane is already present
 var elem = document.getElementById("panel");
 if (elem) {
 	elem.parentNode.removeChild(elem);
@@ -42,6 +44,7 @@ if (elem) {
 	wikiPageFooter.className = wikiPageFooter.className.replace(' addPaddingForPage', '');
 }
 
+// Create a new pane to display affected revisions
 var panelElement = document.createElement('div');
 try{
 	panelElement.innerHTML = "<div id='panel'> <span> <h2 id='title'>WikiSleuth: Fetching Affected Revisions for " + pageName + 
@@ -64,6 +67,5 @@ catch(err){
 }
 /////////////////////
 
-//console.log("in getText.js, pageID:");
-//console.log(pageID);
+
 [text, url, firstSentenceLandmark, endSentenceLandmark, pageID];

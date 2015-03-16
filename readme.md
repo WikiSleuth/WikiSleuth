@@ -1,4 +1,24 @@
-<h1>Git Branching!</h1>
+<h1>WikiSleuth</h1>
+<h3>A Tool For The Avid Wikipedia Editor</h3>
+<br>
+<h2>Installation: </h2>
+WikiSleuth is a Google Chrome browser extension. In order to install, you will need [Google Chrome](https://www.google.com/chrome/browser/desktop/).<br><br>
+1) Clone or download the contents of this repository. <br>
+2) Navigate to your Chrome Extensions page (chrome://extensions) and ensure developer mode is activated. This can be found in the upper right hand corner of the Chrome Extensions page with the check box titled _Developer mode_. <br>
+3) Load the extension into the browser using the _Load unpacked extension_ button and selecting the WikiSleuth file that you downloaded. <br><br>
+You should now see the WikiSleuth icon in the extension area of your Google Chrome browser, and can begin using our tool on [Wikipedia](http://en.wikipedia.org/wiki/Cake).
+<br>
+<h2>Usage: </h2>
+To use WikiSleuth, first navigate to your favorite [Wikipedia Article](http://en.wikipedia.org/wiki/Cake). If you want to see the story of any given text on the page, highlight a segment of text and select _Get Affected Revisions_. This will bring up a pane that will load all revisions that have affecting the text you have highlighted for the current article you are viewing in Wikipedia!
+<br><br>
+If you want to see how active a page has been, use our Heatmap feature by selecting _Start Heatmap_. You will begin to see how frequently sentences are edited based on the color that the sentence is highlighted. A more red color highlighting a sentence signifies that it has been edited more recently, while a more blue color highlighting a sentences signifies that it was not edited recently!
+<br><br>
+If you are curious of an authors activity on Wikipedia, use our _Revisions By Author_ feature. To do this navigate to the extension button and select _Get Revisions By Author_. Once selected enter a Wikipedia author name and a pane will appear with information about that author on Wikipedia!
+<br>
+<br>
+<h2> Simple Branch Tutorial:</h2>
+Please edit, this needs much work! 
+<br>
 This is a simple write up on how to use branching in Git to develop while maintaining a stable product in the Master branch.
 <br>
 <h3>Summary:</h3>

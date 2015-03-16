@@ -209,7 +209,7 @@ function buildAuthorPane(tabs, html) {
 
 // **** End Author Statistics 
 
-
+// **** BEGIN AFFECTED REVISION FLOW ****
 // Query chrome to get an array of all tabs in current window that are focused and active
 function queryForData() {
   if (isOnWiki) {
@@ -227,18 +227,12 @@ function getHighlightedText(tabs) {
 // Response of our executed script will have the highlighted text. Set our text var to equal that string and then trigger the next event
 function sendTextToModel(response) {
   if ((response[0][1].indexOf('wikipedia.org/wiki/')>-1) && (isOnWiki == true) && (response[0][0] != "")) {
-
     WikiAPI = new WikiRevFinder(response[0][1], true, tabID);
-    //console.log("&&&&&&&&&&&&&", response[0][0], response[0][2], response[0][3]);
-    //console.log("in master sendTextToModel pageID:")
-    //console.log(response[0][4]);
     var affectedRevs = WikiAPI.getWikiRevsInfo(response[0][0], response[0][2], response[0][3], response[0][4], 10);
-    //data = getAffectedRevisions(response[0][0], response[0][2], response[0][3], response[0][4]);
-    //document.dispatchEvent(evt);
-    //getPageWindow();
   }
 }
-
+// **** END AFFECTED REVISION FLOW ****
+/***
 // Collects data recieved by the model ****** Should be moved somewhere that makes more sense ******
 function getAffectedRevisions(highlightedText, landmarkBefore, landmarkAfter, pageStartID){
   ////console.log("about to call getWikiRevsInfo");
@@ -291,7 +285,9 @@ function buildPane(tabs, html) {
 // Log the response we get returned from the message we sent to the UI. For debugging purposes.
 function respond(response) {
   //console.log(response);
+  }
 }
+// **** END AFFECTED REVISION FLOW ****
 **/
 
 // If the WikiSleuth shortcut is pressed, start our dataflow
@@ -307,13 +303,8 @@ function handleAuthorCommand(command){
   }
 }
 
-// var evt = new CustomEvent("getInformation");
-// document.addEventListener("getInformation", getPageWindow);
-//authorEvent is for Author Statistics
 var authorEvent = new CustomEvent("getInformation");
 document.addEventListener("getInformation", getAuthorPageWindow);
-//var authorEventTwo = new CustomEvent("getInformation");
-//document.addEventListener("getInformation", addSubmitInfo);
 chrome.commands.onCommand.addListener(handleCommand);
 chrome.commands.onCommand.addListener(handleAuthorCommand);
 
