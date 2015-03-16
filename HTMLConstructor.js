@@ -30,7 +30,7 @@ var HTMLConstructor = function(tabID, WikiAPI, url) {
 					    "<ul class='item_list'>" +
 					  	 "<li class='sub_list'>" +
 					      "<span id='text_affected' class='header_left'>Revision Context:</span><span class='text_added'>"+revInfo['context']+"</span>" +
-					      "<span class='header_right'>"+ "<a href='http://en.wikipedia.org/w/index.php?title="+revInfo['title']+"&diff="+"prev"+"&oldid="+revInfo['revid']+"' title='Compare Affected to Parent Revision' target='_blank'> <button type='button'> Compare Affected to Parent Revision </button></a> | <a href='https://en.wikipedia.org/w/index.php?title=Binary_search_algorithm&action=edit&undoafter=" + revInfo['revid'] + "&undo=" + revInfo['parentid'] + "'Undo Edit' target='_blank'><button type='button'> Undo Edit </button></a> </span>" +
+					      "<span class='header_right'>"+ "<a href='http://en.wikipedia.org/w/index.php?title="+revInfo['title']+"&diff="+"prev"+"&oldid="+revInfo['revid']+"' title='Compare Affected to Parent Revision' target='_blank'> <button type='button'> Compare Affected to Parent Revision </button></a> | <a href='https://en.wikipedia.org/w/index.php?title="+revInfo['title']+"&action=edit&undoafter=" + revInfo['revid'] + "&undo=" + revInfo['parentid'] + "'Undo Edit' target='_blank'><button type='button'> Undo Edit </button></a> </span>" +
 					     "</li>" +
 					    "</ul>" +
 					"</li>";
