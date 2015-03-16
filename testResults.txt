@@ -24,14 +24,14 @@ Results:
 
 10. Provo School District, "The District operates two traditional high schools, an alternative high school, two middle schools, thirteen elementary schools, and a web-based school that serves all grade levels.", 7058 ms, 4 revisions
 
-AVERAGE TIME PER REVISION: 44890 / 26 = 1726 ms = 1.7 seconds
+AVERAGE TIME PER REVISION: 44890 / 26 = 1726 ms = 1.7 seconds/revision
 
 
 1. Jack the Ripper (2003_video_game), “The game is set in New York in 1901, where James Palmer, a reporter of the newspaper New York Today, is investigating a set of murders similar to those of "Jack the Ripper" in Whitechapel 13 years earlier; the murders turn out to be the work of the actual Ripper.” ELAPSED TIME: 3129, 2 revisions.
 
 2. 1914 FIFA Final Cup, “Neither club had reached the FA Cup Final before.” ELAPSED TIME: 4295, 3 revisions.
 
-3. 1978 French Open - Men’s Singles, “Björn Borg defeated Guillermo Vilas 6–1, 6–1, 6–3 in the final to win the Men's Singles tennis title at the 1978 French Open.” ELAPSED TIME: 29711, 2 Revisions.
+3. 1978 French Open - Men’s Singles, “Björn Borg defeated Guillermo Vilas 6–1, 6–1, 6–3 in the final to win the Men's Singles tennis title at the 1978 French Open.” ELAPSED TIME: 17884, 4 Revisions.
 
 4. Doctor Who (series 1), “whom he plucks from obscurity on planet Earth”. ELAPSED TIME: 13128, 4 Revisions.
 
@@ -47,4 +47,4 @@ AVERAGE TIME PER REVISION: 44890 / 26 = 1726 ms = 1.7 seconds
 
 10. Thermal desorption, “first appeared as an environmental treatment technology in 1985 when it was specified in the Record of Decision (ROD) for the McKin site in Maine. It is frequently”. ELAPSED TIME: 2854, 2 Revisions. 
 
-AVERAGE TIME PER REVISION: 70,330ms/21revs = 3349ms/revs = 3.35ms/revs
+AVERAGE TIME PER REVISION: 55,374ms/26revs = 2130ms/revs = 2.13ms/revs
