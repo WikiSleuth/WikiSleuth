@@ -206,7 +206,7 @@ function buildAuthorPane(tabs, html) {
 
 // **** End Author Statistics 
 
-
+// **** BEGIN AFFECTED REVISION FLOW ****
 // Query chrome to get an array of all tabs in current window that are focused and active
 function queryForData() {
   if (isOnWiki) {
@@ -225,68 +225,10 @@ function getHighlightedText(tabs) {
 function sendTextToModel(response) {
   if ((response[0][1].indexOf('wikipedia.org/wiki/')>-1) && (isOnWiki == true) && (response[0][0] != "")) {
     WikiAPI = new WikiRevFinder(response[0][1], true, tabID);
-    //console.log("&&&&&&&&&&&&&", response[0][0], response[0][2], response[0][3]);
-    //console.log("in master sendTextToModel pageID:")
-    //console.log(response[0][4]);
     var affectedRevs = WikiAPI.getWikiRevsInfo(response[0][0], response[0][2], response[0][3], response[0][4], 10);
-    //data = getAffectedRevisions(response[0][0], response[0][2], response[0][3], response[0][4]);
-    //document.dispatchEvent(evt);
-    //getPageWindow();
   }
 }
-
-// Collects data recieved by the model ****** Should be moved somewhere that makes more sense ******
-function getAffectedRevisions(highlightedText, landmarkBefore, landmarkAfter, pageStartID){
-  //console.log("about to call getWikiRevsInfo");
-    console.log("The Highlighted Text in Master: ",highlightedText);
-    console.log("The Landmark Before in Master: ",landmarkBefore);
-    console.log("The Landmark After in Master: ",landmarkAfter);
-    console.log("The pageStartID in Master: ",pageStartID);
-  var affectedRevs = WikiAPI.getWikiRevsInfo(highlightedText, landmarkBefore, landmarkAfter, pageStartID, 10);
-  console.log("done calling getWikiRevsInfo");
-  var revisionDetails = null;
-
-  for (i = 0; i < affectedRevs.length; i++) {
-    if(affectedRevs[i][0]['revid'] != 0){
-      revisionDetails = WikiAPI.WikiAPI.getRevisionStatistics(affectedRevs[i][0]['revid']);
-    }
-    else{
-      revisionDetails = {"user":"page created", "timestamp":"0", "parsedcomment":"N/A", "title":"N/A"}
-    }
-    //diffText = API.getDiffText(affectedRevs[i][0]);
-    affectedRevs[i][0] = [revisionDetails['timestamp'], revisionDetails['user'], revisionDetails['parsedcomment'], revisionDetails['user'], revisionDetails['timestamp'], affectedRevs[i][0]['revid'], affectedRevs[i][0]['parentid'], affectedRevs[i][3], revisionDetails['title']];
-  }
-  return affectedRevs;
-}
-
-/**
-// Get the active window again. *** Can be combined with query for data? ***
-function getPageWindow() {
-  chrome.tabs.query({active: true, currentWindow: true}, addInfo);
-}
-
-// Construct our UI pane
-function addInfo(tabs) {
-  var htmlToAdd = buildHTMLToAdd(tabs, data, buildPane);
-}
-
-// Send constructed pane to Wiki page along with the CSS for the pane
-function buildPane(tabs, html) {
-    if(isOnWiki){
-        chrome.tabs.insertCSS(tabs[0].id, {file: 'panel.css'})
-        chrome.tabs.executeScript(tabs[0].id, { code: 'var panelHTML = ' + JSON.stringify(html) },
-        function() {
-            chrome.tabs.executeScript(tabs[0].id, {file: 'createPanel.js'});
-        });
-        isPaneDisplayed = true; 
-    }
-}
-
-// Log the response we get returned from the message we sent to the UI. For debugging purposes.
-function respond(response) {
-  console.log(response);
-}
-**/
+// **** END AFFECTED REVISION FLOW ****
 
 // If the WikiSleuth shortcut is pressed, start our dataflow
 function handleCommand(command) {
@@ -301,12 +243,7 @@ function handleAuthorCommand(command){
   }
 }
 
-// var evt = new CustomEvent("getInformation");
-// document.addEventListener("getInformation", getPageWindow);
-//authorEvent is for Author Statistics
 var authorEvent = new CustomEvent("getInformation");
 document.addEventListener("getInformation", getAuthorPageWindow);
-//var authorEventTwo = new CustomEvent("getInformation");
-//document.addEventListener("getInformation", addSubmitInfo);
 chrome.commands.onCommand.addListener(handleCommand);
 chrome.commands.onCommand.addListener(handleAuthorCommand);
