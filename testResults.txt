@@ -1,0 +1,26 @@
+
+FAIL CASES:
+We can't do indented, inline stuff like a poem line, for example.
+
+Results:
+
+1. Hungry tiger, "He asks Nanda for permission to eat her and when she declines, he asks for a large quantity of beefsteaks, potatoes, and ice cream." = 5721 ms, 4 revisions
+
+2. Rypefjord, "Rypefjord. Rypefjord was the main population centre of the former municipality of Sørøysund." = 1659 ms, 1 revision
+
+3. Bernhard Lichtenberg, "Because he was considered incorrigible, he was sent to the Dachau concentration camp, but he collapsed and died while in transit, on 5 November 1943 in Hof, Bavaria." = 13974 ms, 8 revisions
+
+4. Consonant harmony, "The following examples are given by de Reuse: in Western Apache, the verbal prefix si- is an alveolar fricative, as in the following forms:" = 3977 ms, 2 revisions
+
+5. The Poem Tree, "The "ancient earthwork" at "Mercia's bounds" may be Grim's Ditch or The Ridgeway (the latter is formed by part of Grim's Ditch)." = 2317 ms, 1 revision
+
+6. Compact-open topology, "However, the modified definition is crucial if one wants the convenient category of compactly generated weak Hausdorff spaces to be Cartesian closed, among other useful properties." = 3487 ms, 1 revision
+
+7. School Certificate (Mauritius), "Students may also choose to obtain IGCSE qualifications at a later time.", 1289 ms, 1 revision
+
+8. 8th Regiment Tennessee Volunteer Cavalry, "Capture and destruction of salt works at Saltville December 20–21.", 2289 ms, 2 revisions
+
+9. Master of Bankdam, "The old patriarch, Simeon dies.", 3119 ms, 2 revisions
+
+10. Provo School District, "The District operates two traditional high schools, an alternative high school, two middle schools, thirteen elementary schools, and a web-based school that serves all grade levels.", 7058 ms, 4 revisions
+
