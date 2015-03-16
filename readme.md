@@ -2,14 +2,10 @@
 <h3>A Tool For The Avid Wikipedia Editor</h3>
 <br>
 <h2>Installation: </h2>
-WikiSleuth is a Google Chrome browser extension. In order to install, navigate to your [Chrome extensions](chrome://extensions) page. [Chrome Extensions](chrome://extensions)
-
-
-
-
-
-
-
+WikiSleuth is a Google Chrome browser extension. In order to install, clone or download the contents of this repository. <br>
+Next, navigate to your Chrome Extensions page (chrome://extensions) and ensure developer mode is activated. This can be found in the upper right hand corner of the Chrome Extensions page with the check box title Developer_mode. <br>
+Load the extension into the browser using the Load_unpacked_extension button and selecting the WikiSleuth file that you downloaded. <br>
+You should now see the WikiSleuth icon in the extension area of your Google Chrome browser, and can begin using our tool on [Wikipedia](http://en.wikipedia.org/).
 <br>
 <br>
 <br>
