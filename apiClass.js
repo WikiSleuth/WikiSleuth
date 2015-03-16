@@ -1,3 +1,14 @@
+/*
+** APICaller is responsible for making the necessary MediaWiki Requests for data to be used in our binary.
+** APICaller takes in the url of a page, and it assumes that the url is that of a wikipedia page. The APICaller class will
+** fail if given a URL other than a wikipage.
+
+** The TimeCalculator class is initialized, which simply calculates a timeframe to generate edit frequencies of
+** Wikipedia editors.
+
+
+
+*/
 var APICaller = function(url){
 	this.pageName = '';
 	this.endpoint = '';
@@ -39,10 +50,10 @@ var APICaller = function(url){
 
 	};
 
-/*
-This is where Thor started his changes to the api class to incorporate user statistics
-*/
 
+	/*
+	Get a list of Revisions for the past 24 hours given an authorName
+	*/
 	this.getDayOldRevisionsListByAuthor = function(authorName){
 		var currTime = this.timeCalculator.getTodayTimeStamp();
 		var dayOldTime = this.timeCalculator.getYesterdayTimeStamp();
@@ -55,7 +66,9 @@ This is where Thor started his changes to the api class to incorporate user stat
 		return jsonObject['query']['usercontribs'];
 
 	};
-
+	/*
+	Get a list of Revisions for the past 7 days given an authorName
+	*/
 	this.getWeekOldRevisionsListByAuthor = function(authorName){
 		var currTime = this.timeCalculator.getTodayTimeStamp();
 		var weekOldTime = this.timeCalculator.getPastWeekTimeStamp();
@@ -69,7 +82,9 @@ This is where Thor started his changes to the api class to incorporate user stat
 
 
 	};
-
+	/*
+	Get a list of Revisions for the past 30 days given an authorName
+	*/
 	this.getMonthOldRevisionsListByAuthor = function(authorName){
 		var currTime = this.timeCalculator.getTodayTimeStamp();
 		var monthOldTime = this.timeCalculator.getPastMonthTimeStamp();
@@ -82,6 +97,9 @@ This is where Thor started his changes to the api class to incorporate user stat
 		return jsonObject['query']['usercontribs'];
 
 	};
+	/*
+	Get a list of Revisions for the past 365 days given an authorName
+	*/
 
 	this.getYearOldRevisionsListByAuthor = function(authorName){
 		var currTime = this.timeCalculator.getTodayTimeStamp();
@@ -95,7 +113,9 @@ This is where Thor started his changes to the api class to incorporate user stat
 		return jsonObject['query']['usercontribs'];
 
 	};
-
+	/*
+	Get a list of Revisions for the past 10 years given an authorName
+	*/
 	this.getTotalOldRevisionListByAuthor = function(authorName){
 		var currTime = this.timeCalculator.getTodayTimeStamp();
 		var decadeOldTime = this.timeCalculator.getPastDecadeTimeStamp();
@@ -108,7 +128,9 @@ This is where Thor started his changes to the api class to incorporate user stat
 		return jsonObject['query']['usercontribs'];
 
 	}
-
+	/*
+	Get a list of the most 500 Revisions for a given WikiPedia Editor
+	*/
 	this.getRecentRevisionsByAuthor = function(authorName){
 		//real query is action=query&list=usercontribs&format=json&uclimit=10&ucuser=BabbaQ&ucprop=ids%7Ctitle%7Cparsedcomment&continue=
 		var action = 'action=query&list=usercontribs&format=json&uclimit=50&ucuser=' + authorName + '&ucprop=ids%7Ctitle%7Cparsedcomment%7Ctimestamp%7Ctags&continue='
@@ -119,7 +141,9 @@ This is where Thor started his changes to the api class to incorporate user stat
 		return jsonObject['query']['usercontribs'];
 
 	}
-
+	/*
+	Get a list of Major Revisions in the past 10 years given an authorName
+	*/
 	this.getTotalMajorEditsByAuthor = function(authorName){
 
 		var currTime = this.timeCalculator.getTodayTimeStamp();
@@ -133,11 +157,10 @@ This is where Thor started his changes to the api class to incorporate user stat
 
 	}
 
-/*
-this is where Thor's work stops
-*/
 
-
+	/*
+	Returns revStats which is the username, timestamp and parsed comment for a particular revision id
+	*/
 	this.getRevisionStatistics = function(revID){
 		var action = 'format=json&action=query&prop=revisions&revids=' + revID + '&rvprop=user|timestamp|parsedcomment&continue=';
 		var apiRequestURL = this.endpoint + action;
@@ -147,7 +170,9 @@ this is where Thor's work stops
 		//return jsonObject['query']['pages'][Object.keys(jsonObject['query']['pages'])[0]]['revisions'][0];
 		return revStats;
 	}
-
+	/*
+	Get a list of 500 revisions from a given revision id
+	*/
 	this.findRevisionIDListFromStartID = function(startID){
 		var action = "format=json&action=query&prop=revisions&rvstartid="+ startId +"rvprop=ids&rvlimit=500&continue=";
 		var apiRequestURL = this.endpoint + action;
@@ -155,18 +180,24 @@ this is where Thor's work stops
 		return jsonObject['query']['pages'][Object.keys(jsonObject['query']['pages'])[0]]['revisions'];
 
 	};
-
+	/*
+	Generate the MedaWiki URL request to be parsed
+	*/
 	this.makeRequest = function(url){
 		var request = new XMLHttpRequest();
   		request.open('GET', url, false);  // `false` makes the request synchronous
   		request.send(null);
   		return this.parseJSONRequest(request.responseText);
 	};
-
+	/*
+	Parse JSON returned from MedaWiki
+	*/
 	this.parseJSONRequest = function(jsonRequest){
 		return JSON.parse(jsonRequest);
 	};
-
+	/*
+	Get Page Content of a given revision id
+	*/
 	this.getRevisionContent = function(revID){
 		var action = 'action=query&prop=revisions&format=json&rvprop=content&revids=' + revID + '&continue=';
 		var apiRequestURL = this.endpoint + action;
