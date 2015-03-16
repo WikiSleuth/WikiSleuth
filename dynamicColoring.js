@@ -56,52 +56,52 @@ function chooseColor(daysElapsed){
                 color = "#F91B04";
                 break;
             case (7 <= daysElapsed &&  daysElapsed < 30):
-                color = "#F4040B";
+                color = "#EE8C8B";
                 break;
             case (30 <= daysElapsed &&  daysElapsed < 183):
-                color = "#EE0328";
+                color = "#ED9B83";
                 break;
             case (183 <= daysElapsed &&  daysElapsed < 365):
-                color = "#E90344";
+                color = "#ECAD7C";
                 break;
             case (365 <= daysElapsed &&  daysElapsed < 548):
-                color = "#E3035E";
+                color = "#D5EA63";
                 break;
             case (548 <= daysElapsed &&  daysElapsed < 730):
-                color = "#DE0277";
+                color = "#84E952";
                 break;
             case (730 <= daysElapsed &&  daysElapsed < 913):
-                color = "#D9028F";
+                color = "#4BE847";
                 break;
             case (913 <= daysElapsed &&  daysElapsed < 1095):
-                color = "#D302A5";
+                color = "#3DE76E";
                 break;
             case (1095 <= daysElapsed &&  daysElapsed < 1278):
-                color = "#CE01BB";
+                color = "#36E78E";
                 break;
             case (1278 <= daysElapsed &&  daysElapsed < 1460):
-                color = "#C201C8";
+                color = "#2FE6AF";
                 break;
             case (1460 <= daysElapsed &&  daysElapsed < 1825):
-                color = "#A501C3";
+                color = "#29E5D4";
                 break;
             case (1825 <= daysElapsed &&  daysElapsed < 2190):
-                color = "#B61EA6";
+                color = "#25E3E5";
                 break;
             case (2190 <= daysElapsed &&  daysElapsed < 2555):
-                color = "#A919C4";
+                color = "#22CFE5";
                 break;            
             case (2555 <= daysElapsed &&  daysElapsed < 2920):
-                color = "#A216D2";
+                color = "#1FBAE5";
                 break;            
             case (2920 <= daysElapsed &&  daysElapsed < 3285):
-                color = "#9C14E1";
+                color = "#6744E8";
                 break;            
             case (3285 <= daysElapsed &&  daysElapsed < 3650):
-                color = "#8F0FFF";
+                color = "#7847E8";
                 break;            
             default:
-                color = "#3514FF";
+                color = "#5540E7";
         }
     }
     return color;

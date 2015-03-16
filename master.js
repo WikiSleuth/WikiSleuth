@@ -24,17 +24,6 @@ var tabID = 0;
 
 // ****************** start heatmap stuff
 
-function preProcessTrue(){
-    preProcess = true;  
-    initHeatmap();
-    console.log("Preprocess set to: ", preProcess);
-}
-
-function preProcessFalse(){
-    preProcess = false;  
-    console.log("Preprocess set to: ", preProcess);
-
-}
  // PREPROCESS STUFF
 chrome.webNavigation.onCompleted.addListener(function(details){
     theURL = details.url; 
@@ -63,8 +52,6 @@ function startTheHeatMap(tabs){
 }
 
 function sendPageToModel(response) {
-    console.log("THIS IS OUR NEW WIKIPAGE OBJECT: ", response);
-    console.log("HERE IS THE NEW LIST WITH INDEX: ", response[0].textInfo);
     makeWorkersTextDateList(response[0].textInfo,response[0].url,response[0].pageID);
     
 }
@@ -75,7 +62,6 @@ function stopTheHeatMap(){
     heatmap_worker2.terminate();
     heatmap_worker3.terminate();
     heatmap_worker4.terminate();
-    //console.log("workers have been terminated! \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 }
 
 
@@ -98,7 +84,6 @@ function injectedColorScript(tabs){
     chrome.tabs.executeScript(tabs[0].id, {
         code: 'var text_date_list = ' + JSON.stringify(text_date_list)
     }, function() {
-        //console.log("inside of master calling colorpage script ", text_date_list);
         chrome.tabs.executeScript(tabs[0].id, {file: 'colorPage.js'});
     });
     text_date_list = []; 
@@ -113,7 +98,6 @@ function dynamicColor(tabs){
         //code: 'var text_date_list = ' + JSON.stringify(text_date_list) 
         code: 'var text_info = ' + JSON.stringify(text_date)
     }, function() {
-        console.log("HERE IN DYNAMIC COLORING");
         chrome.tabs.executeScript(tabs[0].id, {file: 'dynamicColoring.js'});
     });
 }
