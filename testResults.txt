@@ -24,3 +24,4 @@ Results:
 
 10. Provo School District, "The District operates two traditional high schools, an alternative high school, two middle schools, thirteen elementary schools, and a web-based school that serves all grade levels.", 7058 ms, 4 revisions
 
+AVERAGE TIME PER REVISION: 44890 / 26 = 1726 ms = 1.7 seconds
