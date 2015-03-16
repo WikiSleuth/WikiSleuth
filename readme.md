@@ -7,7 +7,7 @@ Next, navigate to your Chrome Extensions page (chrome://extensions) and ensure d
 Load the extension into the browser using the _Load unpacked extension_ button and selecting the WikiSleuth file that you downloaded. <br>
 You should now see the WikiSleuth icon in the extension area of your Google Chrome browser, and can begin using our tool on [Wikipedia](http://en.wikipedia.org/Cake).
 <br>
-<h2>Usage: <h2>
+<h2>Usage: </h2>
 To use WikiSleuth, first navigate to your favorite [Wikipedia Article](http://en.wikipedia.org/Cake). If you want to see the story of any given text on the page, highlight a segment of text and select _Get Affected Revisions_. This will bring up a pane that will load all revisions that have affecting the text you have highlighted for the current article you are viewing in Wikipedia!
 <br><br>
 If you want to see how active a page has been, use our Heatmap feature by selecting _Start Heatmap_. You will begin to see how frequently sentences are edited based on the color that the sentence is highlighted. A more red color highlighting a sentence signifies that it has been edited more recently, while a more blue color highlighting a sentences signifies that it was not edited recently!
