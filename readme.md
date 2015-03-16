@@ -31,6 +31,9 @@ git pull origin branchName <br>
 git push origin branchName <br>
 git checkout master <br>
 git pull <br>
+git checkout branchName <br>
+git merge master <br>
+git checkout master <br>
 git merge branchName <br>
 git branch -d branchName <br>
 git push <br>
